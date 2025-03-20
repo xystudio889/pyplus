@@ -5,7 +5,7 @@ import datetime
 __all__ = ["Unit","Line","Area","Volume","Capacity","Duration","Version","datetime","operators"]
 
 class Unit:
-    def __init__(self,number:int,unit:str,type:str = ""):
+    def __init__(self ,number:int ,unit:str ,type:str = ""):
         """The unit class."""
         self.type = type
         self.number = number
@@ -18,13 +18,13 @@ class Unit:
             self.unit_list.append(k)
             self.unit_conversion.append(v)
     
-    def conversion(self,end_unit :str):
+    def conversion(self ,end_unit :str):
         """Conversion the unit."""
         number = self.number * (self.conversion_list[self.unit] / self.conversion_list[end_unit])
         unit = end_unit
         return self.create_new(number,unit)
     
-    def syn_type(self,other):
+    def syn_type(self ,other):
         """If two Unit's type is same,The other"""
         if isinstance(other,self.__class__):
             if self.type == other.type:
@@ -32,7 +32,7 @@ class Unit:
         else:
             raise TypeError("value '"+str(other)+"' is "+str(type(other))+",not Unit")
         
-    def set_con(self,**list):
+    def set_con(self ,**list):
         self.conversion_list = {}
         self.unit_conversion = []
         self.unit_list = []
@@ -41,7 +41,7 @@ class Unit:
             self.unit_conversion.append(v)
             self.unit_list.append(k)
 
-    def append_con(self,**list):
+    def append_con(self ,**list):
         for k,v in list.items():
             self.conversion_list[k]=v
             self.unit_conversion.append(v)
@@ -261,7 +261,7 @@ class Point:
         pass
 
 class Line(Unit):
-    def __init__(self,number,unit):
+    def __init__(self ,number ,unit):
         self.conversion_list={
             "nm":1/1000**2,"um":1/1000,"mm":1,"cm":10,"dm":100,"m":1000,"km":1000*1000,
             "AU":149_597_870.7*1000**2,"ly":63241.1*149_597_870.7*1000**2,"pc":206264.8*149_597_870.7*1000**2,"mpc":100_0000*206264.8*149_597_870.7*1000**2,
