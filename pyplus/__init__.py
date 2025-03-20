@@ -17,6 +17,8 @@ beta_str = f"{'This version is not release,update log is prepared.':#^55}\n{'  '
 
 __author__ = "xystudio"
 
+is_databeta_str = f"{'Pre version is this.':#^55}\n{'  ':=^50}\n"
+
 #update log and time max reload 5 offical version
 __update__ = {
             "1.0.0":"Upload the library 'pyplus'",

@@ -20,8 +20,9 @@ __all__=[
 
 #if import pyPlus.beta_str,it will be recursion.
 beta_str = f"{'This version is not release,update log is prepared.':#^55}\n{'  ':=^50}\n"
+is_databeta_str = f"{'Pre version is this.':#^55}\n{'  ':=^50}\n"
 
-__version__ = Version(1,0.0)
+__version__ = Version(1,0,0)
 
 __update__ = {
     "1.1.0":beta_str+"Add 'Point','Weight' and new 'Time'.",
