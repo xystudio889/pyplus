@@ -14,10 +14,9 @@ __all__=["science","tools",
          "get_update","get_version_update_time","get_news_update_time","get_new","get_all","get_will","upload"]
 
 beta_str = f"{'This version is not release,update log is prepared.':#^55}\n{'  ':=^50}\n"
+is_databeta_str = f"{'Pre version is this.':#^55}\n{'  ':=^50}\n"
 
 __author__ = "xystudio"
-
-is_databeta_str = f"{'Pre version is this.':#^55}\n{'  ':=^50}\n"
 
 #update log and time max reload 5 offical version
 __update__ = {

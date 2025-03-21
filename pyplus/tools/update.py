@@ -40,7 +40,7 @@ def get_version_update_time(version:str):
     print(out_obj)
     return out_obj
 
-def get_news_update_time(version:str):
+def get_news_update_time():
     '''get the new update time.'''
     return get_version_update_time(NEW)
 
@@ -56,7 +56,7 @@ def get_will():
     '''get the will update doc.'''
     return get_update(WILL)
 
-def upload(version:str = VERSION,update_info:dict[str] = UPDATE_DOC,time:dict[str] = UPDATE_TIME):
+def upload(version:str = VERSION,update_info:dict[str,str] = UPDATE_DOC,time:dict[str,str] = UPDATE_TIME):
     global VERSION,UPDATE_DOC,UPDATE_TIME
 
     VERSION = version
