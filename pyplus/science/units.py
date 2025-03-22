@@ -1,5 +1,6 @@
 from ..tools import operators
 import datetime
+from abc import ABC,abstractclassmethod
 
 __all__ = ["Unit" ,"Line" ,"Area" ,"Volume" ,"Capacity" ,"Duration" ,"Version" ,"datetime" ,"operators"]
 
@@ -254,6 +255,14 @@ class Unit:
     
     def __repr__(self):
         return str(self.number) + self.unit
+
+class ABCUnit(ABC ,Unit):
+    def __init__(self ,number ,unit ,type = ""):
+        super().__init__(number ,unit ,type)
+    
+    @abstractclassmethod
+    def create_new(self ,num ,unit):
+        return super().create_new(num ,unit)
 
 class Point:
     def __init__(self):
