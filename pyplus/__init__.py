@@ -11,7 +11,8 @@ from . import science,tools
 
 __all__=["science","tools",
          "ALL","NEW","WILL",
-         "get_update","get_version_update_time","get_news_update_time","get_new","get_all","get_will","upload"]
+         "get_update","get_version_update_time","get_news_update_time","get_new","get_all","get_will","upload"
+        ]
 
 beta_str = f"{'This version is not release,update log is prepared.':#^55}\n{'  ':=^50}\n"
 is_databeta_str = f"{'Pre version is this.':#^55}\n{'  ':=^50}\n"
