@@ -31,6 +31,6 @@ __update_time__ = {
         "1.1.0":"2025/??/??",
     }
 
-__version__ = "1.0.5"
+__version__ = "1.1.0pre3"
 
 upload(__version__,__update__,__update_time__)
