@@ -27,7 +27,9 @@ __update_time__ = {
         "1.0.0":"2025/03/20",
         "1.1.0":"2025/??/??",
     }
-__version__ = "1.0.4"
+
+__version__ = "1.0.5"
+
 __library_version__ = {
     "pydebugger" : "1.0.0",
     "tag" : "1.0.0",
@@ -35,7 +37,8 @@ __library_version__ = {
     "ptime" : "1.0.0",
     "jurisdiction" : "1.0.0",
     "pyPlus" : "1.0.0",
-    "science" : "1.0.0",
-    "datalist_conversion" : "1.0.0"
+    "science" : "1.1.0",
+    "datalist_conversion" : "1.0.0",
+    "dec":"0.1.0"
 }
 upload(__version__,__update__,__update_time__)
