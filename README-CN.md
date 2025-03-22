@@ -6,9 +6,9 @@
 
 <div align="center" style="line-height: 1;">
   <a href="https://github.com/xystudio889/pyplus"><img
-    src="https://img.shields.io/badge/pyplus-源码-536af5?color=536af5&logoColor=white"/></a>
+    src="https://img.shields.io/badge/源码-github-536af5?color=536af5&logoColor=white"/></a>
   <a href="https://pypi.org/project/python-plus-tools/"><img
-    src="https://img.shields.io/badge/在pypi上的代码-536af5?color=7803f1&logoColor=white"/></a>
+    src="https://img.shields.io/badge/pypi-536af5?color=7803f1&logoColor=white"/></a>
 </div>
 <br />
 <div align="center" style="line-height: 1;">
