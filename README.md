@@ -25,12 +25,19 @@
 For the expansion of python content, it covers science, debugging and other fields.
 
 ---
+## Version name rule
+Version types are `r`,`pre`,`rc`.
 
-<br />
+Version type `r` mean relase.It stores offical version.
+
+Version type `pre` mean pre-relase.It stores beta version.It has more bugs.
+
+Version type `rc` mean relase comming.It stores late test version.The offical version will be relases soon.It has fewer bugs.
 
 ---
 
 ## Library document
+###
 Documents have not been completed.
 
 ---
