@@ -22,10 +22,11 @@ __all__=[
 beta_str = f"{'This version is not release,update log is prepared.':#^55}\n{'  ':=^50}\n"
 is_databeta_str = f"{'Pre version is this.':#^55}\n{'  ':=^50}\n"
 
-__version__ = Version(1,0,0)
+__version__ = Version(1,1,0)
 
 __update__ = {
-    "1.1.0":beta_str+"Add 'Point','Weight' and new 'Time'.",
+    "1.1.0":"Add the ABCUnit,recommed all the class unit(new unit type) use this type.",
+    "1.2.0":beta_str+"Add 'Point','Weight' and new 'Time'.",
     "will":""
 }
 __update_time__ = {

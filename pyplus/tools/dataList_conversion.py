@@ -6,7 +6,7 @@ __update_time__ = {"1.0.0":"2025/03/20"}
 
 upload(__version__,__update__,__update_time__)
 
-def xml_to_json(xmlFile:str,jsonFile:str | None = None):
+def xml_to_json(xmlFile:str,jsonFile:str= None):
     from xmltodict import parse
     from json import dumps
     from math import floor

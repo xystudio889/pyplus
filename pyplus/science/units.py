@@ -1,5 +1,6 @@
 from ..tools import operators
 import datetime
+from abc import ABC,abstractclassmethod
 
 __all__ = ["Unit","Line","Area","Volume","Capacity","Duration","Version","datetime","operators"]
 
@@ -255,11 +256,19 @@ class Unit:
     def __repr__(self):
         return str(self.number) + self.unit
 
+class ABCUnit(ABC,Unit):
+    def __init__(self, number, unit, type = ""):
+        super().__init__(number, unit, type)
+    
+    @abstractclassmethod
+    def create_new(self, num, unit):
+        return super().create_new(num, unit)
+
 class Point:
     def __init__(self):
         pass
 
-class Line(Unit):
+class Line(ABCUnit):
     def __init__(self ,number ,unit):
         self.conversion_list={
             "nm":1/1000**2,"um":1/1000,"mm":1,"cm":10,"dm":100,"m":1000,"km":1000*1000,
@@ -277,7 +286,7 @@ class Line(Unit):
         self.syn_type(n)
         return n
     
-class Area(Unit):
+class Area(ABCUnit):
     def __init__(self,number,unit):
         self.conversion_list={
             "nm2":1/1000**4,"um2":1/1000**2,"mm2":1,"cm2":100,"dm2":10000,"m2":10000*100,"are":10000**2,"ha":10000**2*100,"km2":10000**3,
@@ -308,7 +317,7 @@ class Area(Unit):
         self.number/=(value**2)
         return self
     
-class Volume(Unit):
+class Volume(ABCUnit):
     def __init__(self,number,unit):
         self.conversion_list={
             "nm3":1/1000**6,"um3":1/1000**3,"mm3":1,"cm3":1000,"dm3":1000**2,"m3":1000**3,"km3":1000**6,
@@ -343,7 +352,7 @@ class Volume(Unit):
     def capacity(self):
         return Capacity(self.conversion("dm3").number,"L")
 
-class Capacity(Unit):
+class Capacity(ABCUnit):
     def __init__(self,number,unit):
         self.conversion_list={
             "ml":1,"L":1000,
@@ -365,7 +374,7 @@ class Capacity(Unit):
         self.syn_type(n)
         return n
     
-class Duration(Unit):
+class Duration(ABCUnit):
     def __init__(self,number :int,unit :str):
         self.conversion_list={"ms":1,"s":1000,"h":60000,"d":60000*24,"u":60000*24*365/4,"y":60000*24*365,"a":60000*24*365*10,"c":60000*24*365*100}
         self.number=number
@@ -383,7 +392,7 @@ class Time:
     def __init__(self):
         pass
 
-class Weight(Unit):
+class Weight(ABCUnit):
     def __init__(self,number :int,unit :str):
         self.conversion_list={}
         self.number=number
