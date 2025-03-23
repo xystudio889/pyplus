@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="1.0.7",
+    version="1.0.7post2",
     packages=find_packages(),
     install_requires=["toml"],
     python_requires=">=3.9,<=3.14",

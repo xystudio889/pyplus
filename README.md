@@ -24,13 +24,15 @@ For the expansion of python content, it covers science, debugging and other fiel
 
 ---
 ## Version name rule
-Version types are `r`,`pre`,`rc`.
+Version types are `r`,`pre`,`rc`,`ar`.
 
 Version type `r` mean relase.It stores offical version.
 
 Version type `pre` mean pre-relase.It stores beta version.It has more bugs.
 
-Version type `rc` mean relase comming.It stores late test version.The offical version will be relases soon.It has fewer bugs.
+Version type `rc` mean relase candidate.It stores late test version.The offical version will be relases soon.It has fewer bugs.
+
+Version type `ar` mean after relase.It stores vulnerability for the relase version.
 
 ---
 
