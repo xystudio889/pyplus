@@ -29,12 +29,14 @@ is_databeta_str = f"{'Pre version is this.':#^55}\n{'  ':=^50}\n"
 __version__ = Version(1,0,1)
 
 __update__ = {
-    "1.1.0":"Add the ABCUnit,recommed all the class unit(new unit type) use this type.",
-    "1.2.0":beta_str+"Add 'Point','Weight' and new 'Time'.",
+    "1.0.1":"Add the ABCUnit,recommed all the class unit(new unit type) use this type.",
+    "1.1.0":beta_str + "",
+    "1.2.0":beta_str + "Add 'Point','Weight' and new 'Time'.",
     "will":""
 }
 __update_time__ = {
     "1.0.0" : "2025/03/20",
+    "1.0.1" : "2025/03/23",
     "1.1.0" : "2025/??/??"
 }
 

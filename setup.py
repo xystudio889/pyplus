@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="1.0.7rc2",
+    version="1.0.7",
     packages=find_packages(),
-    install_requires=["toml","yaml"],
+    install_requires=["toml"],
     python_requires=">=3.9,<=3.14",
     author="xystudio",
     author_email="173288240@qq.com",
