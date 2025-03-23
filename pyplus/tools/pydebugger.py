@@ -1,9 +1,10 @@
 from ..science import Version
 from .update import *
+from .update import upload
 from pdb import *
 
 class DebugError(BaseException):
-    def __init__(self, *args):
+    def __init__(self , *args):
         super().__init__(*args)
 
 NO_DEFIND = None
@@ -14,41 +15,41 @@ debug = NO_DEFIND
 START = "start"
 END = "end"
 ticks={}
-__version__ = Version(1,0,0)
+__version__ = Version(1 ,0 ,0)
 version = __version__
 
 __update_doc__ = {}
 
 __update_time__ = {"1.0.0":"2025/03/20"}
 
-upload(__version__,__update_doc__,__update_time__)
+upload(__version__ ,__update_doc__ ,__update_time__)
 
 def stop():
     "stop and press any key to continue."
     input("press any key to continue.")
 
-def run(code,judge:bool = True):
-    '''if judge is True,run code.
+def run(code ,judge:bool = True):
+    '''if judge is True ,run code.
     >>>run('print("hello world!")')
     hello world!
-    >>>run('print("hello world!")',False)
+    >>>run('print("hello world!")' ,False)
     '''
     if judge:
         exec(code)
 
-def output(string,judge:bool = True):
-    '''if judge is True,print string.
+def output(string ,judge:bool = True):
+    '''if judge is True ,print string.
     >>>output("hello world!")
     hello world!
     this code == run('print("hello world!")')
-    >>>output("hello world!",False)
+    >>>output("hello world!" ,False)
     '''
     if judge:
         run("print('"+string+"')")
 
-def judge(main_code,judge:bool,else_code:str = ""):
+def judge(main_code ,judge:bool ,else_code:str = ""):
     '''fast Ternary Operator
-    >>>judge("print(1)",1!=1,"a=2;print(a)")
+    >>>judge("print(1)" ,1!=1 ,"a=2;print(a)")
     2
     '''
     if judge:
@@ -57,23 +58,23 @@ def judge(main_code,judge:bool,else_code:str = ""):
         exec(else_code)
 
 def judge_false_raise_error():
-    assert not(debug is bool or debug is None or debug in [1,2])
+    assert not(debug is bool or debug is None or debug in [1 ,2])
 
 def in_debug() ->bool:
     "is debug."
     judge_false_raise_error()
     return debug
 
-def typejudge(judge_object:list,judge_type:list[type])->bool:
-    assert len(judge_object) == len(judge_type) and isinstance(judge_type,list) and isinstance(judge_object,list)
+def typejudge(judge_object:list ,judge_type:list[type])->bool:
+    assert len(judge_object) == len(judge_type) and isinstance(judge_type ,list) and isinstance(judge_object ,list)
     typeOp=[]
     for i in range(len(judge_object)):
-        typeOp.append(isinstance(judge_object[i],judge_type[i]))
+        typeOp.append(isinstance(judge_object[i] ,judge_type[i]))
     return all(typeOp)
 
-def tick(type:str,name:str,output:bool = True,unit:int = 1000,end:str="s",round_:bool = False,out_name:bool = False,**kwargs)->str:
+def tick(type:str ,name:str ,output:bool = True ,unit:int = 1000 ,end:str="s" ,round_:bool = False ,out_name:bool = False ,**kwargs)->str:
     from time import time
-    assert typejudge([type,name,output,unit,end,round_,out_name],[str,str,bool,int,str,bool,bool])
+    assert typejudge([type ,name ,output ,unit ,end ,round_ ,out_name] ,[str ,str ,bool ,int ,str ,bool ,bool])
     if type == START:
         if name in ticks:
             raise NameError("name'"+name+"'is in clock list.")
@@ -84,9 +85,9 @@ def tick(type:str,name:str,output:bool = True,unit:int = 1000,end:str="s",round_
         del ticks[name]
         out=round((time()-this_tick)*1000/unit) if round_ else (time()-this_tick)*1000/unit
         if output:
-            print(name, out,end=end+"\n")
+            print(name , out ,end=end+"\n")
         if out_name:
-            return name,out
+            return name ,out
         return out
     else:
         raise KeyError("key'"+str(type)+"'is not a tick type.")
@@ -98,9 +99,9 @@ def do(code):
 def func_debug():
     def d(func):
         import time
-        def w(*a,**kw):
+        def w(*a ,**kw):
             t1=time.time()
-            res=func(*a,**kw)
+            res=func(*a ,**kw)
             t2=time.time()
             print(f"function {func.__name__}\nreturn {res}\nuse {(t2-t1)*1000}ms.")
             return res

@@ -8,28 +8,25 @@ def append(**kwargs):
         temp_local[k]=v
 
 def get(key:str=None)->dict:
-    """get the keys variable,if keys is none,return the temp list,else return the key variable`s value."""
-    assert isinstance(key,str)
+    """Get the keys variable,if keys is none,return the temp list,else return the key variable`s value."""
     try:
         return temp_local[key]
     except:
         raise NameError(key+" is not in temp.")
 
 def delete(key:str):
-    """delete the temp keys."""
-    assert isinstance(key,str)
+    """Delete the temp keys."""
     try:
         del temp_local[key]
     except:
         raise NameError(key+" is not in temp.")
 
 def set(**kwargs):
-    """Same as and."""
+    """Same as add."""
     for k,v in kwargs.items():
         temp_local[k]=v
 
 def change(key:str,op,dv):
-    assert isinstance(key,str)
     try:
         temp_local[key]=op(temp_local[key],dv)
     except:
@@ -38,7 +35,6 @@ def change(key:str,op,dv):
 def in_temp(key:str,false_output=None,true_output=None):
     """Choose the temp,if false_output is not None and key not in temp,print it and return False,else return True.\n
     if true_output is not None and key in temp,print it and return True,else return False."""
-    assert isinstance(key,str)
     if false_output is not None and key not in temp_local:
         print(false_output)
     if true_output is not None and key in temp_local:
@@ -46,7 +42,7 @@ def in_temp(key:str,false_output=None,true_output=None):
     return key in temp_local
 
 def clear():
-    """clear the temp."""
+    """Clear the temp."""
     global share_temp
     share_temp={}
 

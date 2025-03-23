@@ -1,4 +1,5 @@
 from .update import *
+from .update import upload
 
 file = None
 OR = "any"
@@ -10,15 +11,16 @@ __update_time__={"1.0.0":"2025/03/20"}
 upload(__version__,__update__,__update_time__)
 
 def get_doc(func) -> str:
-    """get the function's doc."""
+    """Get the function's doc."""
     assert isinstance(func,function)
     return func.__doc__
 
 def get_tag(func) -> list[str]:
     """
-    get the function's tag
-    :doc tag:the function's doc's tag.it starts in # and end in space
-    :return tag list
+    Get the function's tag
+
+    :param tag: the function's doc's tag.it starts in # and end in space
+    :return: tag list
     """
     assert isinstance(func,function)
     start=None
@@ -40,19 +42,19 @@ def get_tag(func) -> list[str]:
 
 def tag_in_func(func,tag:str)->bool:
     """
-    op the tag in function
-    :return tag in function's tag.
+    Operator the tag in function
+
+    :return: tag in function's tag.
     """
     assert isinstance(func,function) and isinstance(tag,str)
     return tag in get_tag(func)
 
 def tags_in_func(func,tags:list[str],rule:str)->bool:
     """
-    op the tag list in function.
-    :paprm rule:set the mode.
-    if the mode is OR,any item in the list then return true.
-    if the mode is AND,all item in the list then return true.
-    :return please look the previous.
+    Operator the tag list in function.
+
+    :param rule: set the mode.if the mode is OR,any item in the list then return true.if the mode is AND,all item in the list then return true.
+    :return: please look the previous.
     """
     assert isinstance(func,function) and isinstance(tag,str) and isinstance(rule,str)
     tag = get_tag(func)
