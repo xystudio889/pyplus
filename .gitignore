@@ -1,6 +1,8 @@
 debug.py
-token.txt
+
 .venv/
+tests/
+
 README-PYPI.md
 
 # Byte-compiled / optimized / DLL files

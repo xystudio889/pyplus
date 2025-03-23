@@ -1,4 +1,5 @@
 from .update import *
+from .update import upload
 
 __version__ = "1.0.0"
 __update__ = {}
