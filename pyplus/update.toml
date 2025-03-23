@@ -1,6 +1,0 @@
-[version]
-main = "1.0.5"
-[update_info]
-main.105 = "Fix some bug.\nAdd the Chinese documents."
-[update_time]
-main.105 = "2025/03/22"

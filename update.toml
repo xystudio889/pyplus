@@ -1,0 +1,5 @@
+#Each file's relase and pre-relase stores up to 5 update info.
+[[relase]]
+main.version = "1.0.6"
+main.update_info = "Fix some bug.\nAdd the Chinese documents."
+main.update_time = "2025/03/22"

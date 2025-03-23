@@ -20,19 +20,20 @@ is_databeta_str = f"{'Pre version is this.':#^55}\n{'  ':=^50}\n"
 __author__ = "xystudio"
 
 #update log and time max reload 5 offical 
-# these update log will abandon,move the
+# these update log will abandon,move to the update.toml.
 __update__ = {
-            "1.0.2":"Add the setup.py",
-            "1.0.5":"Fix some bug.\nAdd the Chinese documents.",
+            "1.0.4":"Add the setup.py",
+            "1.0.6":"Fix some bug.\nAdd the Chinese documents.",
             "1.1.0":beta_str+"Upgrade some library:\n\tjurisdiction -- 1.2.0\n\tptime -- 1.0.3\n\tvariables -- 1.4.0\n\tscience -- 1.5.0\n\tupdate -- 1.0.2\n\ttag -- 1.0.3\n\tpydubugger -- 1.3.4"
         }
 __update_time__ = {
-        "1.0.2":"2025/03/20",
-        "1.0.5":"2025/03/22",
+        "1.0.4":"2025/03/20",
+        "1.0.6":"2025/03/22",
+        "1.0.7":"2025/03/23",
         "1.1.0":"2025/??/??",
     }
 
-__version__ = "1.0.5"
+__version__ = "1.0.6"
 
 __code_name__ = "main"
 
