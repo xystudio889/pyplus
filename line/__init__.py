@@ -1,4 +1,4 @@
-from .tools import operators
+from pyplus.tools import operators
 
 variables = {}
 

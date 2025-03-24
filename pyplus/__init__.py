@@ -7,7 +7,6 @@ the python's plus library.\n
 from .tools.update import *
 from .tools.update import get_update_from_toml
 from . import science ,tools
-from pathlib import Path
 from sys import prefix
 
 __all__=["science" ,"tools" ,
