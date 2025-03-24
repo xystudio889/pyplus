@@ -5,7 +5,7 @@ with open("README-PYPI.md",encoding="utf-8") as f:
 
 setup(
     name = "python-plus-tools",
-    version = "1.0.7rc1",
+    version = "1.1.0rc1",
     packages = find_packages(),
     install_requires = ["toml"],
     python_requires = ">=3.6,<=3.14",
