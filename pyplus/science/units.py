@@ -1,6 +1,5 @@
 from ..tools import operators
 import datetime
-from abc import ABC,abstractclassmethod
 
 __all__ = ["Unit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operators"]
 
@@ -16,18 +15,18 @@ class Unit:
         :param str unit: Your Unit unit.
         :param str = "" type: Your Unit type.
     """
+    conversion_list = {}
     def __init__(self, number: int, unit: str, type: str = ""): 
         self.type = type
         self.number = number
         self.unit = unit
         self.data = [self.number, self.unit]
-        self.conversion_list = {}
         self.unit_list = []
         self.unit_conversion = []
         for k, v in self.conversion_list.items(): 
             self.unit_list.append(k)
             self.unit_conversion.append(v)
-    
+
     def conversion(self, end_unit: str): 
         '''
         Convert your unit.
@@ -46,7 +45,7 @@ class Unit:
         number = self.number  *  (self.conversion_list[self.unit] / self.conversion_list[end_unit])
         unit = end_unit
         return self.create_new(number, unit)
-    
+
     def syn_type(self, other): 
         """
         If two Unit's type is same,the other's conversion list is self conversion list..
@@ -58,7 +57,7 @@ class Unit:
                 other.conversion_list = self.conversion_list
         else: 
             raise TypeError("value '"+str(other)+"' is "+str(type(other))+", not Unit class")
-        
+
     def set_con(self,  **list): 
         "Set the conversion list."
         self.conversion_list = {}
@@ -75,14 +74,14 @@ class Unit:
             self.conversion_list[k] = v
             self.unit_conversion.append(v)
             self.unit_list.append(k)
-    
+
     def delete_con(self, keys): 
         "Delete the conversion list."
         indexs = self.unit_list.index(keys)
         del self.conversion_list[keys]
         del self.unit_list[indexs]
         del self.unit_conversion[indexs]
-    
+
     def set_attr(self, value: list[int, str], conversion_unit: bool = False): 
         '''
         It can use the same type Unit too.
@@ -133,15 +132,15 @@ class Unit:
             temp_dict[k] = v/self.conversion_list[unit]
         self.conversion_list = temp_dict
 
-    def create_new(self, num: int, unit: str): 
+    def __create_new(self, num: int, unit: str): 
         '''
-        If you create a Unit class when inherit is ABCUnit(recommed use this unit when you create create a Unit class).
+        If you create a Unit class when inherit is Unit(recommed use this unit when you create create a Unit class).
         Clone a new unit.
 
         :return: A new Unit class.
         :rtype: Unit
         '''
-        n = Unit(num, unit, self.type)
+        n = self.__class__(num, unit, self.type)
         self.syn_type(n)
         return n
 
@@ -226,7 +225,7 @@ class Unit:
         else: 
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not Unit or int.")
         return self.create_new(number, self.unit)
-    
+
     def set_unit(self, other: str): 
         '''
         Value can Unit too.
@@ -243,13 +242,13 @@ class Unit:
             self.unit = save_unit
             raise KeyError("key '"+self.unit+"'not in conversion list.")
         return self.create_new(self.number, unit)
-    
+
     def __iter__(self): 
         return iter(self.data)
 
     def __getitem__(self, index): 
         return self.data[index]
-    
+
     def __add__(self, value: list): 
         return self.change_attr(operators.matical.add, value)
 
@@ -263,11 +262,11 @@ class Unit:
     def __truediv__(self, value: int): 
         number = self.number/value
         return self.create_new(number, self.unit)
-    
+
     def __floordiv__(self, value: int): 
         number = self.number//value
         return self.create_new(number, self.unit)
-        
+
     def __radd__(self, value: list): 
         return self.change_attr(operators.matical.add, value)
 
@@ -281,11 +280,11 @@ class Unit:
     def __rtruediv__(self, value: int): 
         number = self.number/value
         return self.create_new(number, self.unit)
-    
+
     def __rfloordiv__(self, value: int): 
         number = self.number//value
         return self.create_new(number, self.unit)
-            
+
     def __lshift__(self, other): 
         '''
         Value can Unit too.
@@ -299,7 +298,7 @@ class Unit:
         else: 
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not Unit or int.")
         return self.create_new(self.number, unit)
-        
+
     def __rlshift__(self, other): 
         '''
         Value can Unit too.
@@ -324,7 +323,7 @@ class Unit:
         else: 
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not Unit or int.")
         return self.create_new(self.number, unit)
-        
+
     def __rrshift__(self, other): 
         '''
         Value can Unit too.
@@ -338,7 +337,7 @@ class Unit:
 
     def __eq__(self, value: list): 
         return self.operator(operators.comparison.eq, value)
-    
+
     def __ne__(self, value: list): 
         return self.operator(operators.comparison.ne, value)
 
@@ -353,32 +352,27 @@ class Unit:
 
     def __ge__(self, value: list):     
         return self.operator(operators.comparison.ge, value)
-    
+
     def __neg__(self): 
         return self.create_new(self.number, self.unit)
-    
+
     def __pos__(self): 
         return self.create_new(self.number, self.unit)
-    
+
     def __str__(self): 
         return str(self.number) + self.unit
-    
+
     def __repr__(self): 
         return str(self.number) + self.unit
 
-class ABCUnit(ABC, Unit): 
-    def __init__(self, number, unit, type = ""): 
-        super().__init__(number, unit, type)
-    
-    @abstractclassmethod
-    def create_new(self, num, unit): 
-        return super().create_new(num, unit)
+    def __hash__(self):
+        return hash(self.data)
 
 class Point: 
     def __init__(self): 
         pass
 
-class Line(ABCUnit): 
+class Line(Unit): 
     def __init__(self, number, unit): 
         self.conversion_list = {
             "nm": 1/1000 ** 2, "um": 1/1000, "mm": 1, "cm": 10, "dm": 100, "m": 1000, "km": 1000 * 1000,
@@ -390,13 +384,8 @@ class Line(ABCUnit):
         self.type = "area"
         if self.unit not in self.conversion_list: 
             raise KeyError("key'"+self.unit+"'is not in this class")
-    
-    def create_new(self, num, unit): 
-        n = Area(num, unit)
-        self.syn_type(n)
-        return n
-    
-class Area(ABCUnit): 
+
+class Area(Unit): 
     def __init__(self, number, unit): 
         self.conversion_list = {
             "nm2": 1/1000 ** 4, "um2": 1/1000 ** 2, "mm2": 1, "cm2": 100, "dm2": 10000, "m2": 10000 * 100, "are": 10000 ** 2, "ha": 10000 ** 2 * 100, "km2": 10000 ** 3,
@@ -407,16 +396,11 @@ class Area(ABCUnit):
         self.type = "area"
         if self.unit not in self.conversion_list: 
             raise KeyError("key'"+self.unit+"'is not in this class")
-    
-    def create_new(self, num, unit): 
-        n = Area(num, unit)
-        self.syn_type(n)
-        return n
 
     def scale(self, value: int): 
         self.number *= (value ** 2)
         return self
-    
+
     def __mul__(self, value: int): 
         assert isinstance(value, int)
         self.number *= (value ** 2)
@@ -426,8 +410,8 @@ class Area(ABCUnit):
         assert isinstance(value, int)
         self.number/= (value ** 2)
         return self
-    
-class Volume(ABCUnit): 
+
+class Volume(Unit): 
     def __init__(self, number, unit): 
         self.conversion_list = {
             "nm3": 1/1000 ** 6, "um3": 1/1000 ** 3, "mm3": 1, "cm3": 1000, "dm3": 1000 ** 2, "m3": 1000 ** 3, "km3": 1000 ** 6,
@@ -438,16 +422,11 @@ class Volume(ABCUnit):
         self.type = "volume"
         if self.unit not in self.conversion_list: 
             raise KeyError("key'"+self.unit+"'is not in this class")
-        
-    def create_new(self, num, unit): 
-        n = Weight(num, unit)
-        self.syn_type(n)
-        return n
-    
+
     def scale(self, value: int): 
         self.number *= (value ** 3)
         return self
-    
+
     def __mul__(self, value: int): 
         assert isinstance(value, int)
         self.number *= (value ** 3)
@@ -457,34 +436,29 @@ class Volume(ABCUnit):
         assert isinstance(value, int)
         self.number/= (value ** 3)
         return self
-    
+
     @property
     def capacity(self): 
         return Capacity(self.conversion("dm3").number, "L")
 
-class Capacity(ABCUnit): 
+class Capacity(Unit): 
     def __init__(self, number, unit): 
         self.conversion_list = {
             "ml": 1, "L": 1000,
             "oz": 29.6, "dr": 29.6 * 0.125, "pt": 16 * 29.6, "tbsp": 14.8, "cup": 48 * 14.8, "gal": 128 * 29.6, "tsp": 14.8/3,
-            
+
         }
         self.number = number
         self.unit = unit
         self.type = "capacity"
         if self.unit not in self.conversion_list: 
             raise KeyError("key'"+self.unit+"'is not in this class")
-        
+
     @property
     def volume(self): 
         return Volume(self.conversion("L").number, "dm3")
-    
-    def create_new(self, num, unit): 
-        n = Capacity(num, unit)
-        self.syn_type(n)
-        return n
-    
-class Duration(ABCUnit): 
+
+class Duration(Unit): 
     def __init__(self, number: int, unit: str): 
         self.conversion_list = {"ms": 1, "s": 1000, "h": 60000, "d": 60000 * 24, "u": 60000 * 24 * 365/4, "y": 60000 * 24 * 365, "a": 60000 * 24 * 365 * 10, "c": 60000 * 24 * 365 * 100}
         self.number = number
@@ -492,13 +466,8 @@ class Duration(ABCUnit):
         self.type = "time"
         if self.unit not in self.conversion_list: 
             raise KeyError("key'"+self.unit+"'is not in this class")
-        
-    def create_new(self, num, unit): 
-        n = Duration(num, unit)
-        self.syn_type(n)
-        return n
 
-class Weight(ABCUnit): 
+class Weight(Unit): 
     def __init__(self, number: int, unit: str): 
         self.conversion_list = {}
         self.number = number
@@ -506,11 +475,6 @@ class Weight(ABCUnit):
         self.type = "weight"
         if self.unit not in self.conversion_list: 
             raise KeyError("key'"+self.unit+"'is not in this class")
-
-    def create_new(self, num, unit): 
-        n = Weight(num, unit)
-        self.syn_type(n)
-        return n
 
 class Time: 
     def __init__(self): 
@@ -521,7 +485,7 @@ class Version:
     def __init__(self,  *version): 
         self.version_list = [str(i) for i in version]
         self.version = ".".join(self.version_list)
-    
+
     def __iter__(self): 
         return iter(self.version_list)
 

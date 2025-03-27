@@ -7,6 +7,8 @@
     src="https://img.shields.io/badge/源码-github-536af5?color=536af5&logoColor=white"/></a>
   <a href="https://pypi.org/project/python-plus-tools/"><img
     src="https://img.shields.io/badge/pypi-536af5?color=7803f1&logoColor=white"/></a>
+  <img
+    src="https://img.shields.io/badge/python-3.6 | 3.7 | 3.8 | 3.9 | 3.10 | 3.11 | 3.12 | 3.13-1c93ea?color=1cb5ea&logoColor=white"/>
 </div>
 <br />
 <div align="center" style="line-height: 1;">
@@ -18,7 +20,7 @@
 
 ## 描述
 
-> 这个库需要python >=3.9,<3.12。推荐3.12。
+> 这个库需要python >=3.9,< 3.12。推荐3.12。
 
 对于 python 内容的扩展，它涵盖了科学、调试和其他领域。
 

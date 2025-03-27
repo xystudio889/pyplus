@@ -5,9 +5,9 @@ with open("README-PYPI.md",encoding="utf-8") as f:
 
 setup(
     name = "python-plus-tools",
-    version = "1.1.0rc1",
+    version = "1.0.8a1",
     packages = find_packages(),
-    install_requires = ["toml"],
+    install_requires = ["toml", "linecode"],#, "indently-decorators"],
     python_requires = ">=3.6,<=3.14",
     author = "xystudio",
     author_email = "173288240@qq.com",
