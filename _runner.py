@@ -1,6 +1,6 @@
 import pyplus
 
-print(f"pyplus runner\nrunner version:0.1.0\n pyplus version :1.0.8a2\nBy xystudio https://github.com/xystudio889/pyplus\n\nPress 'exit' to exit.")
+print(f"pyplus runner\nrunner version:0.1.0\n pyplus version :1.0.8a2\nBy xystudio https://github.com/xystudio889/linecode\n\nPress 'exit' to exit.")
 
 while True:
     code = input(">>> ")

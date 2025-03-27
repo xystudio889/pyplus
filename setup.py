@@ -10,7 +10,7 @@ if sys.platform == "win32":
 
 setup(
     name = "python-plus-tools",
-    version = "1.0.8a2",
+    version = "1.0.8a3",
     packages = find_packages(),
     install_requires = ["toml", "linecode"],#, "indently-decorators"],
     python_requires = ">=3.6,<=3.14",
