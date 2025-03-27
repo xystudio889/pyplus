@@ -14,4 +14,4 @@ __all__=["science" ,"tools" ,
          "get_update" ,"get_version_update_time" ,"get_news_update_time" ,"get_new" ,"get_all" ,"get_will" ,"upload"
         ]
 
-get_update_from_toml(prefix + "\\Lib\\site-packages\\pyplus\\update.toml",code_name = "main")
+#get_update_from_toml(prefix + "\\Lib\\site-packages\\pyplus\\update.toml",code_name = "main")
