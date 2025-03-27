@@ -1,11 +1,16 @@
 from setuptools import setup, find_packages
+import sys
 
 with open("README-PYPI.md",encoding="utf-8") as f:
     long_description = f.read()
 
+data_files = []
+if sys.platform == "win32":
+    data_files = [('Scripts', ['scripts/pyplus.exe'])]
+
 setup(
     name = "python-plus-tools",
-    version = "1.0.8a1",
+    version = "1.0.8a2",
     packages = find_packages(),
     install_requires = ["toml", "linecode"],#, "indently-decorators"],
     python_requires = ">=3.6,<=3.14",
@@ -15,4 +20,6 @@ setup(
     long_description = long_description,
     license = "MIT",
     url = "https://github.com/xystudio889/pyplus",
+    data_files = data_files,
+    include_package_data = True
 )
