@@ -10,10 +10,10 @@ if sys.platform == "win32":
 
 setup(
     name = "python-plus-tools",
-    version = "1.0.8a4",
+    version = "1.0.8a5",
     packages = find_packages(),
     install_requires = ["toml", "linecode"],#, "indently-decorators"],
-    python_requires = ">=3.6,<=3.14",
+    python_requires = ">=3.6",
     author = "xystudio",
     author_email = "173288240@qq.com",
     description = "For the expansion of python content, it covers science, debugging and other fields.",

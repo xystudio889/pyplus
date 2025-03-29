@@ -36,6 +36,10 @@ def get_version_update_time(version: str):
     print(out_obj)
     return out_obj
 
+def get_will(): 
+    '''Get the will update doc.'''
+    return get_update(WILL)
+
 def get_news_update_time(): 
     '''Get the new update time.'''
     return get_version_update_time(NEW)
