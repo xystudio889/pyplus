@@ -3,7 +3,7 @@ import sys
 
 install_all = False
 requires = ["toml>=0.10","indently-decorators>=1.0,<=1.1","cryptography>=3.4"]
-data_files = []
+data_files = [('Scripts', [])]
 
 if sys.platform == "win32":
     data_files = [('Scripts', [])]
@@ -13,7 +13,7 @@ if install_all:
 
 setup(
     name = "python-plus-tools",
-    version = "1.2.0a1",
+    version = "1.2.0a2",
     packages = find_packages(),
     install_requires = requires,
     python_requires = ">=3.6",

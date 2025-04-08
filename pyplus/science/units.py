@@ -1,9 +1,14 @@
 from ..tools import operators
 import datetime
 
-__all__ = ["Unit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operators"]
+__all__ = ["Unit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operators", "Points", 
+           "OPEN", "CLOSE"]
+
+OPEN = True
+CLOSE = False
 
 class Unit:
+    conversion_list = {}
     """
         The unit class.It can use in science calculate.
 
@@ -15,7 +20,6 @@ class Unit:
         :param str unit: Your Unit unit.
         :param str = "" type: Your Unit type.
     """
-    conversion_list = {}
     def __init__(self, number: int, unit: str, type: str = ""): 
         self.type = type
         self.number = number
@@ -44,7 +48,7 @@ class Unit:
         '''
         number = self.number  *  (self.conversion_list[self.unit] / self.conversion_list[end_unit])
         unit = end_unit
-        return self.create_new(number, unit)
+        return self._create_new(number, unit)
 
     def syn_type(self, other): 
         """
@@ -82,7 +86,7 @@ class Unit:
         del self.unit_list[indexs]
         del self.unit_conversion[indexs]
 
-    def set_attr(self, value: list[int, str], conversion_unit: bool = False): 
+    def set_attr(self, value: list[int, str], conversion_unit: bool = CLOSE): 
         '''
         It can use the same type Unit too.
         Set the Unit is input unit.
@@ -110,12 +114,12 @@ class Unit:
                 unit = value.unit
             else: 
                 unit = self.unit
-            return self.create_new(number, unit)
+            return self._create_new(number, unit)
         elif isinstance(value, list): 
             if value[1] in self.conversion_list: 
                 unit = value[1]
                 number = value[0]
-                return self.create_new(number, unit)
+                return self._create_new(number, unit)
             else: 
                 raise KeyError("key'"+self.unit+"'is not in this class")
         else: 
@@ -132,7 +136,7 @@ class Unit:
             temp_dict[k] = v/self.conversion_list[unit]
         self.conversion_list = temp_dict
 
-    def __create_new(self, num: int, unit: str): 
+    def _create_new(self, num: int, unit: str): 
         '''
         If you create a Unit class when inherit is Unit(recommed use this unit when you create create a Unit class).
         Clone a new unit.
@@ -166,12 +170,12 @@ class Unit:
         if isinstance(value, self.__class__): 
             self.syn_type(value)
             number = func(self.number, value.conversion(self.unit).number)
-            return self.create_new(number, self.unit)
+            return self._create_new(number, self.unit)
         elif isinstance(value, list): 
             if value[1] in self.conversion_list: 
                 value[0]  *= self.conversion_list[value[1]] / self.conversion_list[self.unit]
                 number = func(self.number, value[0])
-                return self.create_new(number, self.unit)
+                return self._create_new(number, self.unit)
             else: 
                 raise KeyError("key'"+value[1]+"'is not in this class")
         else: 
@@ -224,7 +228,7 @@ class Unit:
             number = other
         else: 
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not Unit or int.")
-        return self.create_new(number, self.unit)
+        return self._create_new(number, self.unit)
 
     def set_unit(self, other: str): 
         '''
@@ -241,7 +245,7 @@ class Unit:
         if self.unit not in self.conversion_list: 
             self.unit = save_unit
             raise KeyError("key '"+self.unit+"'not in conversion list.")
-        return self.create_new(self.number, unit)
+        return self._create_new(self.number, unit)
 
     def __iter__(self): 
         return iter(self.data)
@@ -257,15 +261,15 @@ class Unit:
 
     def __mul__(self, value: int): 
         number = self.number * value
-        return self.create_new(number, self.unit)
+        return self._create_new(number, self.unit)
 
     def __truediv__(self, value: int): 
         number = self.number/value
-        return self.create_new(number, self.unit)
+        return self._create_new(number, self.unit)
 
     def __floordiv__(self, value: int): 
         number = self.number//value
-        return self.create_new(number, self.unit)
+        return self._create_new(number, self.unit)
 
     def __radd__(self, value: list): 
         return self.change_attr(operators.matical.add, value)
@@ -275,15 +279,15 @@ class Unit:
 
     def __rmul__(self, value: int): 
         number = self.number * value
-        return self.create_new(number, self.unit)
+        return self._create_new(number, self.unit)
 
     def __rtruediv__(self, value: int): 
         number = self.number/value
-        return self.create_new(number, self.unit)
+        return self._create_new(number, self.unit)
 
     def __rfloordiv__(self, value: int): 
         number = self.number//value
-        return self.create_new(number, self.unit)
+        return self._create_new(number, self.unit)
 
     def __lshift__(self, other): 
         '''
@@ -297,7 +301,7 @@ class Unit:
             unit = self.unit_list[self.unit_list.index(self.unit) - other]
         else: 
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not Unit or int.")
-        return self.create_new(self.number, unit)
+        return self._create_new(self.number, unit)
 
     def __rlshift__(self, other): 
         '''
@@ -322,7 +326,7 @@ class Unit:
             unit = self.unit_list[self.unit_list.index(self.unit) + other]
         else: 
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not Unit or int.")
-        return self.create_new(self.number, unit)
+        return self._create_new(self.number, unit)
 
     def __rrshift__(self, other): 
         '''
@@ -354,10 +358,10 @@ class Unit:
         return self.operator(operators.comparison.ge, value)
 
     def __neg__(self): 
-        return self.create_new(self.number, self.unit)
+        return self._create_new(self.number, self.unit)
 
     def __pos__(self): 
-        return self.create_new(self.number, self.unit)
+        return self._create_new(self.number, self.unit)
 
     def __str__(self): 
         return str(self.number) + self.unit
@@ -366,19 +370,112 @@ class Unit:
         return str(self.number) + self.unit
 
     def __hash__(self):
-        return hash(self.data)
+        return hash(tuple(self.data))
 
-class Point: 
-    def __init__(self): 
-        pass
+class Points: 
+    def __init__(self, *dots): 
+        self.dots = dots
+    
+    @property
+    def vec(self):
+        return len(self.dots)
+    
+    def set_dot(self, *dots, D_same:bool = OPEN):
+        if D_same and len(dots) != self.vec:
+            raise ValueError(f'You are open the D_same.You input length must be equal to the length you set.(input {len(dots)},Set {self.vec})')
+        self.dot = dots
+        return self
+    
+    def add_dot(self,dot):
+        self,dot = dot
+        return self
+
+    def __iter__(self):
+        return iter(self.dots)
+    
+    def __getitem__(self,index):
+        return self.dots[index]
+    
+    def __len__(self):
+        return len(self.dots)
+    
+    def __repr__(self):
+        return str(self.dots)
+    
+    def __str__(self):
+        return str(self.dots)
+    
+    def __add__(self, value:tuple):
+        '''Value can use Points too.'''
+        point = list(self.dots)
+        if isinstance(value,tuple) or isinstance(value,Points):
+            for i in range(len(self.dots)):
+                try:
+                    point[i] += value[i]
+                except IndexError:
+                    break
+        else:
+            raise TypeError(f'Points operator must use Points or tuple,not {type(value)}')
+        return Points(*tuple(point))
+    
+    def __sub__(self, value:tuple):
+        '''Value can use Points too.'''
+        point = list(self.dots)
+        if isinstance(value,tuple) or isinstance(value,Points):
+            for i in range(len(self.dots)):
+                try:
+                    point[i] -= value[i]
+                except IndexError:
+                    break
+        else:
+            raise TypeError(f'Points operator must use Points or tuple,not {type(value)}')
+        return Points(*tuple(point))
+    
+    def __mul__(self, value:tuple):
+        '''Value can use Points too.'''
+        point = list(self.dots)
+        if isinstance(value,tuple) or isinstance(value,Points):
+            for i in range(len(self.dots)):
+                try:
+                    point[i] *= value[i]
+                except IndexError:
+                    break
+        elif isinstance(value,int): 
+            for i in range(len(self.dots)):
+                try:
+                    point[i] *= value
+                except IndexError:
+                    break
+        else:
+            raise TypeError(f'Points operator must use Points,tuple or int,not {type(value)}')
+        return Points(*tuple(point))
+    
+    def __truediv__(self, value:tuple):
+        '''Value can use Points too.'''
+        point = list(self.dots)
+        if isinstance(value,tuple) or isinstance(value,Points):
+            for i in range(len(self.dots)):
+                try:
+                    point[i] /= value[i]
+                except IndexError:
+                    break
+        elif isinstance(value,int): 
+            for i in range(len(self.dots)):
+                try:
+                    point[i] /= value
+                except IndexError:
+                    break
+        else:
+            raise TypeError(f'Points operator must use Points,tuple or int,not {type(value)}')
+        return Points(*tuple(point))
 
 class Line(Unit): 
-    def __init__(self, number, unit): 
-        self.conversion_list = {
+    conversion_list = {
             "nm": 1/1000 ** 2, "um": 1/1000, "mm": 1, "cm": 10, "dm": 100, "m": 1000, "km": 1000 * 1000,
             "AU": 149_597_870.7 * 1000 ** 2, "ly": 63241.1 * 149_597_870.7 * 1000 ** 2, "pc": 206264.8 * 149_597_870.7 * 1000 ** 2, "mpc": 100_0000 * 206264.8 * 149_597_870.7 * 1000 ** 2,
             "in": 2540, "ft": 12 * 2540, "yd": 36 * 2540, "mi": 63660 * 2540, "nmi": 1.852 * 1000 ** 2
         }
+    def __init__(self, number, unit):
         self.number = number
         self.unit = unit
         self.type = "area"
@@ -386,11 +483,11 @@ class Line(Unit):
             raise KeyError("key'"+self.unit+"'is not in this class")
 
 class Area(Unit): 
-    def __init__(self, number, unit): 
-        self.conversion_list = {
+    conversion_list = {
             "nm2": 1/1000 ** 4, "um2": 1/1000 ** 2, "mm2": 1, "cm2": 100, "dm2": 10000, "m2": 10000 * 100, "are": 10000 ** 2, "ha": 10000 ** 2 * 100, "km2": 10000 ** 3,
             "in2": 2540 ** 2, "ft2": (12 * 2540) ** 2, "mi2": (63660 * 2540) ** 2, "acre2": 4046_8564_22.4
         }
+    def __init__(self, number, unit): 
         self.number = number
         self.unit = unit
         self.type = "area"
@@ -412,11 +509,11 @@ class Area(Unit):
         return self
 
 class Volume(Unit): 
-    def __init__(self, number, unit): 
-        self.conversion_list = {
+    conversion_list = {
             "nm3": 1/1000 ** 6, "um3": 1/1000 ** 3, "mm3": 1, "cm3": 1000, "dm3": 1000 ** 2, "m3": 1000 ** 3, "km3": 1000 ** 6,
             "in3": 2540 ** 3, "ft3": (12 * 2540) ** 3, "mi3": (63660 * 2540) ** 3
         }
+    def __init__(self, number, unit): 
         self.number = number
         self.unit = unit
         self.type = "volume"
@@ -442,12 +539,12 @@ class Volume(Unit):
         return Capacity(self.conversion("dm3").number, "L")
 
 class Capacity(Unit): 
-    def __init__(self, number, unit): 
-        self.conversion_list = {
+    conversion_list = {
             "ml": 1, "L": 1000,
             "oz": 29.6, "dr": 29.6 * 0.125, "pt": 16 * 29.6, "tbsp": 14.8, "cup": 48 * 14.8, "gal": 128 * 29.6, "tsp": 14.8/3,
 
         }
+    def __init__(self, number, unit): 
         self.number = number
         self.unit = unit
         self.type = "capacity"
@@ -459,8 +556,8 @@ class Capacity(Unit):
         return Volume(self.conversion("L").number, "dm3")
 
 class Duration(Unit): 
+    conversion_list = {"ms": 1, "s": 1000, "h": 60000, "d": 60000 * 24, "u": 60000 * 24 * 365/4, "y": 60000 * 24 * 365, "a": 60000 * 24 * 365 * 10, "c": 60000 * 24 * 365 * 100}
     def __init__(self, number: int, unit: str): 
-        self.conversion_list = {"ms": 1, "s": 1000, "h": 60000, "d": 60000 * 24, "u": 60000 * 24 * 365/4, "y": 60000 * 24 * 365, "a": 60000 * 24 * 365 * 10, "c": 60000 * 24 * 365 * 100}
         self.number = number
         self.unit = unit
         self.type = "time"

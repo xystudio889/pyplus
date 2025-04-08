@@ -15,3 +15,5 @@ main.update_time."1.2.0" = ""
 main.version = "1.2.0a1"
 main.update_info."1.2.0a1" = "Fix some bug.\nAdd two moudles:\n\tpassword:Encrypt your texts.This moudle is not completed.\n\ttypes:Some types.\nNow dec can used.\n\tUpdate the update -- 1.1.2."
 main.update_time."1.2.0a1" = 2025-04-07
+main.update_info."1.2.0a2" = "Fix some bug.\nupdate the science -- 1.2.0."
+main.update_time."1.2.0a2" = 2025-04-08
