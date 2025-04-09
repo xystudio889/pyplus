@@ -1,7 +1,8 @@
 from ..tools import operators
+from abc import ABC, abstractclassmethod
 import datetime
 
-__all__ = ["Unit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operators", "Points", 
+__all__ = ["Unit", "ABCUnit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operators", "Points", 
            "OPEN", "CLOSE"]
 
 OPEN = True
@@ -358,7 +359,7 @@ class Unit:
         return self.operator(operators.comparison.ge, value)
 
     def __neg__(self): 
-        return self._create_new(self.number, self.unit)
+        return self._create_new(-self.number, self.unit)
 
     def __pos__(self): 
         return self._create_new(self.number, self.unit)
@@ -372,6 +373,23 @@ class Unit:
     def __hash__(self):
         return hash(tuple(self.data))
 
+class ABCUnit(ABC, Unit):
+    '''
+    Simply to create a customised UnitClass.
+
+    This class must define a method `_create_new`.
+
+    This class cannot be called directly.If you need to use it,you must inherit this type.
+    '''
+
+    def __init__(self, number, unit, type = ""):
+        super().__init__(number, unit, type)
+
+    @abstractclassmethod
+    def _create_new(self, num, unit):
+        '''This method must be defined.'''
+        return super()._create_new(num, unit)
+
 class Points: 
     def __init__(self, *dots): 
         self.dots = dots
@@ -383,11 +401,11 @@ class Points:
     def set_dot(self, *dots, D_same:bool = OPEN):
         if D_same and len(dots) != self.vec:
             raise ValueError(f'You are open the D_same.You input length must be equal to the length you set.(input {len(dots)},Set {self.vec})')
-        self.dot = dots
+        self.dots = dots
         return self
     
     def add_dot(self,dot):
-        self,dot = dot
+        self.dots = dot
         return self
 
     def __iter__(self):
@@ -403,10 +421,9 @@ class Points:
         return str(self.dots)
     
     def __str__(self):
-        return str(self.dots)
+        return self.__repr__()
     
-    def __add__(self, value:tuple):
-        '''Value can use Points too.'''
+    def __add__(self, value):
         point = list(self.dots)
         if isinstance(value,tuple) or isinstance(value,Points):
             for i in range(len(self.dots)):
@@ -418,8 +435,7 @@ class Points:
             raise TypeError(f'Points operator must use Points or tuple,not {type(value)}')
         return Points(*tuple(point))
     
-    def __sub__(self, value:tuple):
-        '''Value can use Points too.'''
+    def __sub__(self, value):
         point = list(self.dots)
         if isinstance(value,tuple) or isinstance(value,Points):
             for i in range(len(self.dots)):
@@ -431,8 +447,7 @@ class Points:
             raise TypeError(f'Points operator must use Points or tuple,not {type(value)}')
         return Points(*tuple(point))
     
-    def __mul__(self, value:tuple):
-        '''Value can use Points too.'''
+    def __mul__(self, value):
         point = list(self.dots)
         if isinstance(value,tuple) or isinstance(value,Points):
             for i in range(len(self.dots)):
@@ -450,8 +465,7 @@ class Points:
             raise TypeError(f'Points operator must use Points,tuple or int,not {type(value)}')
         return Points(*tuple(point))
     
-    def __truediv__(self, value:tuple):
-        '''Value can use Points too.'''
+    def __truediv__(self, value):
         point = list(self.dots)
         if isinstance(value,tuple) or isinstance(value,Points):
             for i in range(len(self.dots)):
@@ -468,6 +482,27 @@ class Points:
         else:
             raise TypeError(f'Points operator must use Points,tuple or int,not {type(value)}')
         return Points(*tuple(point))
+    
+    def __radd__(self, value):
+        return self.__add__(value)
+    
+    def __rsub__(self, value):
+        return self.__sub__(value)
+    
+    def __rmul__(self, value):
+        return self.__mul__(value)
+    
+    def __rtruediv__(self, value):
+        return self.__truediv__(value)
+    
+    def __neg__(self):
+        dot = list(self.dots)
+        for i in range(len(dot)):
+            dot[i] = -dot[i]
+        return Points(*tuple(dot))
+    
+    def __pos__(self):
+        return Points(*self.dots)
 
 class Line(Unit): 
     conversion_list = {
