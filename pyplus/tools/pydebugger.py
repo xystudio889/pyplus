@@ -1,4 +1,4 @@
-from ..science import Version
+from ..science.units import Version
 from .update import *
 from .update import upload
 from pdb import *

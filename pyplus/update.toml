@@ -13,13 +13,15 @@ main.update_info."1.2.0" = "Fix some bug.\nAdd two moudles:\n\tpassword:Encrypt 
 main.update_time."1.2.0" = ""
 
 [pre-release]
-main.version = "1.2.0b1"
+main.version = "1.2.0rc1"
 main.update_info."1.2.0a1" = "Fix some bug.\nAdd two moudles:\n\tpassword:Encrypt your texts.This moudle is not completed.\n\ttypes:Some types.\nNow dec can used.\n\tUpdate the update -- 1.1.2."
 main.update_time."1.2.0a1" = 2025-04-07
 main.update_info."1.2.0a2" = "Fix some bug.\nupdate the science -- 1.2.0."
 main.update_time."1.2.0a2" = 2025-04-08
 main.update_info."1.2.0b1" = "Fix some bug.\nUpdate the science -- 1.2.1.\nAdd lib:advancedlib:Some expansions of bulit-in functions.\nAdd tools:moudle:Getsome operations of import."
-main.update_time."1.2.0b2" = 2025-04-08
+main.update_time."1.2.0b1" = 2025-04-09
+main.update_info."1.2.0rc2" = "Modify some code."
+main.update_time."1.2.0rc2" = 2025-04-10
 
 unit.version = "1.2.1"
 unit.update_info."1.0.0" = ""

@@ -13,3 +13,4 @@ from . import (
     #, password
 )
 import decorators
+from img_fit import latex2text

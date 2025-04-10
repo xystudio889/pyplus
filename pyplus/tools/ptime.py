@@ -1,6 +1,6 @@
 from timeit import *
 from time import *
-from ..science import Duration
+from ..science.units import Duration
 from .update import *
 from .update import upload
 

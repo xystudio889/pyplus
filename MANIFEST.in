@@ -1,1 +1,3 @@
 include pyplus/update.toml
+include pyplus/docs/*
+include pyplus/docs/web/*

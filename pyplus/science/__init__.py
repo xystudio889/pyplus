@@ -8,18 +8,10 @@ class A(ABCUnit)
 ```
 '''
 
-from .units import *
-from decimal import Decimal as long
-from fractions import Fraction as fraction
-# from . import shapes
-from ..tools.dec import dint,SimpleType
+from . import units
+from advancedlib.math import *
 
 __all__ = [
     "shapes", "fraction", "long", "dint", "SimpleType", "numpy", "matplotlib", 
     "Unit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operators"
 ]
-
-try:
-    import numpy, matplotlib
-except (ImportError, ModuleNotFoundError):
-    pass
