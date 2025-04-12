@@ -9,7 +9,7 @@ class A(ABCUnit)
 '''
 
 from . import units
-from advancedlib.math import *
+from advancedlib.scinece import *
 
 __all__ = [
     "shapes", "fraction", "long", "dint", "SimpleType", "numpy", "matplotlib", 

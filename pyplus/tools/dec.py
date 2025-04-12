@@ -1,12 +1,5 @@
-from .update import *
-from .update import upload
 from .operators.matical import space,select
 from .type import _AllSimpleTypes as SimpleType
-
-__all__=["select", "space", "dint", "istr"
-        "ALL", "NEW", "WILL", 
-        "get_update", "get_version_update_time", "get_news_update_time", "get_new", "get_all", "get_will", 
-        "get_pre_update", "get_pre_version_update_time", "get_pre_news_update_time", "get_pre_news_update_time", "get_pre_new", "get_pre_all"]
 
 class dint(int):
     def __new__(cls, value:int):
@@ -119,3 +112,6 @@ class istr(str):
         else:
             raise TypeError(f'unsupported operand type(s) for +: istr and {type(value)}')
         return istr(self.str)
+
+class Calc:
+    pass
