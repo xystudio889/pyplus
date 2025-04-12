@@ -16,7 +16,7 @@ def get_update(version: str):
     if version == ALL: 
         out_obj = UPDATE_DOC
     elif version == NEW: 
-        out_obj = UPDATE_DOC.get(str(version), "This version is not found. Maybe it is not recorded.")
+        out_obj = UPDATE_DOC.get(str(VERSION), "This version is not found. Maybe it is not recorded.")
     elif version == WILL: 
         out_obj = UPDATE_DOC.get(WILL, "This version is not found. Maybe it is not recorded.")
     else: 
@@ -28,6 +28,10 @@ def get_version_update_time(version: str):
     '''Get the version update time.'''
     if version == NEW: 
         out_obj = UPDATE_TIME.get(str(VERSION), "This version is not found. Maybe it is not recorded.")
+    elif version == ALL: 
+        out_obj = UPDATE_TIME
+    elif version == WILL: 
+        raise ValueError('`get_version_update_time` cannot get will update time.')
     else: 
         out_obj = UPDATE_TIME.get(str(version), "This version is not found. Maybe it is not recorded.")
     print(out_obj)
@@ -78,6 +82,10 @@ def get_pre_version_update_time(version: str):
     '''Get the pre-release version update time.'''
     if version == NEW: 
         out_obj = PRE_UPDATE_TIME.get(str(VERSION))
+    elif version == ALL: 
+        out_obj = PRE_UPDATE_TIME.get(str(VERSION))
+    elif version == WILL: 
+        raise ValueError('`get_version_update_time` cannot get will update time.')
     else: 
         out_obj = PRE_UPDATE_TIME.get(str(version), "This version is not found. Maybe it is not recorded.")
     print(out_obj)

@@ -1,111 +1,97 @@
-from . import operators
-from .update import *
-from .update import upload
+import operator as operators
 
-juris = {}
-player_level = {}
-
-__version__ = "1.0.0"
-
-__update_time__ = {
-    "1.0.0": "2025/03/20", 
-}
-
-__update__ = {}
-
-upload(__version__, __update__, __update_time__)
+users = {}
+user_level = {}
 
 LEVEL = "level"
-JURIS_NAME = "juris"
-PLAYER_NAME = "player"
-if not __import__("os").path.exists(__import__("sys").prefix+"\\juris") and __import__("os").path.isdir(__import__("sys").prefix+"\\juris"): 
-    if __import__("os").path.isdir(__import__("sys").prefix+"\\juris"): 
-        __import__("os").remove(__import__("sys").prefix+"\\juris")
-    __import__("os").mkdir(__import__("sys").prefix+"\\juris")
+USER_NAME = "users"
+if not __import__("os").path.exists(__import__("sys").prefix+"\\users") and __import__("os").path.isdir(__import__("sys").prefix+"\\users"): 
+    if __import__("os").path.isdir(__import__("sys").prefix+"\\users"): 
+        __import__("os").remove(__import__("sys").prefix+"\\users")
+    __import__("os").mkdir(__import__("sys").prefix+"\\users")
 
 def append(**kwargs): 
-    """Add the juris to juris, if juris in juris, set the juris."""
+    """Add the users to users, if users in users, set the users."""
     for k, v in kwargs.items(): 
-        juris[k] = v
+        users[k] = v
 
 def get(key: str = None)->dict: 
-    """get the keys juris, if keys is none, return the juris list, else return the key juris`s value."""
+    """get the keys users, if keys is none, return the users list, else return the key users`s value."""
     try: 
-        return juris[key]
+        return users[key]
     except: 
-        raise NameError(key+" is not in juris.")
+        raise NameError(key+" is not in users.")
 
-def set(**kwargs): 
-    """Same as and."""
-    for k, v in kwargs.items(): 
-        juris[k] = v
-
-def judge(jurises, level): 
+def judge(useres, level): 
     try: 
-        return juris[jurises] == level
+        return users[useres] == level
     except Exception as e: 
         raise NameError(e)
     
-def juris_in_list(type, judge): 
+def user_in_list(type, judge): 
     if type == LEVEL: 
-        for k, v in juris.items(): 
+        for k, v in users.items(): 
             if v == judge: 
                 return True
         return False
-    elif type ==  JURIS_NAME: 
-        return judge in juris
+    elif type ==  USER_NAME: 
+        return judge in users
     else: 
         raise NameError(type+" is not in temp.")
 
-def get_player(key: str = None)->dict: 
-    """get the player juris"""
+def get_user(key: str = None)->dict: 
+    """get the user users"""
     try: 
-        return player_level[key]
+        return user_level[key]
     except: 
-        raise NameError(key+" is not in juris.")
+        raise NameError(key+" is not in users.")
     
-def change_player(func, num, key: str = None)->dict: 
-    """get the player juris"""
+def change_user(func, num, key: str = None)->dict: 
+    """get the user users"""
     try: 
-        player_level[key] = func(player_level[key], num)
-        return player_level[key]
+        user_level[key] = func(user_level[key], num)
+        return user_level[key]
     except: 
-        raise NameError(key+" is not in juris.")
+        raise NameError(key+" is not in users.")
     
-def del_player(key: str): 
-    """delete the player keys."""
+def del_user(key: str): 
+    """delete the user keys."""
     try: 
-        del player_level[key]
+        del user_level[key]
     except: 
-        raise NameError(key+" is not in juris.")
+        raise NameError(key+" is not in users.")
 
-def set_player(**kwargs): 
-    """Set the player Level"""
+def set_user(**kwargs): 
+    """Set the user Level"""
     for k, v in kwargs.items(): 
-        player_level[k] = juris[v]
+        user_level[k] = users[v]
 
-def player_judge(type, judge): 
+def user_judge(type, judge): 
     if type == LEVEL: 
-        for k, v in player_level.items(): 
-            if juris[k] == judge: 
+        for k, v in user_level.items(): 
+            if users[k] == judge: 
                 return True
         return False
-    elif type ==  PLAYER_NAME: 
-        return judge in player_level
+    elif type ==  USER_NAME: 
+        return judge in user_level
     else: 
         raise NameError(type+" is not in temp.")
     
 def download(name): 
     import pickle
 
-    with open(__import__("sys").prefix+"\\juris\\" + name + ".jur", "rb") as f: 
+    with open(__import__("sys").prefix+"\\users\\" + name + ".jur", "rb") as f: 
         pickle.load(f)
 
 def upload(name): 
     import pickle
 
-    with open(__import__("sys").prefix+"\\juris\\" + name + ".jur", "wb") as f: 
-        pickle.dump([juris, player_level], f)
+    with open(__import__("sys").prefix+"\\users\\" + name + ".jur", "wb") as f: 
+        pickle.dump([users, user_level], f)
+
+set_permission = append
+get_permission = get
+judge_permission = judge
 
 class User: 
     def __init__(self, name, level): 

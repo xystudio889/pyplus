@@ -1,4 +1,4 @@
-from ...tools import operators
+import operator as operators
 from abc import ABC, abstractclassmethod
 import datetime
 
@@ -273,22 +273,19 @@ class Unit:
         return self._create_new(number, self.unit)
 
     def __radd__(self, value: list): 
-        return self.change_attr(operators.matical.add, value)
+        return self.__add__(value)
 
     def __rsub__(self, value: list): 
-        return self.change_attr(operators.matical.sub, value)
+        return self.__sub__(value)
 
     def __rmul__(self, value: int): 
-        number = self.number * value
-        return self._create_new(number, self.unit)
+        return self.__mul__(value)
 
     def __rtruediv__(self, value: int): 
-        number = self.number/value
-        return self._create_new(number, self.unit)
+        return self.__truediv__(value)
 
     def __rfloordiv__(self, value: int): 
-        number = self.number//value
-        return self._create_new(number, self.unit)
+        return self.__floordiv__(value)
 
     def __lshift__(self, other): 
         '''
@@ -389,6 +386,136 @@ class ABCUnit(ABC, Unit):
     def _create_new(self, num, unit):
         '''This method must be defined.'''
         return super()._create_new(num, unit)
+    
+class NoInputTypeUnit(Unit):
+    '''
+    Simply to create a UnitClass.
+    '''
+
+    def __init__(self, number, unit):
+        super().__init__(number, unit, None)
+
+class Line(Unit): 
+    conversion_list = {
+            "nm": 1/1000 ** 2, "um": 1/1000, "mm": 1, "cm": 10, "dm": 100, "m": 1000, "km": 1000 * 1000,
+            "AU": 149_597_870.7 * 1000 ** 2, "ly": 63241.1 * 149_597_870.7 * 1000 ** 2, "pc": 206264.8 * 149_597_870.7 * 1000 ** 2, "mpc": 100_0000 * 206264.8 * 149_597_870.7 * 1000 ** 2,
+            "in": 2540, "ft": 12 * 2540, "yd": 36 * 2540, "mi": 63660 * 2540, "nmi": 1.852 * 1000 ** 2
+        }
+    def __init__(self, number, unit):
+        super().__init__(number,unit,"line")
+        if self.unit not in self.conversion_list: 
+            raise KeyError("key'"+self.unit+"'is not in this class")
+
+class Area(Unit): 
+    conversion_list = {
+            "nm2": 1/1000 ** 4, "um2": 1/1000 ** 2, "mm2": 1, "cm2": 100, "dm2": 10000, "m2": 10000 * 100, "are": 10000 ** 2, "ha": 10000 ** 2 * 100, "km2": 10000 ** 3,
+            "in2": 2540 ** 2, "ft2": (12 * 2540) ** 2, "mi2": (63660 * 2540) ** 2, "acre2": 4046_8564_22.4
+        }
+    def __init__(self, number, unit): 
+        super().__init__(number,unit,"area")
+        if self.unit not in self.conversion_list: 
+            raise KeyError("key'"+self.unit+"'is not in this class")
+
+    def scale(self, value: int): 
+        self.number *= (value ** 2)
+        return self
+
+    def __mul__(self, value: int): 
+        assert isinstance(value, int)
+        self.number *= (value ** 2)
+        return self
+
+    def __truediv__(self, value: int): 
+        assert isinstance(value, int)
+        self.number/= (value ** 2)
+        return self
+
+class Volume(Unit): 
+    conversion_list = {
+            "nm3": 1/1000 ** 6, "um3": 1/1000 ** 3, "mm3": 1, "cm3": 1000, "dm3": 1000 ** 2, "m3": 1000 ** 3, "km3": 1000 ** 6,
+            "in3": 2540 ** 3, "ft3": (12 * 2540) ** 3, "mi3": (63660 * 2540) ** 3
+        }
+    def __init__(self, number, unit): 
+        super().__init__(number,unit,"volume")
+        if self.unit not in self.conversion_list: 
+            raise KeyError("key'"+self.unit+"'is not in this class")
+
+    def scale(self, value: int): 
+        self.number *= (value ** 3)
+        return self
+
+    def __mul__(self, value: int): 
+        assert isinstance(value, int)
+        self.number *= (value ** 3)
+        return self
+
+    def __truediv__(self, value: int): 
+        assert isinstance(value, int)
+        self.number/= (value ** 3)
+        return self
+
+    @property
+    def capacity(self): 
+        return Capacity(self.conversion("dm3").number, "L")
+    
+    @property
+    def weight(self): 
+        raise NotImplementedError("Document is not completed.")
+
+class Capacity(Unit): 
+    conversion_list = {
+            "ml": 1, "L": 1000,
+            "oz": 29.6, "dr": 29.6 * 0.125, "pt": 16 * 29.6, "tbsp": 14.8, "cup": 48 * 14.8, "gal": 128 * 29.6, "tsp": 14.8/3,
+
+        }
+    def __init__(self, number, unit): 
+        super().__init__(number,unit,"capacity")
+        if self.unit not in self.conversion_list: 
+            raise KeyError("key'"+self.unit+"'is not in this class")
+
+    @property
+    def volume(self): 
+        return Volume(self.conversion("L").number, "dm3")
+    
+    @property
+    def weight(self): 
+        raise NotImplementedError("Document is not completed.")
+
+class Duration(Unit): 
+    conversion_list = {"ms": 1, "s": 1000, "h": 60000, "d": 60000 * 24, "u": 60000 * 24 * 365/4, "y": 60000 * 24 * 365, "a": 60000 * 24 * 365 * 10, "c": 60000 * 24 * 365 * 100}
+    def __init__(self, number: int, unit: str): 
+        super().__init__(number,unit,"duration")
+        if self.unit not in self.conversion_list: 
+            raise KeyError("key'"+self.unit+"'is not in this class")
+
+class Weight(Unit): 
+    conversion_list = {}
+    def __init__(self, number: int, unit: str): 
+        super().__init__(number,unit,"weight")
+        if self.unit not in self.conversion_list: 
+            raise KeyError("key'"+self.unit+"'is not in this class")
+
+class Time: 
+    def __init__(self): 
+        pass
+
+class Version: 
+    '''use to write project version.'''
+    def __init__(self,  *version): 
+        self.version_list = [str(i) for i in version]
+        self.version = ".".join(self.version_list)
+
+    def __iter__(self): 
+        return iter(self.version_list)
+
+    def __getitem__(self, index): 
+        return self.version_list[index]
+
+    def __len__(self): 
+        return len(self.version_list)
+
+    def __repr__(self): 
+        return self.version
 
 class Points: 
     def __init__(self, *dots): 
@@ -503,129 +630,3 @@ class Points:
     
     def __pos__(self):
         return Points(*self.dots)
-
-class Line(Unit): 
-    conversion_list = {
-            "nm": 1/1000 ** 2, "um": 1/1000, "mm": 1, "cm": 10, "dm": 100, "m": 1000, "km": 1000 * 1000,
-            "AU": 149_597_870.7 * 1000 ** 2, "ly": 63241.1 * 149_597_870.7 * 1000 ** 2, "pc": 206264.8 * 149_597_870.7 * 1000 ** 2, "mpc": 100_0000 * 206264.8 * 149_597_870.7 * 1000 ** 2,
-            "in": 2540, "ft": 12 * 2540, "yd": 36 * 2540, "mi": 63660 * 2540, "nmi": 1.852 * 1000 ** 2
-        }
-    def __init__(self, number, unit):
-        self.number = number
-        self.unit = unit
-        self.type = "area"
-        if self.unit not in self.conversion_list: 
-            raise KeyError("key'"+self.unit+"'is not in this class")
-
-class Area(Unit): 
-    conversion_list = {
-            "nm2": 1/1000 ** 4, "um2": 1/1000 ** 2, "mm2": 1, "cm2": 100, "dm2": 10000, "m2": 10000 * 100, "are": 10000 ** 2, "ha": 10000 ** 2 * 100, "km2": 10000 ** 3,
-            "in2": 2540 ** 2, "ft2": (12 * 2540) ** 2, "mi2": (63660 * 2540) ** 2, "acre2": 4046_8564_22.4
-        }
-    def __init__(self, number, unit): 
-        self.number = number
-        self.unit = unit
-        self.type = "area"
-        if self.unit not in self.conversion_list: 
-            raise KeyError("key'"+self.unit+"'is not in this class")
-
-    def scale(self, value: int): 
-        self.number *= (value ** 2)
-        return self
-
-    def __mul__(self, value: int): 
-        assert isinstance(value, int)
-        self.number *= (value ** 2)
-        return self
-
-    def __truediv__(self, value: int): 
-        assert isinstance(value, int)
-        self.number/= (value ** 2)
-        return self
-
-class Volume(Unit): 
-    conversion_list = {
-            "nm3": 1/1000 ** 6, "um3": 1/1000 ** 3, "mm3": 1, "cm3": 1000, "dm3": 1000 ** 2, "m3": 1000 ** 3, "km3": 1000 ** 6,
-            "in3": 2540 ** 3, "ft3": (12 * 2540) ** 3, "mi3": (63660 * 2540) ** 3
-        }
-    def __init__(self, number, unit): 
-        self.number = number
-        self.unit = unit
-        self.type = "volume"
-        if self.unit not in self.conversion_list: 
-            raise KeyError("key'"+self.unit+"'is not in this class")
-
-    def scale(self, value: int): 
-        self.number *= (value ** 3)
-        return self
-
-    def __mul__(self, value: int): 
-        assert isinstance(value, int)
-        self.number *= (value ** 3)
-        return self
-
-    def __truediv__(self, value: int): 
-        assert isinstance(value, int)
-        self.number/= (value ** 3)
-        return self
-
-    @property
-    def capacity(self): 
-        return Capacity(self.conversion("dm3").number, "L")
-
-class Capacity(Unit): 
-    conversion_list = {
-            "ml": 1, "L": 1000,
-            "oz": 29.6, "dr": 29.6 * 0.125, "pt": 16 * 29.6, "tbsp": 14.8, "cup": 48 * 14.8, "gal": 128 * 29.6, "tsp": 14.8/3,
-
-        }
-    def __init__(self, number, unit): 
-        self.number = number
-        self.unit = unit
-        self.type = "capacity"
-        if self.unit not in self.conversion_list: 
-            raise KeyError("key'"+self.unit+"'is not in this class")
-
-    @property
-    def volume(self): 
-        return Volume(self.conversion("L").number, "dm3")
-
-class Duration(Unit): 
-    conversion_list = {"ms": 1, "s": 1000, "h": 60000, "d": 60000 * 24, "u": 60000 * 24 * 365/4, "y": 60000 * 24 * 365, "a": 60000 * 24 * 365 * 10, "c": 60000 * 24 * 365 * 100}
-    def __init__(self, number: int, unit: str): 
-        self.number = number
-        self.unit = unit
-        self.type = "time"
-        if self.unit not in self.conversion_list: 
-            raise KeyError("key'"+self.unit+"'is not in this class")
-
-class Weight(Unit): 
-    def __init__(self, number: int, unit: str): 
-        self.conversion_list = {}
-        self.number = number
-        self.unit = unit
-        self.type = "weight"
-        if self.unit not in self.conversion_list: 
-            raise KeyError("key'"+self.unit+"'is not in this class")
-
-class Time: 
-    def __init__(self): 
-        pass
-
-class Version: 
-    '''use to write project version.'''
-    def __init__(self,  *version): 
-        self.version_list = [str(i) for i in version]
-        self.version = ".".join(self.version_list)
-
-    def __iter__(self): 
-        return iter(self.version_list)
-
-    def __getitem__(self, index): 
-        return self.version_list[index]
-
-    def __len__(self): 
-        return len(self.version_list)
-
-    def __repr__(self): 
-        return self.version
