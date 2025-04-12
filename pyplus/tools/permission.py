@@ -5,6 +5,7 @@ user_level = {}
 
 LEVEL = "level"
 USER_NAME = "users"
+
 if not __import__("os").path.exists(__import__("sys").prefix+"\\users") and __import__("os").path.isdir(__import__("sys").prefix+"\\users"): 
     if __import__("os").path.isdir(__import__("sys").prefix+"\\users"): 
         __import__("os").remove(__import__("sys").prefix+"\\users")
