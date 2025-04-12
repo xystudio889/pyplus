@@ -1,19 +1,7 @@
 from . import operators
-from .update import *
-from .update import upload
 
 juris = {}
 player_level = {}
-
-__version__ = "1.0.0"
-
-__update_time__ = {
-    "1.0.0": "2025/03/20", 
-}
-
-__update__ = {}
-
-upload(__version__, __update__, __update_time__)
 
 LEVEL = "level"
 JURIS_NAME = "juris"

@@ -12,7 +12,9 @@
 For the expansion of python content, it covers science, debugging and other fields.
 
 ---
+
 ## Version name rule
+
 Version types are `dev`,`a`,`b`,`r`,`rc`,`post`.
 
 Version type `dev` mean develop.It stores develop version.It has more bugs.
@@ -30,14 +32,17 @@ Version type `post` stores vulnerability for the relase version.
 ---
 
 ## Library document
-###
+
 Documents have not been completed.
 
 ---
+
 ## Setup method
+
 run `python setup.py install` or `pip install python-plus-tools` to install the package.
 
 ## Check setup successful
+
 After setup complete,open the python,input
 ```python
 import pyplus

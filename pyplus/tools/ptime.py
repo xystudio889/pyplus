@@ -1,20 +1,11 @@
 from timeit import *
 from time import *
 from ..science.units import Duration
-from .update import *
-from .update import upload
 
 MS = 1
 SEC = 1000
 SEC_TIME = Duration(1, "s")
 MS_TIME = Duration(1, "ms")
-
-__version__  =  "1.0.0"
-__update__  =  {}
-__update_time__ = {
-    "1.0.0": "2025/03/20"
-}
-upload(__version__, __update__, __update_time__)
 
 class Clock: 
     def __init__(self): 

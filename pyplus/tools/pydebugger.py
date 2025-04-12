@@ -1,6 +1,5 @@
 from ..science.units import Version
-from .update import *
-from .update import upload
+from . import update
 from pdb import *
 
 class DebugError(BaseException): 
@@ -11,18 +10,12 @@ NO_DEFIND = None
 NOT_IN_DEBUG = False
 IN_DEBUG = True
 THIS_FILE = "__main__"
+
 debug = NO_DEFIND
 START = "start"
 END = "end"
-ticks={}
-__version__ = Version(1, 0, 0)
-version = __version__
 
-__update_doc__ = {}
-
-__update_time__ = {"1.0.0": "2025/03/20"}
-
-upload(__version__, __update_doc__, __update_time__)
+ticks = {}
 
 def stop(): 
     "stop and press any key to continue."
@@ -30,26 +23,26 @@ def stop():
 
 def run(code, judge: bool = True): 
     '''if judge is True, run code.
-    >>>run('print("hello world!")')
-    hello world!
-    >>>run('print("hello world!")', False)
+    >>> run('print("hello world!")')
+    'hello world!'
+    >>> run('print("hello world!")', False)
     '''
     if judge: 
         exec(code)
 
 def output(string, judge: bool = True): 
     '''if judge is True, print string.
-    >>>output("hello world!")
-    hello world!
-    this code == run('print("hello world!")')
-    >>>output("hello world!", False)
+
+    >>> output("hello world!")
+    'hello world!'
+    >>> output("hello world!", False)
     '''
     if judge: 
         run("print('"+string+"')")
 
 def judge(main_code, judge: bool, else_code: str = ""): 
     '''fast Ternary Operator
-    >>>judge("print(1)", 1!=1, "a=2;print(a)")
+    >>> judge("print(1)", 1!=1, "a=2;print(a)")
     2
     '''
     if judge: 
@@ -97,13 +90,13 @@ def do(code):
     Pdb.run(code)
 
 def func_debug(): 
-    def d(func): 
+    def decorator(func): 
         import time
-        def w(*a, **kw): 
+        def wrapper(*a, **kw): 
             t1=time.time()
             res=func(*a, **kw)
             t2=time.time()
             print(f"function {func.__name__}\nreturn {res}\nuse {(t2-t1)*1000}ms.")
             return res
-        return w
-    return d
+        return wrapper
+    return decorator
