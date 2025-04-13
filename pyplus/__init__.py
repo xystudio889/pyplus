@@ -6,16 +6,84 @@ the python's plus library.\n
 
 from . import science ,tools
 from site import getsitepackages
-from toml import load
+from toml import load,dump
+from pathlib import Path
+import os
+
+global_config_path = Path(os.getenv("appdata"),"xystudio", "pyplus", "config.toml")
+local_config_path = Path(".xystudio", "pyplus", "config.toml").resolve()
+global_config = {}
+local_config = {}
+union_config = {}
+
+os.makedirs(global_config_path.parent, exist_ok=True)
+
+if not global_config_path.exists():
+    global_config_path.touch()
+else:
+    with open(global_config_path, 'r', encoding="utf-8") as f:
+        global_config = load(f)
+
+_temp = True
+try:
+    if global_config["library"].get("autoCreateLocalConfig", "true") == "false":
+        _temp = False
+except KeyError:
+    pass
+
+if _temp:
+    os.makedirs(local_config_path.parent, exist_ok=True)
+    if not(local_config_path.exists()):
+        local_config_path.touch()
+
+try:
+    with open(local_config_path, 'r', encoding="utf-8") as f:
+        local_config = load(f)
+except FileNotFoundError:
+    pass
+
+_temp = True
+try:
+    print(global_config,global_config["library"]["firstUsedConfig"])
+    if global_config["library"].get("firstUsedConfig", "local") == "global":
+        _temp = False
+except KeyError:
+    pass
+
+if _temp:
+    union_config = global_config | local_config
+else:
+    union_config = local_config | global_config
+
+try:
+    with open(local_config_path, 'r', encoding="utf-8") as f:
+        local_config = load(f)
+except FileNotFoundError:
+    pass
+
+_temp = True
+try:
+    if union_config["library"].get("showDeprecationWarning", "true") == "false":
+        _temp = False
+except KeyError:
+    pass
+
+if _temp:
+    print(f"{tools.colors.Fore.MAGENTA}{tools.colors.Style.BRIGHT}note:write 'pyplus.config('library.showDeprecationWarning', false)' and run code again to close this warning.")
 
 __all__=[
     "science" ,"tools",
     "VERSION","UPDATE_DOC", "UPDATE_TIME", "PRE_VERSION", "PRE_UPDATE_DOC", "PRE_UPDATE_TIME",
     "ALL", "NEW", "WILL", 
-    "get_update", "get_version_update_time", "get_version", "get_pre_version", "get_news_update_time", "get_new", "get_all", "get_will", "get_pre_update", "get_pre_version_update_time", "get_pre_news_update_time", "get_pre_new", "get_pre_all"
+    "get_update", "get_version_update_time", "get_version", "get_pre_version", "get_news_update_time", "get_new", "get_all", "get_will", "get_pre_update", "get_pre_version_update_time", "get_pre_news_update_time", "get_pre_new", "get_pre_all", 
+    "config"
 ]
 
-updates = load(open(getsitepackages()[1]+"\\pyplus\\update.toml", "r", encoding="utf-8"))
+with open(getsitepackages()[1]+"\\pyplus\\update.toml", "r", encoding="utf-8") as f:
+    updates = load(f)
+
+LOCAL = "local"
+GLOBAL = "global"
 
 ALL = "all"
 NEW = "news"
@@ -138,5 +206,55 @@ def get_pre_all():
 
 def open_doc(doc_name:str):
     raise NotImplementedError("Document is not completed.")
+
+try:
+    first_used_config = global_config["library"].get("firstUsedConfig", "local")
+except KeyError:
+    first_used_config = "local"
+
+def config(config_name:str, value:object, config_type = first_used_config):
+    global local_config,global_config
+
+    config_name = config_name.lower()
+
+    if config_type == LOCAL:
+        os.makedirs(local_config_path.parent, exist_ok=True)
+        if not(local_config_path.exists()):
+            local_config_path.touch()
+
+        config_split = config_name.split(".")
+        config_char_1 = config_split[0]
+        try:
+            config_char_2 = config_split[1]
+            local_config[config_char_1] = {config_char_2:value}
+        except IndexError:
+            local_config[config_char_1] = value
+
+        with open(local_config_path, "w", encoding="utf-8") as f:
+            dump(local_config, f)
+    elif config_type == GLOBAL:
+        config_split = config_name.split(".")
+        config_char_1 = config_split[0]
+        try:
+            config_char_2 = config_split[1]
+            global_config[config_char_1] = {config_char_2:value}
+        except IndexError:
+            global_config[config_char_1] = value
+        with open(global_config_path, "w", encoding="utf-8") as f:
+            dump(global_config, f)
+    else:
+        raise ValueError("This config type not found.")
+
+def get_config(config_name:str):
+    try:
+        config_split = config_name.split(".")
+        config_char_1 = config_split[0]
+        try:
+            config_char_2 = config_split[1]
+            return union_config[config_char_1][config_char_2]
+        except IndexError:
+            return union_config[config_char_1]
+    except KeyError:
+        return None
 
 __version__ = get_version("main")

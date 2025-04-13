@@ -1,3 +1,25 @@
+from toml import load
+from pathlib import Path
+from os import getenv
+from . import colors
+import warnings
+
+config = load(open(Path(getenv("appdata"),"xystudio", "pyplus", "config.toml"))) | load(open(Path(".xystudio", "pyplus", "config.toml").resolve()))
+_show_warn = True
+
+try:
+    if config["library"]["showDeprecationWarning"] != "true":
+        _show_warn = False
+except KeyError:
+    pass
+
+if _show_warn:
+    warnings.warn(
+        colors.Fore.YELLOW + colors.Style.BRIGHT + "dataList_conversion is deprecated since v1.2 and will be removed in v2.0. Please use database_convert (In 1.2.2 created)." + colors.Style.RESET_ALL,
+        DeprecationWarning,
+        stacklevel=2
+    )
+
 def xml_to_json(xmlFile, jsonFile): 
     from xmltodict import parse
     from json import dumps

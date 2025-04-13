@@ -1,4 +1,26 @@
 from . import operators
+import warnings
+from . import colors
+from toml import load
+from os import getenv
+from pathlib import Path
+
+warnings.simplefilter('always', DeprecationWarning)
+config = load(open(Path(getenv("appdata"),"xystudio", "pyplus", "config.toml"))) | load(open(Path(".xystudio", "pyplus", "config.toml").resolve()))
+_show_warn = True
+
+try:
+    if config["library"]["showDeprecationWarning"] != "true":
+        _show_warn = False
+except KeyError:
+    pass
+
+if _show_warn:
+    warnings.warn(
+        colors.Fore.YELLOW + colors.Style.BRIGHT + "jurisdiction is deprecated since v1.2 and will be removed in v2.0.Please use permission.(In 1.2.2 created)" + colors.Style.RESET_ALL,
+        DeprecationWarning,
+        stacklevel=2
+    )
 
 juris = {}
 player_level = {}

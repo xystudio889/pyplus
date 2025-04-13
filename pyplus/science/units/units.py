@@ -1,4 +1,4 @@
-import operator as operators
+from . import operators
 from abc import ABC, abstractclassmethod
 import datetime
 
