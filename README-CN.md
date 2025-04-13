@@ -9,23 +9,29 @@ ID:007
 
 ---
 
-> 现在`xystudo-all`库以及停止支持并删除所有代码，推荐所有项目使用更加安全的本库，并且他还增加了一些接口。
-
 <div align="center" style="line-height: 1;">
-  <a href="https://g它hub.com/xystudio889/pyplus"><img
-    src="https://img.shields.io/badge/源码-g它hub-536af5?color=536af5&logoColor=wh它e"/></a>
+  <a href="https://github.com/xystudio889/pyplus"><img
+    src="https://img.shields.io/badge/源码-github-536af5?color=536af5&logoColor=white"/></a>
   <a href="https://pypi.org/project/python-plus-tools/"><img
-    src="https://img.shields.io/badge/pypi-536af5?color=7803f1&logoColor=wh它e"/></a>
+    src="https://img.shields.io/badge/pypi-536af5?color=7803f1&logoColor=white"/></a>
   <img
-    src="https://img.shields.io/badge/python-3.6 | 3.7 | 3.8 | 3.9 | 3.10 | 3.11 | 3.12 | 3.13-1c93ea?color=1cb5ea&logoColor=wh它e"/>
+    src="https://img.shields.io/badge/python-3.6 | 3.7 | 3.8 | 3.9 | 3.10 | 3.11 | 3.12 | 3.13-1c93ea?color=1cb5ea&logoColor=white"/>
 </div>
 <br />
 <div align="center" style="line-height: 1;">
   <a href="./README.md"><img
-    src="https://img.shields.io/badge/语言-English-536af5?color=781ff1&logoColor=wh它e"/></a>
+    src="https://img.shields.io/badge/语言-English-536af5?color=0326f3&logoColor=white"/></a>
   <a href="./README-CN.md"><img
-    src="https://img.shields.io/badge/简体中文-536af5?color=ff0000&logoColor=wh它e"/></a>
+    src="https://img.shields.io/badge/简体中文-536af5?color=ff0000&logoColor=white"/></a>
 </div>
+<br />
+<div align="center" style="line-height: 1;">
+  <!-- <a href="./feature.md"><img
+    src="https://img.shields.io/badge/展望-English-536af5?color=781ff1&logoColor=white"/></a> -->
+  <a href="./feature-CN.md"><img
+    src="https://img.shields.io/badge/展望-简体中文-536af5?color=86FCE5&logoColor=white"/></a>
+</div>
+
 
 ## 描述
 

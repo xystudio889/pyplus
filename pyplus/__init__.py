@@ -4,7 +4,6 @@ The python Plus - Pyplus
 the python's plus library.\n
 '''
 
-from . import science ,tools
 from site import getsitepackages
 from toml import load,dump
 from pathlib import Path
@@ -68,8 +67,10 @@ try:
 except KeyError:
     pass
 
+from . import science ,tools
+
 if _temp:
-    print(f"{tools.colors.Fore.MAGENTA}{tools.colors.Style.BRIGHT}note:write 'pyplus.config('library.showDeprecationWarning', false)' and run code again to close this warning.")
+    print(f"{tools.colors.Fore.MAGENTA}{tools.colors.Style.BRIGHT}note:write 'pyplus.config('library.showDeprecationWarning', 'false')' and run code again to close this warning.")
 
 __all__=[
     "science" ,"tools",
@@ -215,7 +216,7 @@ except KeyError:
 def config(config_name:str, value:object, config_type = first_used_config):
     global local_config,global_config
 
-    config_name = config_name.lower()
+    config_name = config_name
 
     if config_type == LOCAL:
         os.makedirs(local_config_path.parent, exist_ok=True)
