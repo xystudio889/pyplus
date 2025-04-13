@@ -1,2 +1,2 @@
-from . import dataList_conversion,jurisdiction, ptime, pydebugger, tag, update, dec, type, moudle, operators, variables, colors#, password
+from . import dataList_conversion,permission, ptime, pydebugger, tag, update, dec, type, moudle, variables, colors#, password
 import decorators
