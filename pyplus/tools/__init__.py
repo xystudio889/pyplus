@@ -1,2 +1,20 @@
-from . import dataList_conversion,permission, ptime, pydebugger, tag, update, dec, type, moudle, variables, colors#, password
 import decorators
+
+from . import (
+    colors,
+    dec, 
+    database_convert,
+    moudle, 
+    #password,
+    ptime, 
+    permission, 
+    pydebugger, 
+    tag, 
+    type, 
+    update, 
+    variables, 
+)
+from . import (
+    jurisdiction, 
+    operators, 
+) # deprecated moudle
