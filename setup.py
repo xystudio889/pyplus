@@ -1,6 +1,5 @@
 from setuptools import setup, find_packages
 import sys
-from pyplus import get_pre_version
 
 data_files = [('Scripts', [])]
 
@@ -9,7 +8,7 @@ if sys.platform == "win32":
 
 setup(
     name="python-plus-tools",
-    version="1.2.1.post2",
+    version="1.2.1.post3",
     packages=find_packages(),
     install_requires=["toml>=0.10", "indently-decorators>=1.0,<=1.1", "cryptography>=3.4", "imgfit>=0.3", "colorama>=0.1", 
                       "numpy>=1.14", "matplotlib>=3.4","torch>=2", "pandas>=2"],
