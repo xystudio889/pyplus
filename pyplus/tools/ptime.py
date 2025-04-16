@@ -1,6 +1,6 @@
+from ..science.units import Duration
 from timeit import *
 from time import *
-from ..science.units import Duration
 
 MS = 1
 SEC = 1000

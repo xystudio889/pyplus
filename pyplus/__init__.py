@@ -4,18 +4,27 @@ The python Plus - Pyplus
 the python's plus library.\n
 '''
 
-from site import getsitepackages
-from toml import load,dump
+from os import makedirs, getenv
 from pathlib import Path
-import os
+from site import getsitepackages
 
-global_config_path = Path(os.getenv("appdata"),"xystudio", "pyplus", "config.toml")
-local_config_path = Path(".xystudio", "pyplus", "config.toml").resolve()
+from . import tools, science
+from toml import load,dump
+
+global_config_path = Path(getenv("appdata"),"xystudio", "pyplus", "config.toml")
+local_config_path = Path(".xystudio", "pyplus", "config.toml").absolute()
 global_config = {}
 local_config = {}
 union_config = {}
 
-os.makedirs(global_config_path.parent, exist_ok=True)
+LOCAL = "local"
+GLOBAL = "global"
+
+ALL = "all"
+NEW = "news"
+WILL = "will"
+
+makedirs(global_config_path.parent, exist_ok=True)
 
 if not global_config_path.exists():
     global_config_path.touch()
@@ -23,15 +32,8 @@ else:
     with open(global_config_path, 'r', encoding="utf-8") as f:
         global_config = load(f)
 
-_temp = True
-try:
-    if global_config["library"].get("autoCreateLocalConfig", "true") == "false":
-        _temp = False
-except KeyError:
-    pass
-
-if _temp:
-    os.makedirs(local_config_path.parent, exist_ok=True)
+if global_config.get("library", {"autoCreateLocalConfig" : True}).get("autoCreateLocalConfig", True):
+    makedirs(local_config_path.parent, exist_ok=True)
     if not(local_config_path.exists()):
         local_config_path.touch()
 
@@ -41,54 +43,28 @@ try:
 except FileNotFoundError:
     pass
 
-_temp = True
-try:
-    print(global_config,global_config["library"]["firstUsedConfig"])
-    if global_config["library"].get("firstUsedConfig", "local") == "global":
-        _temp = False
-except KeyError:
-    pass
+first_used_config = global_config.get("library", {"firstUsedConfig" : "local"}).get('firstUsedConfig', True)
 
-if _temp:
+if first_used_config == "local":
     union_config = global_config | local_config
 else:
     union_config = local_config | global_config
 
-try:
-    with open(local_config_path, 'r', encoding="utf-8") as f:
-        local_config = load(f)
-except FileNotFoundError:
-    pass
-
-_temp = True
-try:
-    if union_config["library"].get("showDeprecationWarning", "true") == "false":
-        _temp = False
-except KeyError:
-    pass
-
-from . import science ,tools
-
-if _temp:
-    print(f"{tools.colors.Fore.MAGENTA}{tools.colors.Style.BRIGHT}note:write 'pyplus.config('library.showDeprecationWarning', 'false')' and run code again to close this warning.")
+if union_config.get("library", {"showDeprecationWarning" : True}).get("showDeprecationWarning", True):
+    print(f"{tools.colors.Fore.MAGENTA}{tools.colors.Style.BRIGHT}note:write 'config('library.showDeprecationWarning', 'false')' and run code again to close this warning.")
 
 __all__=[
     "science" ,"tools",
-    "VERSION","UPDATE_DOC", "UPDATE_TIME", "PRE_VERSION", "PRE_UPDATE_DOC", "PRE_UPDATE_TIME",
     "ALL", "NEW", "WILL", 
     "get_update", "get_version_update_time", "get_version", "get_pre_version", "get_news_update_time", "get_new", "get_all", "get_will", "get_pre_update", "get_pre_version_update_time", "get_pre_news_update_time", "get_pre_new", "get_pre_all", 
-    "config"
+    "config", "get_config", "get_config_help"
 ]
 
-with open(getsitepackages()[1]+"\\pyplus\\update.toml", "r", encoding="utf-8") as f:
+with open("pyplus\\config\\update.toml", "r", encoding="utf-8") as f:
     updates = load(f)
 
-LOCAL = "local"
-GLOBAL = "global"
-
-ALL = "all"
-NEW = "news"
-WILL = "will"
+with open("pyplus\\config\\get_config.toml", "r", encoding="utf-8") as f:
+    config_help = load(f)
 
 def get_update(namespace:str, version: str): 
     '''get the version update doc.'''
@@ -208,41 +184,37 @@ def get_pre_all():
 def open_doc(doc_name:str):
     raise NotImplementedError("Document is not completed.")
 
-try:
-    first_used_config = global_config["library"].get("firstUsedConfig", "local")
-except KeyError:
-    first_used_config = "local"
-
 def config(config_name:str, value:object, config_type = first_used_config):
     global local_config,global_config
 
     config_name = config_name
 
     if config_type == LOCAL:
-        os.makedirs(local_config_path.parent, exist_ok=True)
+        makedirs(local_config_path.parent, exist_ok=True)
         if not(local_config_path.exists()):
             local_config_path.touch()
 
-        config_split = config_name.split(".")
+        config_split = config_name.split(".", 1)
         config_char_1 = config_split[0]
         try:
             config_char_2 = config_split[1]
-            local_config[config_char_1] = {config_char_2:value}
         except IndexError:
-            local_config[config_char_1] = value
+            raise ValueError("config name must use 'a.b'.")
 
-        with open(local_config_path, "w", encoding="utf-8") as f:
-            dump(local_config, f)
+        with open(local_config_path, "w+", encoding="utf-8") as f:
+            config = load(f) | {config_char_1 : {config_char_2 : value}}
+            dump(config, f)
     elif config_type == GLOBAL:
         config_split = config_name.split(".")
         config_char_1 = config_split[0]
         try:
             config_char_2 = config_split[1]
-            global_config[config_char_1] = {config_char_2:value}
         except IndexError:
-            global_config[config_char_1] = value
-        with open(global_config_path, "w", encoding="utf-8") as f:
-            dump(global_config, f)
+            raise ValueError("config name must use 'a.b'.")
+
+        with open(global_config_path, "w+", encoding="utf-8") as f:
+            config = load(f) | {config_char_1 : {config_char_2 : value}}
+            dump(config, f)
     else:
         raise ValueError("This config type not found.")
 
@@ -254,8 +226,162 @@ def get_config(config_name:str):
             config_char_2 = config_split[1]
             return union_config[config_char_1][config_char_2]
         except IndexError:
-            return union_config[config_char_1]
+            raise ValueError("config name must use two texts, example : 'a.b'.")
     except KeyError:
         return None
 
+def get_config_help(config_type = ALL):
+    if config_type == ALL:
+        for config_t,config_docs in config_help.items():
+            print("*" * 22 + "-" * 8 + config_t + "-" * 8 + "*" * 22)
+            for doc_name, doc_des in config_docs.items():
+                print()
+                print(f"{doc_name} : {doc_des}")
+    else:
+        print("*" * 22 + "-" * 8 + config_type + "- " * 8 + "*" * 22)
+        try:
+            for doc_name, doc_des in config_help[config_type].items():
+                print(f"{doc_name} : {doc_des}")
+        except KeyError:
+            print("This document is not found.")
+
 __version__ = get_version("main")
+
+del getsitepackages, Path, getenv
+
+def main_config():
+    import argparse
+
+    class globalAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            self.handle_output(parser, namespace, values)
+
+        @staticmethod
+        def handle_output(parser, namespace, values):
+            setattr(namespace, "_global", values)
+
+    class allAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            self.handle_output(parser, namespace, values)
+
+        @staticmethod
+        def handle_output(parser, namespace, values):
+            setattr(namespace, "_all", values)
+
+    class localAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            self.handle_output(parser, namespace, values)
+
+        @staticmethod
+        def handle_output(parser, namespace, values):
+            setattr(namespace, "_local", values)
+
+    parser = argparse.ArgumentParser(description="imgfit commands")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    local_conf = subparsers.add_parser("local", help="Config file only in your project.Local config in './.xystudio/pyplus/config.toml'")
+    global_conf = subparsers.add_parser("global", help="Config file in all project.Global config in 'Users/Appdata/roaming/xystudio/pyplus/config.toml'")
+    local_conf.add_argument("setting", help="Config setting.")
+    local_conf.add_argument("value", help="Config value.")
+    global_conf.add_argument("setting", help="Config setting.")
+    global_conf.add_argument("value", help="Config value.")
+
+    get_conf_help = subparsers.add_parser("get_config_help", help="Get the config help.")
+    get_conf_help.add_argument("-d", "--document_description",nargs="?",help="get one document description.", default=ALL)
+
+    get_conf = subparsers.add_parser("get_config", help="Get the config.")
+    get_conf.add_argument("-l", "--local", nargs="?", action=localAction,help="Output the local config.")
+    get_conf.add_argument("-g", "--global", action=globalAction,nargs="?", help="Output the global config.")
+    get_conf.add_argument("-a","--all", nargs="?", action=allAction, help="Output all the config.")
+
+    args = parser.parse_args()
+
+    if args.command == "config":
+        if args.value.lower() == "true":
+            value = True
+        elif args.value.lower() == "false":
+            value = False
+        else:
+            value = args.value
+        config(args.setting, value, args.namespace) 
+    elif args.command == "get_config_help":
+        get_config_help(args.document_description)
+    elif args.command == "get_config":
+        if hasattr(args, "_local"):
+            print(local_config)
+        if hasattr(args, "_global"):
+            print(global_config)
+        if hasattr(args, "_all"):
+            print(union_config)
+    print("Run code again to set the config.")
+
+def main():
+    import argparse
+
+    class globalAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            self.handle_output(parser, namespace, values)
+
+        @staticmethod
+        def handle_output(parser, namespace, values):
+            setattr(namespace, "_global", values)
+
+    class allAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            self.handle_output(parser, namespace, values)
+
+        @staticmethod
+        def handle_output(parser, namespace, values):
+            setattr(namespace, "_all", values)
+
+    class localAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            self.handle_output(parser, namespace, values)
+
+        @staticmethod
+        def handle_output(parser, namespace, values):
+            setattr(namespace, "_local", values)
+
+    parser = argparse.ArgumentParser(description="imgfit commands")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    config_cmd = subparsers.add_parser("config", help="Set the config setting.Usage 'pyplus get_config' to get all config.")
+    config_namespace = config_cmd.add_subparsers(dest="namespace", required=True)
+    loacal_conf = config_namespace.add_parser("local", help="Config file only in your project.Local config in './.xystudio/pyplus/config.toml'")
+    global_conf = config_namespace.add_parser("global", help="Config file in all project.Global config in 'Users/Appdata/roaming/xystudio/pyplus/config.toml'")
+    config_cmd.add_argument("setting", help="Config setting.")
+    config_cmd.add_argument("value", help="Config value.")
+
+    subparsers.add_parser("version", help="Get the pyplus version.")
+
+    get_conf_help = subparsers.add_parser("get_config_help", help="Get the config help.")
+    get_conf_help.add_argument("-d", "--document_description",nargs="?",help="get one document description.", default=ALL)
+
+    get_conf = subparsers.add_parser("get_config", help="Get the config.")
+    get_conf.add_argument("-l", "--local", nargs="?", action=localAction,help="Output the local config.")
+    get_conf.add_argument("-g", "--global", action=globalAction,nargs="?", help="Output the global config.")
+    get_conf.add_argument("-a","--all", nargs="?", action=allAction, help="Output all the config.")
+
+    args = parser.parse_args()
+
+    if args.command == "config":
+        if args.value.lower() == "true":
+            value = True
+        elif args.value.lower() == "false":
+            value = False
+        else:
+            value = args.value
+        config(args.setting, value, args.namespace) 
+    elif args.command == "version":
+        print("Version : pyplus pre:", get_pre_version)
+        print("Version : pyplus :",get_version())
+    elif args.command == "get_config_help":
+        get_config_help(args.document_description)
+    elif args.command == "get_config":
+        if hasattr(args, "_local"):
+            print(local_config)
+        if hasattr(args, "_global"):
+            print(global_config)
+        if hasattr(args, "_all"):
+            print(union_config)
+    print("Run code again to set the config.")

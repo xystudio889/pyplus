@@ -1,26 +1,26 @@
-from . import operators
-import warnings
-from . import colors
-from toml import load
+import operator
 from os import getenv
 from pathlib import Path
 
-warnings.simplefilter('always', DeprecationWarning)
-config = load(open(Path(getenv("appdata"),"xystudio", "pyplus", "config.toml"))) | load(open(Path(".xystudio", "pyplus", "config.toml").resolve()))
-_show_warn = True
+from . import operators
+from pyplus.tools import colors
+from toml import load 
 
 try:
-    if config["library"]["showDeprecationWarning"] != "true":
-        _show_warn = False
-except KeyError:
-    pass
+    o1 = open(Path(getenv("appdata"),"xystudio", "pyplus", "config.toml"))
+    o2 = open(Path(".xystudio", "pyplus", "config.toml").absolute())
 
-if _show_warn:
-    warnings.warn(
-        colors.Fore.YELLOW + colors.Style.BRIGHT + "jurisdiction is deprecated since v1.2 and will be removed in v2.0.Please use permission.(In 1.2.2 created)" + colors.Style.RESET_ALL,
-        DeprecationWarning,
-        stacklevel=2
-    )
+    config = (load(o1) | load(o2)).get("library", {"showDeprecationWarning" : True}).get("showDeprecationWarning", True)
+
+    o1.close()
+    o2.close()
+except FileNotFoundError:
+    config = True
+
+if config:
+    print(colors.Fore.YELLOW + "DeprecationWarning: pyplus.tools.jurisdiction is deprecated since v1.2 and will be removed in v2.0. Please use pyplus.tools.permission." + colors.Style.RESET_ALL)
+
+del colors, load, getenv
 
 juris = {}
 player_level = {}
@@ -135,43 +135,43 @@ class User:
             raise TypeError("value '"+str(value)+"' is"+str(type(value))+", not User or int.")
     
     def __eq__(self, value : int): 
-        return self.operator(operators.comparison.eq, value)
+        return self.operator(operator.eq, value)
 
     def __ne__(self, value : int): 
-        return self.operator(operators.comparison.ne, value)
+        return self.operator(operator.ne, value)
 
     def __lt__(self, value : int): 
-        return self.operator(operators.comparison.lt, value)
+        return self.operator(operator.lt, value)
 
     def __gt__(self, value : int): 
-        return self.operator(operators.comparison.gt, value)
+        return self.operator(operator.gt, value)
 
     def __le__(self, value : int): 
-        return self.operator(operators.comparison.le, value)
+        return self.operator(operator.le, value)
 
     def __ge__(self, value : int):     
-        return self.operator(operators.comparison.ge, value)
+        return self.operator(operator.ge, value)
     
     def __add__(self, value : int): 
-        return self.change(operators.matical.add, value)
+        return self.change(operator.add, value)
 
     def __sub__(self, value : int): 
-        return self.change(operators.matical.sub, value)
+        return self.change(operator.sub, value)
     
     def __radd__(self, value : int): 
-        return self.change(operators.matical.add, value)
+        return self.change(operator.add, value)
 
     def __rsub__(self, value : int): 
-        return self.change(operators.matical.sub, value)
+        return self.change(operator.sub, value)
     
     def __lshift__(self, value): 
-        return self.change(operators.matical.sub, value)
+        return self.change(operator.sub, value)
         
     def __rlshift__(self, value): 
-        return self.change(operators.matical.sub, value)
+        return self.change(operator.sub, value)
 
     def __rshift__(self, value): 
-        return self.change(operators.matical.add, value)
+        return self.change(operator.add, value)
         
     def __rrshift__(self, value): 
-        return self.change(operators.matical.add, value)
+        return self.change(operator.add, value)
