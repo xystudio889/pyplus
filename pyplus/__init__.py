@@ -9,6 +9,7 @@ from pathlib import Path
 from site import getsitepackages
 
 from . import tools, science
+from advancedlib import _all as advancedlib
 from toml import load,dump
 
 global_config_path = Path(getenv("appdata"),"xystudio", "pyplus", "config.toml")

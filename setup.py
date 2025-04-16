@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="1.2.2",
+    version="1.3.0.dev1",
     packages=find_packages(),
     install_requires=["toml>=0.10", "indently-decorators>=1.0,<=1.1", "cryptography>=3.4", "imgfit>=0.3", "colorama>=0.1", 
                       "numpy>=1.14", "matplotlib>=3.4","torch>=2", "pandas>=2"],
