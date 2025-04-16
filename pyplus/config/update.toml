@@ -61,6 +61,6 @@ update_info = {"1.1.0" = "Delete the encrypt."}
 update_time = {"1.0.0" =  "2025/03/20", "1.1.0" = "2025/03/23"}
 
 [pre-release]
-version = "1.2.2b1"
-mupdate_info = { "1.2.2b1" = "Fix some bug." }
-update_time = { "1.2.2b1" = 2025-04-23 }
+version = "1.3.0.dev1"
+mupdate_info = { "1.3.0.dev1" = "Add some modules:\n\tpyplus.tools.stack:Some queue lib.\n\tadvancedlib.itertools: None" }
+update_time = { "1.3.0.dev1" = 2025-04-23 }
