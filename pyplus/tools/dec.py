@@ -31,11 +31,11 @@ def space(a, b) -> int:
     >>> 1
 
     :return int: 
-    If a < b,return -1.
-    If a > b,return 1.
-    If a == b,return 0.
+    If a < b,return -1.If a > b,return 1.If a == b,return 0.
     '''
     return (a > b) - (a < b)
+
+cmp = space
 
 class dint(int):
     def __new__(cls, value:int):

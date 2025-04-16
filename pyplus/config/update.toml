@@ -2,8 +2,8 @@
 
 [release.main]
 version = "1.2.1.post0"
-update_info = { "1.0.6" = "Fix some bug.\nAdd the Chinese documents.Update the update -- 1.1.0", "1.0.7" = "Modify some code.\nUpdate some packages:\n\tupdate -- 1.1.1\n\tdatalist_conversion -- 1.1.0", "1.1.0" = "Modify some code.", "1.2.0" = "Fix some bug.\nAdd some moudles:\n\tpassword:Encrypt your texts.This moudle is not completed.\n\ttypes:Some types.\n\tmoudle:Getsome operations of import\n\tlatex:Latex to text or image.\n\tadvancedlib:Some expansions of bulit-in functions.\nNow dec can used.\n\tUpdate some moudles:\n\tupdate -- 1.1.2.\nscinece -- 1.2.2.\nModify some code.Add more update log.", "1.2.1" = "Add config." }
-update_time = { "1.0.6" = 2025-03-22, "1.0.7" = 2025-03-23, "1.1.0" = 2025-04-05, "1.2.0" = 2025-04-12, "1.2.1" = 2025-04-13 }
+update_info = { "1.0.7" = "Modify some code.\nUpdate some packages:\n\tupdate -- 1.1.1\n\tdatalist_conversion -- 1.1.0", "1.1.0" = "Modify some code.", "1.2.0" = "Fix some bug.\nAdd some moudles:\n\tpassword:Encrypt your texts.This moudle is not completed.\n\ttypes:Some types.\n\tmoudle:Getsome operations of import\n\tlatex:Latex to text or image.\n\tadvancedlib:Some expansions of bulit-in functions.\nNow dec can used.\n\tUpdate some moudles:\n\tupdate -- 1.1.2.\nscinece -- 1.2.2.\nModify some code.Add more update log.", "1.2.1" = "Add config.", "1.2.2" = "Add some modules:\n\tpermission:substriute jurisdiction\n\tdatabase_convert:substriute datalist_conversion\n\tAdd pyplus command." }
+update_time = { "1.0.7" = 2025-03-23, "1.1.0" = 2025-04-05, "1.2.0" = 2025-04-12, "1.2.1" = 2025-04-13, "1.2.2" = 2025-04-16 }
 
 [release.scinece]
 version = "1.2.1"
