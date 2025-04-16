@@ -1,98 +1,121 @@
-import operator as operators
+import operator
+from os import getenv
+from pathlib import Path
 
-users = {}
-user_level = {}
+from . import operators
+from pyplus.tools import colors
+from toml import load 
+
+try:
+    o1 = open(Path(getenv("appdata"),"xystudio", "pyplus", "config.toml"))
+    o2 = open(Path(".xystudio", "pyplus", "config.toml").absolute())
+
+    config = (load(o1) | load(o2)).get("library", {"showDeprecationWarning" : True}).get("showDeprecationWarning", True)
+
+    o1.close()
+    o2.close()
+except FileNotFoundError:
+    config = True
+
+if config:
+    print(colors.Fore.YELLOW + "DeprecationWarning: pyplus.tools.jurisdiction is deprecated since v1.2 and will be removed in v2.0. Please use pyplus.tools.permission." + colors.Style.RESET_ALL)
+
+del colors, load, getenv
+
+juris = {}
+player_level = {}
 
 LEVEL = "level"
-USER_NAME = "users"
-
-if not __import__("os").path.exists(__import__("sys").prefix+"\\users") and __import__("os").path.isdir(__import__("sys").prefix+"\\users"): 
-    if __import__("os").path.isdir(__import__("sys").prefix+"\\users"): 
-        __import__("os").remove(__import__("sys").prefix+"\\users")
-    __import__("os").mkdir(__import__("sys").prefix+"\\users")
+JURIS_NAME = "juris"
+PLAYER_NAME = "player"
+if not __import__("os").path.exists(__import__("sys").prefix+"\\juris") and __import__("os").path.isdir(__import__("sys").prefix+"\\juris"): 
+    if __import__("os").path.isdir(__import__("sys").prefix+"\\juris"): 
+        __import__("os").remove(__import__("sys").prefix+"\\juris")
+    __import__("os").mkdir(__import__("sys").prefix+"\\juris")
 
 def append(**kwargs): 
-    """Add the users to users, if users in users, set the users."""
+    """Add the juris to juris, if juris in juris, set the juris."""
     for k, v in kwargs.items(): 
-        users[k] = v
+        juris[k] = v
 
 def get(key: str = None)->dict: 
-    """get the keys users, if keys is none, return the users list, else return the key users`s value."""
+    """get the keys juris, if keys is none, return the juris list, else return the key juris`s value."""
     try: 
-        return users[key]
+        return juris[key]
     except: 
-        raise NameError(key+" is not in users.")
+        raise NameError(key+" is not in juris.")
 
-def judge(useres, level): 
+def set(**kwargs): 
+    """Same as and."""
+    for k, v in kwargs.items(): 
+        juris[k] = v
+
+def judge(jurises, level): 
     try: 
-        return users[useres] == level
+        return juris[jurises] == level
     except Exception as e: 
         raise NameError(e)
     
-def user_in_list(type, judge): 
+def juris_in_list(type, judge): 
     if type == LEVEL: 
-        for k, v in users.items(): 
+        for k, v in juris.items(): 
             if v == judge: 
                 return True
         return False
-    elif type ==  USER_NAME: 
-        return judge in users
+    elif type ==  JURIS_NAME: 
+        return judge in juris
     else: 
         raise NameError(type+" is not in temp.")
 
-def get_user(key: str = None)->dict: 
-    """get the user users"""
+def get_player(key: str = None)->dict: 
+    """get the player juris"""
     try: 
-        return user_level[key]
+        return player_level[key]
     except: 
-        raise NameError(key+" is not in users.")
+        raise NameError(key+" is not in juris.")
     
-def change_user(func, num, key: str = None)->dict: 
-    """get the user users"""
+def change_player(func, num, key: str = None)->dict: 
+    """get the player juris"""
     try: 
-        user_level[key] = func(user_level[key], num)
-        return user_level[key]
+        player_level[key] = func(player_level[key], num)
+        return player_level[key]
     except: 
-        raise NameError(key+" is not in users.")
+        raise NameError(key+" is not in juris.")
     
-def del_user(key: str): 
-    """delete the user keys."""
+def del_player(key: str): 
+    """delete the player keys."""
     try: 
-        del user_level[key]
+        del player_level[key]
     except: 
-        raise NameError(key+" is not in users.")
+        raise NameError(key+" is not in juris.")
 
-def set_user(**kwargs): 
-    """Set the user Level"""
+def set_player(**kwargs): 
+    """Set the player Level"""
     for k, v in kwargs.items(): 
-        user_level[k] = users[v]
+        player_level[k] = juris[v]
 
-def user_judge(type, judge): 
+def player_judge(type, judge): 
     if type == LEVEL: 
-        for k, v in user_level.items(): 
-            if users[k] == judge: 
+        for k, v in player_level.items(): 
+            if juris[k] == judge: 
                 return True
         return False
-    elif type ==  USER_NAME: 
-        return judge in user_level
+    elif type ==  PLAYER_NAME: 
+        return judge in player_level
     else: 
         raise NameError(type+" is not in temp.")
     
 def download(name): 
     import pickle
 
-    with open(__import__("sys").prefix+"\\users\\" + name + ".jur", "rb") as f: 
+    with open(__import__("sys").prefix+"\\juris\\" + name + ".jur", "rb") as f: 
         pickle.load(f)
 
 def upload(name): 
     import pickle
 
-    with open(__import__("sys").prefix+"\\users\\" + name + ".jur", "wb") as f: 
-        pickle.dump([users, user_level], f)
-
-set_permission = append
-get_permission = get
-judge_permission = judge
+    with open(__import__("sys").prefix+"\\juris\\" + name + ".jur", "wb") as f: 
+        pickle.dump([juris, player_level], f)
 
 class User: 
     def __init__(self, name, level): 
@@ -112,43 +135,43 @@ class User:
             raise TypeError("value '"+str(value)+"' is"+str(type(value))+", not User or int.")
     
     def __eq__(self, value : int): 
-        return self.operator(operators.comparison.eq, value)
+        return self.operator(operator.eq, value)
 
     def __ne__(self, value : int): 
-        return self.operator(operators.comparison.ne, value)
+        return self.operator(operator.ne, value)
 
     def __lt__(self, value : int): 
-        return self.operator(operators.comparison.lt, value)
+        return self.operator(operator.lt, value)
 
     def __gt__(self, value : int): 
-        return self.operator(operators.comparison.gt, value)
+        return self.operator(operator.gt, value)
 
     def __le__(self, value : int): 
-        return self.operator(operators.comparison.le, value)
+        return self.operator(operator.le, value)
 
     def __ge__(self, value : int):     
-        return self.operator(operators.comparison.ge, value)
+        return self.operator(operator.ge, value)
     
     def __add__(self, value : int): 
-        return self.change(operators.matical.add, value)
+        return self.change(operator.add, value)
 
     def __sub__(self, value : int): 
-        return self.change(operators.matical.sub, value)
+        return self.change(operator.sub, value)
     
     def __radd__(self, value : int): 
-        return self.change(operators.matical.add, value)
+        return self.change(operator.add, value)
 
     def __rsub__(self, value : int): 
-        return self.change(operators.matical.sub, value)
+        return self.change(operator.sub, value)
     
     def __lshift__(self, value): 
-        return self.change(operators.matical.sub, value)
+        return self.change(operator.sub, value)
         
     def __rlshift__(self, value): 
-        return self.change(operators.matical.sub, value)
+        return self.change(operator.sub, value)
 
     def __rshift__(self, value): 
-        return self.change(operators.matical.add, value)
+        return self.change(operator.add, value)
         
     def __rrshift__(self, value): 
-        return self.change(operators.matical.add, value)
+        return self.change(operator.add, value)

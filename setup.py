@@ -1,16 +1,10 @@
 from setuptools import setup, find_packages
-import sys
-
-data_files = [('Scripts', [])]
-
-if sys.platform == "win32":
-    data_files = [('Scripts', [])]
 
 setup(
     name="python-plus-tools",
-    version="2.0.0.dev1",
+    version="2.0.0.dev2",
     packages=find_packages(),
-    install_requires=["toml>=0.10", "indently-decorators>=1.0,<=1.1", "cryptography>=3.4", "imgfit>=0.3", 
+    install_requires=["toml>=0.10", "indently-decorators>=1.0,<=1.1", "cryptography>=3.4", "imgfit>=0.3", "colorama>=0.1", 
                       "numpy>=1.14", "matplotlib>=3.4","torch>=2", "pandas>=2"],
     python_requires=">=3.8",
     author="xystudio",
@@ -19,6 +13,11 @@ setup(
     long_description=open("README-PYPI.md",encoding="utf-8").read(),
     license="MIT",
     url="https://github.com/xystudio889/pyplus",
-    data_files=data_files,
-    include_package_data=True
+    include_package_data=True, 
+    entry_points={
+        "console_scripts": [
+            "pyplus = pyplus.__init__:main",
+#            "pyplus-config = pyplus.__init__:main_config"
+        ]
+    }, 
 )

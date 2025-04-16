@@ -1,8 +1,8 @@
-import operator as operators
+import operator
 from abc import ABC, abstractclassmethod
 import datetime
 
-__all__ = ["Unit", "ABCUnit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operators", "Points", 
+__all__ = ["Unit", "ABCUnit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operator", "Points", 
            "OPEN", "CLOSE"]
 
 OPEN = True
@@ -158,12 +158,12 @@ class Unit:
         >>> a = Unit(1,'a')
         >>> b = Unit(1,'b')
         >>> a.set_con(a = 1, b = 100)
-        >>> a.change_attr(operators.matical.add,b)
+        >>> a.change_attr(operator.add,b)
         '101a'
-        >>> a.change_attr(operators.matical.add,[20,'a'])
+        >>> a.change_attr(operator.add,[20,'a'])
         '21a'
 
-        :param function func: The control function.It is in operators.matical.
+        :param function func: The control function.It is in operator.
         :param list[int,str] | Unit class value: The change value.
         :return: The changed Unit class
         :rtype: Unit
@@ -191,12 +191,12 @@ class Unit:
         >>> a = Unit(1,'a')
         >>> b = Unit(1,'b')
         >>> a.set_con(a = 1, b = 100)
-        >>> a.operator(operators.comparison.gt, b)
+        >>> a.operator(operator.gt, b)
         False
-        >>> a.operator(operators.comparison.le, [20, 'a'])
+        >>> a.operator(operator.le, [20, 'a'])
         True
 
-        :param function func: The control function.It is in operators.comparison.
+        :param function func: The control function.It is in operator.
         :param list[int,str] | Unit class value: The change value.
         :return: The operator Unit class result.
         :rtype: bool
@@ -255,10 +255,10 @@ class Unit:
         return self.data[index]
 
     def __add__(self, value: list): 
-        return self.change_attr(operators.matical.add, value)
+        return self.change_attr(operator.add, value)
 
     def __sub__(self, value: list): 
-        return self.change_attr(operators.matical.sub, value)
+        return self.change_attr(operator.sub, value)
 
     def __mul__(self, value: int): 
         number = self.number * value
@@ -338,22 +338,22 @@ class Unit:
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not int.")
 
     def __eq__(self, value: list): 
-        return self.operator(operators.comparison.eq, value)
+        return self.operator(operator.eq, value)
 
     def __ne__(self, value: list): 
-        return self.operator(operators.comparison.ne, value)
+        return self.operator(operator.ne, value)
 
     def __lt__(self, value: list): 
-        return self.operator(operators.comparison.lt, value)
+        return self.operator(operator.lt, value)
 
     def __gt__(self, value: list): 
-        return self.operator(operators.comparison.gt, value)
+        return self.operator(operator.gt, value)
 
     def __le__(self, value: list): 
-        return self.operator(operators.comparison.le, value)
+        return self.operator(operator.le, value)
 
     def __ge__(self, value: list):     
-        return self.operator(operators.comparison.ge, value)
+        return self.operator(operator.ge, value)
 
     def __neg__(self): 
         return self._create_new(-self.number, self.unit)
