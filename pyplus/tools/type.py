@@ -3,6 +3,7 @@ import collections
 import contextlib
 import types
 
+from . import stack
 from string import (
     whitespace, 
     ascii_lowercase, 
