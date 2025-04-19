@@ -6,7 +6,6 @@ from . import (
     database_convert,
     moudle, 
     #password,
-    ptime, 
     permission, 
     pydebugger, 
     tag, 
@@ -17,5 +16,7 @@ from . import (
 from . import (
     jurisdiction, 
     operators, 
-    dataList_conversion
+    dataList_conversion, 
+    ptime, 
+    geohash
 ) # deprecated moudle

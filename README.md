@@ -15,24 +15,25 @@ index id:001
   <a href="https://github.com/xystudio889/pyplus"><img
     src="https://img.shields.io/badge/source code-github-536af5?color=536af5&logoColor=white"/></a>
   <a href="https://pypi.org/project/python-plus-tools/"><img
-    src="https://img.shields.io/badge/pypi-1.0.7-536af5?color=7803f1&logoColor=white"/></a>
+    src="https://img.shields.io/badge/pypi-1.2.2-536af5?color=7803f1&logoColor=white"/></a>
   <img
-    src="https://img.shields.io/badge/python-3.6 | 3.7 | 3.8 | 3.9 | 3.10 | 3.11 | 3.12 | 3.13-1c93ea?color=1cb5ea&logoColor=white"/>
+    src="https://img.shields.io/badge/python-3.7 | 3.8 | 3.9 | 3.10 | 3.11 | 3.12 | 3.13-1c93ea?color=1cb5ea&logoColor=white"/>
 </div>
 <br />
 <div align="center" style="line-height: 1;">
   <a href="./README.md"><img
-    src="https://img.shields.io/badge/语言-English-536af5?color=781ff1&logoColor=white"/></a>
+    src="https://img.shields.io/badge/language-English-536af5?color=781ff1&logoColor=white"/></a>
   <a href="./README-CN.md"><img
     src="https://img.shields.io/badge/简体中文-536af5?color=ff0000&logoColor=white"/></a>
 </div>
 <br />
 <div align="center" style="line-height: 1;">
   <a href="./feature.md"><img
-    src="https://img.shields.io/badge/feature-English-536af5?color=86fce5&logoColor=white"/></a>
-  <!-- <a href="./feature-CN.md"><img
-    src="https://img.shields.io/badge/展望-简体中文-536af5?color=86fce5&logoColor=white"/></a> -->
+    src="https://img.shields.io/badge/feature-English-536af5?color=781ff1&logoColor=white"/></a>
+  <a href="./feature-CN.md"><img
+    src="https://img.shields.io/badge/简体中文-536af5?color=86fce5&logoColor=white"/></a>
 </div>
+<br />
 
 ## Description
 
