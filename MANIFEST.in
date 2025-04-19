@@ -1,5 +1,1 @@
-include pyplus/update.toml
-include pyplus/docs/*
-include pyplus/docs/web/*
-include pyplus/config/*
-include scripts/*.exe
+recursive-include pyplus/data *

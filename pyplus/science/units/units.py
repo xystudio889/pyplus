@@ -2,7 +2,7 @@ import operator
 from abc import ABC, abstractclassmethod
 import datetime
 
-__all__ = ["Unit", "ABCUnit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operator", "Points", 
+__all__ = ["Unit", "ABCUnit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operator", "Points", "NoInputTypeUnit", 
            "OPEN", "CLOSE"]
 
 OPEN = True

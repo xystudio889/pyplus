@@ -1,4 +1,5 @@
 from itertools import *
+from functools import reduce
 
 def create_generator(values: list):
     return (i for i in values)

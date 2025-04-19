@@ -11,6 +11,12 @@ from site import getsitepackages
 from . import tools, science
 from advancedlib import _all as advancedlib
 from toml import load,dump
+from sys import version_info
+
+if version_info > (3,8):
+    from typing import List, Dict, Union, Optional
+else:
+    from typing_extensions import List, Dict, Union, Optional
 
 global_config_path = Path(getenv("appdata"),"xystudio", "pyplus", "config.toml")
 local_config_path = Path(".xystudio", "pyplus", "config.toml").absolute()
@@ -61,10 +67,10 @@ __all__=[
     "config", "get_config", "get_config_help"
 ]
 
-with open("pyplus\\config\\update.toml", "r", encoding="utf-8") as f:
+with open(getsitepackages()[1] + "\\pyplus\\data\\config\\update.toml", "r", encoding="utf-8") as f:
     updates = load(f)
 
-with open("pyplus\\config\\get_config.toml", "r", encoding="utf-8") as f:
+with open(getsitepackages()[1] + "\\pyplus\\data\\config\\get_config.toml", "r", encoding="utf-8") as f:
     config_help = load(f)
 
 def get_update(namespace:str, version: str): 
@@ -204,6 +210,7 @@ def config(config_name:str, value:object, config_type = first_used_config):
 
         with open(local_config_path, "w+", encoding="utf-8") as f:
             config = load(f) | {config_char_1 : {config_char_2 : value}}
+            local_config |= config
             dump(config, f)
     elif config_type == GLOBAL:
         config_split = config_name.split(".")
@@ -215,9 +222,11 @@ def config(config_name:str, value:object, config_type = first_used_config):
 
         with open(global_config_path, "w+", encoding="utf-8") as f:
             config = load(f) | {config_char_1 : {config_char_2 : value}}
+            global_config |= config
             dump(config, f)
     else:
         raise ValueError("This config type not found.")
+    union_config |= config
 
 def get_config(config_name:str):
     try:
@@ -348,8 +357,8 @@ def main():
 
     config_cmd = subparsers.add_parser("config", help="Set the config setting.Usage 'pyplus get_config' to get all config.")
     config_namespace = config_cmd.add_subparsers(dest="namespace", required=True)
-    loacal_conf = config_namespace.add_parser("local", help="Config file only in your project.Local config in './.xystudio/pyplus/config.toml'")
-    global_conf = config_namespace.add_parser("global", help="Config file in all project.Global config in 'Users/Appdata/roaming/xystudio/pyplus/config.toml'")
+    config_namespace.add_parser("local", help="Config file only in your project.Local config in './.xystudio/pyplus/config.toml'")
+    config_namespace.add_parser("global", help="Config file in all project.Global config in 'Users/Appdata/roaming/xystudio/pyplus/config.toml'")
     config_cmd.add_argument("setting", help="Config setting.")
     config_cmd.add_argument("value", help="Config value.")
 
