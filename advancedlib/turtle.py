@@ -1,7 +1,4 @@
 from turtle import *
-from turtle import __all__ as tall
-
-__all__ = tall + ['star', "square", "rect", "polygon", "reg_polygon"]
 
 FORWARD = 0
 RIGHT = 0

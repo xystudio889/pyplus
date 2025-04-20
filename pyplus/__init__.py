@@ -9,7 +9,6 @@ from pathlib import Path
 from site import getsitepackages
 
 from . import tools, science
-from advancedlib import _all as advancedlib
 from toml import load,dump
 from sys import version_info
 
@@ -59,6 +58,14 @@ else:
 
 if union_config.get("library", {"showDeprecationWarning" : True}).get("showDeprecationWarning", True):
     print(f"{tools.colors.Fore.MAGENTA}{tools.colors.Style.BRIGHT}note:write 'config('library.showDeprecationWarning', 'false')' and run code again to close this warning.")
+
+if union_config.get("import", {"pyscience" : True}).get("pyscience", True):
+    from advancedlib import _all as advancedlib
+else:
+    if union_config.get("import", {"math" : False}).get("math", False):
+        from advancedlib import _no_science
+    elif union_config.get("import", {"advancedlib" : True}).get("advancedlib", True):
+            from advancedlib import _no_math
 
 __all__=[
     "science" ,"tools",
@@ -247,6 +254,8 @@ def get_config_help(config_type = ALL):
             for doc_name, doc_des in config_docs.items():
                 print()
                 print(f"{doc_name} : {doc_des}")
+            print(f"\n{'-'*30}\n")
+        print("\nWhen you set config,you need use 'paragraph name.config name'")
     else:
         print("*" * 22 + "-" * 8 + config_type + "- " * 8 + "*" * 22)
         try:
@@ -254,76 +263,10 @@ def get_config_help(config_type = ALL):
                 print(f"{doc_name} : {doc_des}")
         except KeyError:
             print("This document is not found.")
+        else:
+            print("When you set config,you need use 'paragraph name.config name'")
 
 __version__ = get_version("main")
-
-del getsitepackages, Path, getenv
-
-def main_config():
-    import argparse
-
-    class globalAction(argparse.Action):
-        def __call__(self, parser, namespace, values, option_string=None):
-            self.handle_output(parser, namespace, values)
-
-        @staticmethod
-        def handle_output(parser, namespace, values):
-            setattr(namespace, "_global", values)
-
-    class allAction(argparse.Action):
-        def __call__(self, parser, namespace, values, option_string=None):
-            self.handle_output(parser, namespace, values)
-
-        @staticmethod
-        def handle_output(parser, namespace, values):
-            setattr(namespace, "_all", values)
-
-    class localAction(argparse.Action):
-        def __call__(self, parser, namespace, values, option_string=None):
-            self.handle_output(parser, namespace, values)
-
-        @staticmethod
-        def handle_output(parser, namespace, values):
-            setattr(namespace, "_local", values)
-
-    parser = argparse.ArgumentParser(description="imgfit commands")
-    subparsers = parser.add_subparsers(dest="command", required=True)
-
-    local_conf = subparsers.add_parser("local", help="Config file only in your project.Local config in './.xystudio/pyplus/config.toml'")
-    global_conf = subparsers.add_parser("global", help="Config file in all project.Global config in 'Users/Appdata/roaming/xystudio/pyplus/config.toml'")
-    local_conf.add_argument("setting", help="Config setting.")
-    local_conf.add_argument("value", help="Config value.")
-    global_conf.add_argument("setting", help="Config setting.")
-    global_conf.add_argument("value", help="Config value.")
-
-    get_conf_help = subparsers.add_parser("get_config_help", help="Get the config help.")
-    get_conf_help.add_argument("-d", "--document_description",nargs="?",help="get one document description.", default=ALL)
-
-    get_conf = subparsers.add_parser("get_config", help="Get the config.")
-    get_conf.add_argument("-l", "--local", nargs="?", action=localAction,help="Output the local config.")
-    get_conf.add_argument("-g", "--global", action=globalAction,nargs="?", help="Output the global config.")
-    get_conf.add_argument("-a","--all", nargs="?", action=allAction, help="Output all the config.")
-
-    args = parser.parse_args()
-
-    if args.command == "config":
-        if args.value.lower() == "true":
-            value = True
-        elif args.value.lower() == "false":
-            value = False
-        else:
-            value = args.value
-        config(args.setting, value, args.namespace) 
-    elif args.command == "get_config_help":
-        get_config_help(args.document_description)
-    elif args.command == "get_config":
-        if hasattr(args, "_local"):
-            print(local_config)
-        if hasattr(args, "_global"):
-            print(global_config)
-        if hasattr(args, "_all"):
-            print(union_config)
-    print("Run code again to set the config.")
 
 def main():
     import argparse
@@ -381,6 +324,7 @@ def main():
             value = False
         else:
             value = args.value
+        print("Run code again to set the config.")
         config(args.setting, value, args.namespace) 
     elif args.command == "version":
         print("Version : pyplus pre:", get_pre_version)
@@ -394,4 +338,8 @@ def main():
             print(global_config)
         if hasattr(args, "_all"):
             print(union_config)
-    print("Run code again to set the config.")
+
+if __name__ == "__main__":
+    main()
+
+del getsitepackages, Path, getenv, version_info

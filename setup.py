@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="1.3.0.dev2",
+    version="1.3.0.dev3",
     packages=find_packages(),
     install_requires=[
         "toml>=0.10", "indently-decorators>=1.0,<=1.1", "cryptography>=3.4", "imgfit>=0.3", "colorama>=0.1", 
@@ -19,7 +19,6 @@ setup(
     entry_points={
         "console_scripts": [
             "pyplus = pyplus.__init__:main",
-#           "pyplus-config = pyplus.__init__:main_config"
         ]
     }, 
     extras_require={
