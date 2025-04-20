@@ -1,7 +1,4 @@
 from tkinter import *
-from tkinter import __all__ as tall
-
-__all__ = tall
 
 font_setting = None
 

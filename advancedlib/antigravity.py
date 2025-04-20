@@ -1,3 +1,28 @@
+from toml import load
+from os import getenv
+from pathlib import Path
+
+try:
+    o1 = open(Path(getenv("appdata"),"xystudio", "pyplus", "config.toml"))
+    o2 = open(Path(".xystudio", "pyplus", "config.toml").absolute())
+
+    config = (load(o1) | load(o2))
+
+    o1.close()
+    o2.close()
+except FileNotFoundError:
+    config = {}
+
+del load, getenv, Path
+
+def open_web():
+    import webbrowser
+
+    webbrowser.open("https://xkcd.com/353/")
+
+if config.get("advancedlib", {"showAntigravityWeb" : False}).get("showAntigravityWeb", False):
+    open_web()
+
 def geohash(latitude, longitude, datedow):
     import hashlib
     '''Compute geohash() using the Munroe algorithm.

@@ -22,20 +22,25 @@ try:
     o1 = open(Path(getenv("appdata"),"xystudio", "pyplus", "config.toml"))
     o2 = open(Path(".xystudio", "pyplus", "config.toml").absolute())
 
-    config = (load(o1) | load(o2)).get("library", {"showDeprecationWarning" : True}).get("showDeprecationWarning", True)
+    config = (load(o1) | load(o2))
 
     o1.close()
     o2.close()
 except FileNotFoundError:
-    config = True
+    config = {}
 
-if config:
+if config.get("library", {"showDeprecationWarning" : True}).get("showDeprecationWarning", True):
     print(Fore.YELLOW + "DeprecationWarning: pyplus.science.science is deprecated since v1.2 and will be removed in v2.0. Please use pyplus.scince.pyscince." + Style.RESET_ALL)
     print(Fore.YELLOW + "DeprecationWarning: pyplus.science.units.operators is deprecated since v1.2 and will be removed in v2.0. Please use pyplus.scince.operator." + Style.RESET_ALL)
+
+if config.get("import", {"pyscience" : True}).get("pyscience", True):
+    from . import pyscience
+    from . import pyscience as science
+elif config.get("import", {"math" : False}).get("math", False):
+    from advancedlib import math
 
 del Style, Fore, init, load, getenv
 
 __all__ = [
-    "units", "pyscience", "science",
-    "Unit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operators"
+    "units", "pyscience", "science"
 ]
