@@ -1,1 +1,1 @@
-from advancedlib import errors
+from advancedlib.errors import *

@@ -29,8 +29,7 @@ dependencies = [
 ]
 keywords = ["debug", "science", "pyplus"]
 [project.optional-dependencies]
-dev = ["deprecated>=1"]
-test = ["pytest", "mypy"]
+dev = ["deprecated>=1"] 
 [project.scripts]
 pyplus = "pyplus.__init__:main"
 [tool.setuptools]

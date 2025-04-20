@@ -39,7 +39,7 @@ if config.get("import", {"pyscience" : True}).get("pyscience", True):
 elif config.get("import", {"math" : False}).get("math", False):
     from advancedlib import math
 
-del Style, Fore, init, load, getenv
+del Style, Fore, init, load, getenv, Path
 
 __all__ = [
     "units", "pyscience", "science"
