@@ -17,7 +17,7 @@ except FileNotFoundError:
 if config:
     print(colors.Fore.YELLOW + "DeprecationWarning: pyplus.tools.dataList_conversion is deprecated since v1.2 and will be removed in v2.0. Please use pyplus.tools.database_convert." + colors.Style.RESET_ALL)
 
-del colors, load, getenv
+del colors, load, getenv, Path
 
 def xml_to_json(xmlFile, jsonFile): 
     from xmltodict import parse

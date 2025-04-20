@@ -20,7 +20,7 @@ except FileNotFoundError:
 if config:
     print(colors.Fore.YELLOW + "DeprecationWarning: pyplus.tools.jurisdiction is deprecated since v1.2 and will be removed in v2.0. Please use pyplus.tools.permission." + colors.Style.RESET_ALL)
 
-del colors, load, getenv
+del colors, load, getenv, Path
 
 juris = {}
 player_level = {}

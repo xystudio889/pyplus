@@ -1,4 +1,6 @@
 from .type import _AllSimpleTypes as SimpleType
+from .stack import IteratorCalculator
+from typing_extensions import override, Union, TypeAlias
 
 def select(a:object, b:object ,select: bool) -> object:
     '''
@@ -52,12 +54,14 @@ class dint(int):
     def __len__(self):
         return len(str(self))
 
+    @override
     def __lshift__(self, value):
         if self.use_dec:
             return dint(self * (10 ** value))
         else:
             return super().__lshift__(value)
     
+    @override
     def __rshift__(self, value:int):
         if self.use_dec:
             o = str(self)[:-value]
@@ -65,6 +69,7 @@ class dint(int):
         else:
             return super().__rshift__(value )
     
+    @override
     def __or__(self, value):
         if self.use_dec:
             o = ""
@@ -83,6 +88,7 @@ class dint(int):
         else:
             return super().__or__(value)
 
+    @override
     def __and__(self, value):
         if self.use_dec:
             o = ""
@@ -101,6 +107,7 @@ class dint(int):
         else:
             return super().__and__(value)
     
+    @override
     def __invert__(self):
         if self.use_dec:
             o = ""
@@ -110,6 +117,7 @@ class dint(int):
         else:
             return super().__invert__()
     
+    @override
     def __xor__(self, value):
         if self.use_doc:
             o = ""
@@ -133,6 +141,7 @@ class istr(str):
     def __new__(cls, string:str):
         instance = super().__new__(cls,string)
         instance.str = string
+        instance.use_defalt = False
         return instance
     
     @property
@@ -140,14 +149,95 @@ class istr(str):
         '''Get some string unicode.'''
         return [ord(char) for char in self.str]
 
+    @property
     def __add__(self, value):
-        if isinstance(value, int):
-            self.str += chr(value)
-        elif isinstance(value,str):
-            self.str += value
+        if self.use_default:
+            return super().__add__(value)
         else:
-            raise TypeError(f'unsupported operand type(s) for +: istr and {type(value)}')
-        return istr(self.str)
+            if isinstance(value, int):
+                self.str += chr(value)
+            elif isinstance(value,str):
+                self.str += value
+            else:
+                raise TypeError(f'unsupported operand type(s) for +: istr and {type(value)}')
+            return istr(self.str)
 
 class Calc:
-    pass
+    def __init__(self, num:Union[int, float, dint]):
+        self.num = num
+
+    def __add__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return self.num + value
+
+    def __sub__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return self.num - value
+
+    def __mul__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return self.num * value
+
+    def __truediv__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return self.num / value
+
+    def __floordiv__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return self.num // value
+
+    def __mod__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return self.num % value
+
+    def __pow__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return self.num ** value
+
+    def __lshift__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return self.num << value
+
+    def __rshift__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return self.num >> value
+
+    def __and__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return self.num & value
+
+    def __xor__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return self.num ^ value
+
+    def __or__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return self.num | value
+
+    def __radd__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return value + self.num
+
+    def __rsub__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return value - self.num
+
+    def __rmul__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return value * self.num
+
+    def __rtruediv__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return value / self.num
+
+    def __rfloordiv__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return value // self.num    
+
+    def __rmod__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return value % self.num
+
+    def __rpow__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return value ** self.num
+
+    def __rlshift__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return value << self.num
+
+    def __rrshift__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return value >> self.num
+
+    def __rand__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return value & self.num
+
+    def __rxor__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return value ^ self.num
+
+    def __ror__(self, value:Union[int, float, dint]) -> Union[int, float, dint]:
+        return value | self.num
+
+Calculator: TypeAlias = Calc
+
+del override, TypeAlias, Union

@@ -1,4 +1,5 @@
-raise ModuleNotFoundError('This moudle is not completed.')
+import requests
+from .errors import NotCompleted
 
 def get_country(ip=requests.get("https://ipinfo.io/json").json().get("ip", "8.8.8.8")):
     import requests
@@ -7,5 +8,6 @@ def get_country(ip=requests.get("https://ipinfo.io/json").json().get("ip", "8.8.
     response = requests.get(url).json()
     return response.get("country_name", "Unknown")
 
-def bind_web(web_path):
+@NotCompleted("This function is not completed.")
+def bind_web(web_path:str, port:int = 5000, ip:str = "127.0.0.1"):
     pass

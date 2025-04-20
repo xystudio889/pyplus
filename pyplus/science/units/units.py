@@ -1,6 +1,10 @@
 import operator
 from abc import ABC, abstractclassmethod
 import datetime
+from typing import Union, TypeAlias, List, Dict, Callable, Literal
+from typing_extensions import override
+
+UnitClass:TypeAlias = Union[List[Union[int, str]], "Unit"]
 
 __all__ = ["Unit", "ABCUnit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operator", "Points", "NoInputTypeUnit", 
            "OPEN", "CLOSE"]
@@ -8,8 +12,31 @@ __all__ = ["Unit", "ABCUnit", "Line", "Area", "Volume", "Capacity", "Duration", 
 OPEN = True
 CLOSE = False
 
+CONVERT = 0
+SYN = 1
+SET_UNIT = 2
+SET_ONE = 3
+CHANGE_UNIT = 3
+OPERATOR = 4
+SET_UNIT = 5
+SET_NUMBER = 6 
+ADD = 7
+SUB = 8
+MUL = 9
+DIV = 10
+TRUEDIV = DIV
+FLOORDIV = 11
+MOD = 12
+POW = 13
+LSHIFT = 14
+RSHIFT = 15
+AND = 16
+XOR = 17
+OR = 18
+RLSHIFT = 19
+RRSHIFT = 20
+
 class Unit:
-    conversion_list = {}
     """
         The unit class.It can use in science calculate.
 
@@ -21,13 +48,15 @@ class Unit:
         :param str unit: Your Unit unit.
         :param str = "" type: Your Unit type.
     """
+    conversion_list:Dict[str, int] = {}
+
     def __init__(self, number: int, unit: str, type: str = ""): 
         self.type = type
         self.number = number
         self.unit = unit
         self.data = [self.number, self.unit]
-        self.unit_list = []
-        self.unit_conversion = []
+        self.unit_list:List[str] = []
+        self.unit_conversion:List[int] = []
         for k, v in self.conversion_list.items(): 
             self.unit_list.append(k)
             self.unit_conversion.append(v)
@@ -47,11 +76,11 @@ class Unit:
         :return: Convert the unit.
         :rtype: Unit.
         '''
-        number = self.number  *  (self.conversion_list[self.unit] / self.conversion_list[end_unit])
+        number = self.number * (self.conversion_list[self.unit] / self.conversion_list[end_unit])
         unit = end_unit
         return self._create_new(number, unit)
 
-    def syn_type(self, other): 
+    def syn_type(self, other:"Unit"): 
         """
         If two Unit's type is same,the other's conversion list is self conversion list..
 
@@ -80,16 +109,15 @@ class Unit:
             self.unit_conversion.append(v)
             self.unit_list.append(k)
 
-    def delete_con(self, keys): 
+    def delete_con(self, keys:str): 
         "Delete the conversion list."
         indexs = self.unit_list.index(keys)
         del self.conversion_list[keys]
         del self.unit_list[indexs]
         del self.unit_conversion[indexs]
 
-    def set_attr(self, value: list[int, str], conversion_unit: bool = CLOSE): 
+    def set_attr(self, value: UnitClass, conversion_unit: bool = CLOSE): 
         '''
-        It can use the same type Unit too.
         Set the Unit is input unit.
 
         :Example: 
@@ -149,9 +177,8 @@ class Unit:
         self.syn_type(n)
         return n
 
-    def change_attr(self, func, value: list[int, str]): 
+    def change_attr(self, func: Callable, value: UnitClass): 
         """
-        It can use the same type Unit too.
         Change the Unit.
 
         :Example: 
@@ -182,9 +209,8 @@ class Unit:
         else: 
             raise TypeError("value '"+str(value)+"' is"+str(type(value))+", not Unit or list.")
 
-    def operator(self, func, value: list[int, str]) -> bool: 
+    def operator(self, func: Callable, value: UnitClass) -> bool: 
         """
-        Value can Unit too.
         Operator the unit.
 
         :Example: 
@@ -218,9 +244,8 @@ class Unit:
     def attributes(self): 
         return f"{'attributes': -^30}\nnum = {self.number}\nunit = {self.unit}\ntype = {self.type}\nconversion = {self.conversion_list}"
 
-    def set_num(self, other: int): 
+    def set_num(self, other: Union[int, "Unit"]): 
         '''
-        value can Unit too.
         Set the number.
         '''
         if isinstance(other, self.__class__): 
@@ -231,7 +256,7 @@ class Unit:
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not Unit or int.")
         return self._create_new(number, self.unit)
 
-    def set_unit(self, other: str): 
+    def set_unit(self, other: Union[str, "Unit"]): 
         '''
         Value can Unit too.
         Set the unit.
@@ -253,24 +278,53 @@ class Unit:
 
     def __getitem__(self, index): 
         return self.data[index]
+    
+    def __setitem__(self, index, value): 
+        if index == 0: 
+            self.number = value
+        elif index == 1: 
+            self.unit = value
+        else: 
+            raise IndexError("list index out of range")
+        
+    def __call__(self, command, *value): 
+        pass
 
-    def __add__(self, value: list): 
+    def __add__(self, value): 
         return self.change_attr(operator.add, value)
 
-    def __sub__(self, value: list): 
+    def __sub__(self, value): 
         return self.change_attr(operator.sub, value)
 
-    def __mul__(self, value: int): 
+    def __mul__(self, value): 
         number = self.number * value
         return self._create_new(number, self.unit)
 
-    def __truediv__(self, value: int): 
+    def __truediv__(self, value): 
         number = self.number/value
         return self._create_new(number, self.unit)
 
-    def __floordiv__(self, value: int): 
+    def __floordiv__(self, value): 
         number = self.number//value
         return self._create_new(number, self.unit)
+    
+    def __pow__(self, value): 
+        self.change_attr(operator.pow, value)
+
+    def __mod__(self, value): 
+        self.change_attr(operator.mod, value)
+
+    def __and__(self, value): 
+        self.change_attr(operator.and_, value)
+
+    def __xor__(self, value): 
+        self.change_attr(operator.xor, value)
+
+    def __or__(self, value): 
+        self.change_attr(operator.or_, value)
+
+    def __invert__(self): 
+        self.change_attr(operator.invert, None)
 
     def __radd__(self, value: list): 
         return self.__add__(value)
@@ -278,14 +332,29 @@ class Unit:
     def __rsub__(self, value: list): 
         return self.__sub__(value)
 
-    def __rmul__(self, value: int): 
+    def __rmul__(self, value): 
         return self.__mul__(value)
 
-    def __rtruediv__(self, value: int): 
+    def __rtruediv__(self, value): 
         return self.__truediv__(value)
 
-    def __rfloordiv__(self, value: int): 
+    def __rfloordiv__(self, value): 
         return self.__floordiv__(value)
+    
+    def __rpow__(self, value): 
+        return self.__pow__(value)
+    
+    def __rmod__(self, value): 
+        return self.__mod__(value)
+    
+    def __rand__(self, value): 
+        return self.__and__(value)
+
+    def __rxor__(self, value): 
+        return self.__xor__(value)
+
+    def __ror__(self, value): 
+        return self.__or__(value)
 
     def __lshift__(self, other): 
         '''
@@ -383,6 +452,7 @@ class ABCUnit(ABC, Unit):
         super().__init__(number, unit, type)
 
     @abstractclassmethod
+    @override
     def _create_new(self, num, unit):
         '''This method must be defined.'''
         return super()._create_new(num, unit)
@@ -420,11 +490,13 @@ class Area(Unit):
         self.number *= (value ** 2)
         return self
 
+    @override
     def __mul__(self, value: int): 
         assert isinstance(value, int)
         self.number *= (value ** 2)
         return self
 
+    @override
     def __truediv__(self, value: int): 
         assert isinstance(value, int)
         self.number/= (value ** 2)
@@ -444,11 +516,13 @@ class Volume(Unit):
         self.number *= (value ** 3)
         return self
 
+    @override
     def __mul__(self, value: int): 
         assert isinstance(value, int)
         self.number *= (value ** 3)
         return self
 
+    @override
     def __truediv__(self, value: int): 
         assert isinstance(value, int)
         self.number/= (value ** 3)
@@ -525,14 +599,14 @@ class Points:
     def vec(self):
         return len(self.dots)
     
-    def set_dot(self, *dots, D_same:bool = OPEN):
+    def set_dot(self, *dots, D_same:Literal[True,False] = OPEN):
         if D_same and len(dots) != self.vec:
             raise ValueError(f'You are open the D_same.You input length must be equal to the length you set.(input {len(dots)},Set {self.vec})')
         self.dots = dots
         return self
     
-    def add_dot(self,dot):
-        self.dots = dot
+    def add_dot(self, dot:tuple[int]):
+        self.dots += dot
         return self
 
     def __iter__(self):
@@ -630,3 +704,5 @@ class Points:
     
     def __pos__(self):
         return Points(*self.dots)
+
+del Union, abstractclassmethod, override, ABC, TypeAlias, Callable, List, Dict, Literal
