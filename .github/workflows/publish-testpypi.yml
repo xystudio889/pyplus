@@ -3,10 +3,6 @@
 name: Python package
 
 on:
-  push:
-    branches: [ "master", "develop", "2.0-update" ]
-  pull_request:
-    branches: [ "develop", "2.0-update" ]
   workflow_dispatch:
 
 jobs:
@@ -32,8 +28,8 @@ jobs:
       run: python -m build
 
   Publish:
-    - name: Publish to PyPI
+    - name: Publish to TestPyPI
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-      run: twine upload dist/*
+        TWINE_PASSWORD: ${{ secrets.TESTPYPI_API_TOKEN }}
+      run: twine upload dist/* --repository testpypi
