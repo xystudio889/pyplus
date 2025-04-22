@@ -1,9 +1,4 @@
-# Build Packages
+# build
 build
 setuptools
-wheel
 twine
-
-# Lint & Coverage
-flake8
-mypy
