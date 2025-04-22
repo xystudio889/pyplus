@@ -1,1 +1,1 @@
-recursive-include pyplus/data *
+recursive-include src/pyplus/data *
