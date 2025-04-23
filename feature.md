@@ -14,4 +14,8 @@
 
 ## pyplus
 
-* Before the official release of 2.0,at least 1.3 without changing modules will be released.
+## 1.3
+Add some unit.
+
+## 2.0
+2.0 will release in May.

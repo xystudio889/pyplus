@@ -1,4 +1,3 @@
-from errors import *
 from errno import *
 import warnings
 
