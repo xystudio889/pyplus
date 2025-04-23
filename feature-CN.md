@@ -12,6 +12,9 @@
     src="https://img.shields.io/badge/打开-readme-536af5?color=3004a0&logoColor=white"/></a>
 </div>
 
-## pyplus
+# pyplus
+## 1.3
+添加一些单位.
 
-* 在2.0正式发布前，至少还会发布一个不更改接口的1.3版本。
+## 2.0
+2.0将在5月发布.

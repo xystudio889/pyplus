@@ -1,13 +1,11 @@
-import operator
 from abc import ABC, abstractclassmethod
 import datetime
 from typing import Union, TypeAlias, List, Dict, Callable, Literal
 from typing_extensions import override
+from advancedlib import operator as operators
+import operator
 
 UnitClass:TypeAlias = Union[List[Union[int, str]], "Unit"]
-
-__all__ = ["Unit", "ABCUnit", "Line", "Area", "Volume", "Capacity", "Duration", "Version", "datetime", "operator", "Points", "NoInputTypeUnit", 
-           "OPEN", "CLOSE"]
 
 OPEN = True
 CLOSE = False
@@ -16,25 +14,67 @@ CONVERT = 0
 SYN = 1
 SET_UNIT = 2
 SET_ONE = 3
-CHANGE_UNIT = 3
-OPERATOR = 4
-SET_UNIT = 5
-SET_NUMBER = 6 
-ADD = 7
-SUB = 8
-MUL = 9
-DIV = 10
+CHANGE_UNIT = 4
+OPERATOR = 5
+SET_UNIT = 6
+SET_NUMBER = 7 
+ADD = 8
+SUB = 9
+MUL = 10
+DIV = 11
 TRUEDIV = DIV
-FLOORDIV = 11
-MOD = 12
-POW = 13
-LSHIFT = 14
-RSHIFT = 15
-AND = 16
-XOR = 17
-OR = 18
-RLSHIFT = 19
-RRSHIFT = 20
+FLOORDIV = 12
+MOD = 13
+POW = 14
+LSHIFT = 15
+RSHIFT = 16
+AND = 17
+XOR = 18
+OR = 19
+RLSHIFT = 20
+RRSHIFT = 21
+
+all_command = [
+"CONVERT", 
+"SYN", 
+"SET_UNIT", 
+"SET_ONE", 
+"CHANGE_UNIT", 
+"OPERATOR", 
+"SET_UNIT", 
+"SET_NUMBER", 
+"ADD", 
+"SUB", 
+"MUL", 
+"DIV", 
+"TRUEDIV", 
+"FLOORDIV", 
+"MOD", 
+"POW", 
+"LSHIFT", 
+"RSHIFT", 
+"AND", 
+"XOR", 
+"OR", 
+"RLSHIFT", 
+"RRSHIFT", 
+]
+
+__all__ = all_command + [
+    "Unit", 
+    "ABCUnit", 
+    "Line", 
+    "Area", 
+    "Volume", 
+    "Capacity", 
+    "Duration", 
+    "Version", 
+    "datetime", 
+    "Points", 
+    "NoInputTypeUnit", 
+    "OPEN", 
+    "CLOSE"
+]
 
 class Unit:
     """

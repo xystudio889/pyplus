@@ -5,6 +5,8 @@ Use this moudle,plese write:
 If you want to create new unit class,please use: 
 '''
 
+import operator
+from advancedlib import operator as operators
 
 from pathlib import Path
 from os import getenv
@@ -31,7 +33,6 @@ except FileNotFoundError:
 
 if config.get("library", {"showDeprecationWarning" : True}).get("showDeprecationWarning", True):
     print(Fore.YELLOW + "DeprecationWarning: pyplus.science.science is deprecated since v1.2 and will be removed in v2.0. Please use pyplus.scince.pyscince." + Style.RESET_ALL)
-    print(Fore.YELLOW + "DeprecationWarning: pyplus.science.units.operators is deprecated since v1.2 and will be removed in v2.0. Please use pyplus.scince.operator." + Style.RESET_ALL)
 
 if config.get("import", {"pyscience" : True}).get("pyscience", True):
     from . import pyscience
@@ -42,5 +43,5 @@ elif config.get("import", {"math" : False}).get("math", False):
 del Style, Fore, init, load, getenv, Path
 
 __all__ = [
-    "units", "pyscience", "science"
+    "units", "pyscience", "science", "operators", "operator"
 ]
