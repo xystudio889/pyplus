@@ -11,13 +11,25 @@ setup(
     author_email="173288240@qq.com",
     description="For the expansion of python content, it covers science, debugging and other fields.",
     long_description=open("README-PYPI.md",encoding="utf-8").read(),
+    long_description_content_type="text/markdown",
     license="MIT",
     url="https://github.com/xystudio889/pyplus",
     include_package_data=True, 
     entry_points={
         "console_scripts": [
             "pyplus = pyplus.__init__:main",
-#            "pyplus-config = pyplus.__init__:main_config"
         ]
     }, 
+    extras_require={
+    "dev": [],
+    "test": [
+        "flake8", 
+        "mypy"
+    ],
+    "build": [
+        "build", 
+        "setuptools", 
+        "twine"
+    ]
+    }
 )

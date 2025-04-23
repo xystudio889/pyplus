@@ -3,7 +3,7 @@
 ## 项目ID
 项目来自于:python_projects
 
-ID:007
+ID:001
 
 [查看项目表](https://github.com/xystudio889/xystudio889/blob/main/index/python-projects.md)
 
@@ -26,12 +26,12 @@ ID:007
 </div>
 <br />
 <div align="center" style="line-height: 1;">
-  <!-- <a href="./feature.md"><img
-    src="https://img.shields.io/badge/展望-English-536af5?color=781ff1&logoColor=white"/></a> -->
+  <a href="./feature.md"><img
+    src="https://img.shields.io/badge/展望-English-536af5?color=781ff1&logoColor=white"/></a>
   <a href="./feature-CN.md"><img
-    src="https://img.shields.io/badge/展望-简体中文-536af5?color=86FCE5&logoColor=white"/></a>
+    src="https://img.shields.io/badge/简体中文-536af5?color=86FCE5&logoColor=white"/></a>
 </div>
-
+<br />
 
 ## 描述
 
@@ -40,7 +40,7 @@ ID:007
 对于 python 内容的扩展，它涵盖了科学、调试和其他领域。
 
 ---
-## Version name rule
+## 版本命令规则
 版本类型有 `dev`,`a`,`b`,`r`,`rc`,`post`.
 
 版本类型 `dev` 意思是开发版.它存放开发版.它有较多的bug.
