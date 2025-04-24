@@ -5,7 +5,7 @@
 
 ## Description
 
-> This library must use python version>=3.6.Recommed 3.12.
+> This library must use python version>=3.7.Recommed 3.12.
 
 For the expansion of python content, it covers science, debugging and other fields.
 
@@ -13,9 +13,7 @@ For the expansion of python content, it covers science, debugging and other fiel
 
 ## Install
 
-Use ```
-pip install python-plus-tools
-```
+Use `pip install python-plus-tools` to install library.
 
 ---
 ## Library document
