@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="1.3.0b1",
+    version="1.3.0rc1",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -15,7 +15,7 @@ setup(
         "typing-extensions>=4.10.0", 
         "numpy>=1.14", 
         "matplotlib>=3.4",
-        "torch>=2", 
+        "torch>=2",  
         "pandas>=2", 
         "matplotlib>=3.4", 
         "torch>=2", 
