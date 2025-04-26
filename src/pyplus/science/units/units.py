@@ -72,6 +72,10 @@ __all__ = all_command + [
     "datetime", 
     "Points", 
     "NoInputTypeUnit", 
+    "UnitWeight", 
+    "Weight", 
+    "Length",
+    "UnitPerUnit", 
     "OPEN", 
     "CLOSE"
 ]
@@ -90,13 +94,14 @@ class Unit:
     """
     conversion_list:Dict[str, int] = {}
 
-    def __init__(self, number: int, unit: str, type: str = ""): 
+    def __init__(self, number: int, unit: str, type: str = "", type_custom: bool = True): 
         self.type = type
         self.number = number
         self.unit = unit
         self.data = [self.number, self.unit]
         self.unit_list:List[str] = []
         self.unit_conversion:List[int] = []
+        self.type_custom:bool = type_custom
         for k, v in self.conversion_list.items(): 
             self.unit_list.append(k)
             self.unit_conversion.append(v)
@@ -116,7 +121,7 @@ class Unit:
         :return: Convert the unit.
         :rtype: Unit.
         '''
-        number = self.number * (self.conversion_list[self.unit] / self.conversion_list[end_unit])
+        number = self.number * (self.conversion_list[self.unit.lower()] / self.conversion_list[end_unit.lower()])
         unit = end_unit
         return self._create_new(number, unit)
 
@@ -127,10 +132,10 @@ class Unit:
         :raises TypeError: You input is not a Unit class.
         """
         if isinstance(other, self.__class__): 
-            if self.type == other.type: 
+            if self.type.lower() == other.type.lower(): 
                 other.conversion_list = self.conversion_list
         else: 
-            raise TypeError("value '"+str(other)+"' is "+str(type(other))+", not Unit class")
+            raise TypeError("value '"+str(other)+"' is Not same type")
 
     def set_con(self,  **list): 
         "Set the conversion list."
@@ -178,14 +183,14 @@ class Unit:
         '''
         if isinstance(value, self.__class__): 
             self.syn_type(value)
-            number = value.number
+            number = value.numbr
             if conversion_unit: 
                 unit = value.unit
             else: 
                 unit = self.unit
             return self._create_new(number, unit)
         elif isinstance(value, list): 
-            if value[1] in self.conversion_list: 
+            if value[1].lower() in self.conversion_list: 
                 unit = value[1]
                 number = value[0]
                 return self._create_new(number, unit)
@@ -213,7 +218,11 @@ class Unit:
         :return: A new Unit class.
         :rtype: Unit
         '''
-        n = self.__class__(num, unit, self.type)
+        if self.type_custom:
+            n = self.__class__(num, unit, self.type)
+        else:
+            n = self.__class__(num, unit)
+
         self.syn_type(n)
         return n
 
@@ -240,7 +249,7 @@ class Unit:
             number = func(self.number, value.conversion(self.unit).number)
             return self._create_new(number, self.unit)
         elif isinstance(value, list): 
-            if value[1] in self.conversion_list: 
+            if value[1].lower() in self.conversion_list: 
                 value[0]  *= self.conversion_list[value[1]] / self.conversion_list[self.unit]
                 number = func(self.number, value[0])
                 return self._create_new(number, self.unit)
@@ -271,7 +280,7 @@ class Unit:
             self.syn_type(value)
             op = func(self.number, value.conversion(self.unit).number)
         elif isinstance(value, list): 
-            if value[1] in self.conversion_list: 
+            if value[1].lower() in self.conversion_list: 
                 value[0]  *= (self.conversion_list[value[1]] / self.conversion_list[self.unit])
                 op = func(self.number, value[0])
             else: 
@@ -308,7 +317,7 @@ class Unit:
             unit = other
         else: 
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not Unit or str.")
-        if self.unit not in self.conversion_list: 
+        if self.unit.lower() not in self.conversion_list: 
             self.unit = save_unit
             raise KeyError("key '"+self.unit+"'not in conversion list.")
         return self._create_new(self.number, unit)
@@ -503,7 +512,7 @@ class NoInputTypeUnit(Unit):
     '''
 
     def __init__(self, number, unit):
-        super().__init__(number, unit, None)
+        super().__init__(number, unit, None, False)
 
 class Line(Unit): 
     conversion_list = {
@@ -512,9 +521,11 @@ class Line(Unit):
             "in": 2540, "ft": 12 * 2540, "yd": 36 * 2540, "mi": 63660 * 2540, "nmi": 1.852 * 1000 ** 2
         }
     def __init__(self, number, unit):
-        super().__init__(number,unit,"line")
-        if self.unit not in self.conversion_list: 
+        super().__init__(number,unit,"line", False)
+        if self.unit.lower() not in self.conversion_list: 
             raise KeyError("key'"+self.unit+"'is not in this class")
+
+Length: TypeAlias = Line
 
 class Area(Unit): 
     conversion_list = {
@@ -522,8 +533,8 @@ class Area(Unit):
             "in2": 2540 ** 2, "ft2": (12 * 2540) ** 2, "mi2": (63660 * 2540) ** 2, "acre2": 4046_8564_22.4
         }
     def __init__(self, number, unit): 
-        super().__init__(number,unit,"area")
-        if self.unit not in self.conversion_list: 
+        super().__init__(number,unit,"area", False)
+        if self.unit.lower() not in self.conversion_list: 
             raise KeyError("key'"+self.unit+"'is not in this class")
 
     def scale(self, value: int): 
@@ -548,8 +559,8 @@ class Volume(Unit):
             "in3": 2540 ** 3, "ft3": (12 * 2540) ** 3, "mi3": (63660 * 2540) ** 3
         }
     def __init__(self, number, unit): 
-        super().__init__(number,unit,"volume")
-        if self.unit not in self.conversion_list: 
+        super().__init__(number,unit,"volume", False)
+        if self.unit.lower() not in self.conversion_list: 
             raise KeyError("key'"+self.unit+"'is not in this class")
 
     def scale(self, value: int): 
@@ -569,45 +580,58 @@ class Volume(Unit):
         return self
 
     @property
-    def capacity(self): 
+    def capacity(self) -> "Capacity": 
         return Capacity(self.conversion("dm3").number, "L")
     
-    @property
-    def weight(self): 
-        raise NotImplementedError("Document is not completed.")
+    def weight(self, mass:"UnitWeight") -> "Weight": 
+        return Weight(self.conversion(mass.unit.unit).number * mass.weight.unit, mass.weight.unit)
 
 class Capacity(Unit): 
     conversion_list = {
-            "ml": 1, "L": 1000,
+            "ml": 1, "l": 1000,
             "oz": 29.6, "dr": 29.6 * 0.125, "pt": 16 * 29.6, "tbsp": 14.8, "cup": 48 * 14.8, "gal": 128 * 29.6, "tsp": 14.8/3,
-
+            "tb": 1000 * 14.8, "fl oz": 16 * 29.6, "pint": 16 * 29.6, "qt": 2 * 16 * 29.6, "gal US": 128 * 29.6, "tbs": 14.8, "fl oz US": 16 * 29.6, "pints US": 16 * 29.6, "qts US": 2 * 16 * 29.6, 
         }
     def __init__(self, number, unit): 
-        super().__init__(number,unit,"capacity")
-        if self.unit not in self.conversion_list: 
+        super().__init__(number,unit,"capacity", False)
+        if self.unit.lower() not in self.conversion_list: 
             raise KeyError("key'"+self.unit+"'is not in this class")
 
     @property
-    def volume(self): 
+    def volume(self) -> "Volume": 
         return Volume(self.conversion("L").number, "dm3")
     
-    @property
-    def weight(self): 
-        raise NotImplementedError("Document is not completed.")
+    def weight(self, mass:"UnitWeight") -> "Weight": 
+        return Weight(self.conversion(mass.unit.unit).number * mass.weight.number, mass.weight.unit)
 
 class Duration(Unit): 
     conversion_list = {"ms": 1, "s": 1000, "h": 60000, "d": 60000 * 24, "u": 60000 * 24 * 365/4, "y": 60000 * 24 * 365, "a": 60000 * 24 * 365 * 10, "c": 60000 * 24 * 365 * 100}
     def __init__(self, number: int, unit: str): 
-        super().__init__(number,unit,"duration")
-        if self.unit not in self.conversion_list: 
+        super().__init__(number,unit,"duration", False)
+        if self.unit.lower() not in self.conversion_list: 
             raise KeyError("key'"+self.unit+"'is not in this class")
 
 class Weight(Unit): 
-    conversion_list = {}
+    conversion_list = {
+        "g": 1, "kg": 1000, "mg": 1/1000, "ug": 1/1000 ** 2, "ng": 1/1000 ** 3, "pg": 1/1000 ** 4, "fg": 1/1000 ** 5, "dg": 10, "cg": 100, 
+        "lb": 453.592, "oz": 28.3495, "dr": 28.3495 * 0.125, "pt": 16 * 28.3495, "tbsp": 14.17475, "cup": 48 * 14.17475, "gal": 128 * 28.3495, "tsp": 14.17475/3,
+        "ton": 1000, "tonne": 1000, "slug": 14593.903
+    }
     def __init__(self, number: int, unit: str): 
-        super().__init__(number,unit,"weight")
-        if self.unit not in self.conversion_list: 
+        super().__init__(number,unit,"weight", False)
+        if self.unit.lower() not in self.conversion_list: 
             raise KeyError("key'"+self.unit+"'is not in this class")
+
+class UnitPerUnit:
+    def __init__(self, unit1:Unit, unit2:Unit):
+        self.unit1 = unit1
+        self.unit2 = unit2
+
+class UnitWeight(UnitPerUnit):
+    def __init__(self, unit:Union[Capacity, Volume], weight:Weight):
+        super().__init__(unit, weight)
+        self.weight = weight
+        self.unit = unit
 
 class Time: 
     def __init__(self): 
