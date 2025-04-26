@@ -56,10 +56,10 @@ else:
     union_config = local_config | global_config
 
 with open(getsitepackages()[1] + "\\pyplus\\data\\config\\update.toml", "r", encoding="utf-8") as f:
-    updates = load(f)
+     updates = load(f)
 
 with open(getsitepackages()[1] + "\\pyplus\\data\\config\\get_config.toml", "r", encoding="utf-8") as f:
-    config_help = load(f)
+     config_help = load(f)
 
 def get_version(namespace:str) -> str:
     '''Get the version.'''
