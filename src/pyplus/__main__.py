@@ -1,3 +1,3 @@
-from pyplus.command import main
+from pyplus_cmd import main
 
 main()

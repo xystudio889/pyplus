@@ -17,4 +17,6 @@ except FileNotFoundError:
     config = True
 
 if config:
-    print(colors.Fore.YELLOW + "DeprecationWarning: pyplus.tools.errors is deprecated since v1.3.1 and will be removed in v2.0. Please use advancedlib.errors instead." + colors.Style.RESET_ALL)
+    print(colors.Fore.YELLOW + "DeprecationWarning: pyplus.tools.errors is deprecated since v1.3 and will be removed in v2.0. Please use advancedlib.errors." + colors.Style.RESET_ALL)
+
+del colors, load, getenv, Path

@@ -6,7 +6,6 @@ from . import (
     dec, 
     database_convert,
     formula, 
-    moudle, 
     # password,
     permission, 
     pydebugger, 
@@ -24,5 +23,6 @@ from . import (
     errors, 
     ptime, 
     moudle, 
-    geohash
+    geohash, 
+    errors
 ) # deprecated moudle

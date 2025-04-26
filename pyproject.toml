@@ -48,7 +48,7 @@ build = [
     "twine"
 ]
 [project.scripts]
-pyplus = "pyplus.command:main"
+pyplus = "pyplus_cmd:main"
 [tool.setuptools]
 include-package-data = true
 [tool.setuptools.package-dir]
