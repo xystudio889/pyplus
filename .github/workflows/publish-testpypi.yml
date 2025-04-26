@@ -1,4 +1,4 @@
-name: Python package publish test
+name: build_and_publish_testpypi
 
 on:
   workflow_dispatch:
