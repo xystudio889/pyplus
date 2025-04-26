@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="2.0.0a1",
+    version="1.3.1rc1",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -15,7 +15,7 @@ setup(
         "typing-extensions>=4.10.0", 
         "numpy>=1.14", 
         "matplotlib>=3.4",
-        "torch>=2", 
+        "torch>=2",  
         "pandas>=2", 
         "matplotlib>=3.4", 
         "torch>=2", 
@@ -34,7 +34,7 @@ setup(
     include_package_data=True, 
     entry_points={
         "console_scripts": [
-            "pyplus = pyplus.__init__:main",
+            "pyplus = pyplus.command:main",
         ]
     }, 
     extras_require={
