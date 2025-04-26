@@ -34,7 +34,7 @@ setup(
     include_package_data=True, 
     entry_points={
         "console_scripts": [
-            "pyplus = pyplus.command:main",
+            "pyplus = pyplus_cmd:main",
         ]
     }, 
     extras_require={
@@ -48,5 +48,10 @@ setup(
         "setuptools", 
         "twine"
     ]
-    }
+    },
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ]
 )
