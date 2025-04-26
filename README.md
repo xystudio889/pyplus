@@ -8,15 +8,7 @@ index id:001
 [Looking the index list](https://github.com/xystudio889/xystudio889/blob/main/index/python-projects.md)
 
 ---
-
-<div align="center" style="line-height: 1;">
-  <a href="https://github.com/xystudio889/pyplus"><img
-    src="https://img.shields.io/badge/source code-github-536af5?color=536af5&logoColor=white"/></a>
-  <a href="https://pypi.org/project/python-plus-tools/"><img
-    src="https://img.shields.io/badge/pypi-1.2.2-536af5?color=7803f1&logoColor=white"/></a>
-  <img
-    src="https://img.shields.io/badge/python-3.7 | 3.8 | 3.9 | 3.10 | 3.11 | 3.12 | 3.13-1c93ea?color=1cb5ea&logoColor=white"/>
-</div>
+[![build and publish](https://github.com/xystudio889/pyplus/workflows/build_and_publish/badge.svg)](https://github.com/xystudio889/pyplus/actions?query=workflow%3Abuild_and_publish)   [![pypi](https://img.shields.io/pypi/v/python-plus-tools.svg)](https://pypi.org/project/python-plus-tools/)   [![support-version](https://img.shields.io/pypi/pyversions/python-plus-tools)](https://img.shields.io/pypi/pyversions/python-plus-tools)  [![license](https://img.shields.io/github/license/xystudio889/pyplus)](https://github.com/gaogaotiantian/viztracer/blob/master/LICENSE)  [![commit](https://img.shields.io/github/last-commit/xystudio889/pyplus/master)](https://github.com/xystudio889/pyplus/commits/master)  [![sponsor](https://img.shields.io/badge/%E2%9D%A4-Sponsor%20me-%23c96198?style=flat&logo=GitHub)](https://github.com/sponsors/xystudio889)
 <br />
 <div align="center" style="line-height: 1;">
   <a href="./README.md"><img
