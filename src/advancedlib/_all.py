@@ -3,9 +3,7 @@ from . import (
     math, 
     tkinter, 
     turtle, 
-    antigravity, 
-    itertools, 
-    scinece, 
     importlib, 
+    time,
 )
 from . import scinece # deprecated moudle
