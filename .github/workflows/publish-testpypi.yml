@@ -3,6 +3,10 @@ name: build_and_publish_testpypi
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  actions: read
+
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
