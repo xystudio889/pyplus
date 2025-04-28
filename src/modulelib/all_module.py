@@ -1,6 +1,9 @@
 from pathlib import Path
 from sys import prefix
 
+from toml import load, dump
+from site import getsitepackages
+
 folder_path = Path(prefix, "Lib")
 all_entries = [entry.name for entry in folder_path.iterdir()]
 files = [entry.name for entry in folder_path.iterdir() if entry.is_file()]
@@ -10,7 +13,7 @@ filter_list = ["site-packages", "this.py", "antigravity.py", "__pycache__"]
 
 filtered_list = [item for item in files + dirs if item not in filter_list]
 
-texts = []
+texts = ["INITIALIZED = True"]
 
 for i in filtered_list:
     try:
@@ -19,5 +22,7 @@ for i in filtered_list:
     except (ImportError,ModuleNotFoundError):
         pass
 
-with open("debug.py", "w", encoding="utf-8") as f:
+with open(getsitepackages()[1] + "/pyplus/data/config/all_module.py", "w", encoding="utf-8") as f:
     f.write("\n".join(texts))
+
+del load, dump, getsitepackages

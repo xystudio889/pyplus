@@ -6,6 +6,7 @@ from . import (
     dec, 
     database_convert,
     formula, 
+    geohash, 
     # password,
     permission, 
     pydebugger, 
@@ -13,16 +14,7 @@ from . import (
     tag, 
     type, 
     update, 
-    # web
+    web, 
     variables, 
 )
-from . import (
-    jurisdiction, 
-    operators, 
-    dataList_conversion,
-    errors, 
-    ptime, 
-    moudle, 
-    geohash, 
-    errors
-) # deprecated moudle
+# from . import () # deprecated moudle

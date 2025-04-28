@@ -3,6 +3,10 @@ name: build_and_publish_testpypi
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  actions: read
+
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
@@ -29,6 +33,16 @@ jobs:
         path: |
           dist/*.whl
           dist/*.tar.gz
+
+    - name: Create draft release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: github_actions_release
+        name: "Release file by GitHub Actions"
+        draft: true
+        files: dist/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Publish to PyPI
       env:

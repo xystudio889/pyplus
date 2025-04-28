@@ -6,4 +6,3 @@ from . import (
     importlib, 
     time,
 )
-from . import scinece # deprecated moudle

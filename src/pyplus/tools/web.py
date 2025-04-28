@@ -1,5 +1,5 @@
 import requests
-from .errors import NotCompleted
+from advancedlib.errors import NotCompleted
 
 def get_country(ip=requests.get("https://ipinfo.io/json").json().get("ip", "8.8.8.8")):
     import requests

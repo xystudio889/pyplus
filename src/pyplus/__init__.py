@@ -61,10 +61,7 @@ if union_config.get("library", {"showDeprecationWarning" : True}).get("showDepre
 
 if union_config.get("import", {"pyscience" : True}).get("pyscience", True):
     from advancedlib import _all as advancedlib
-else:
-    if union_config.get("import", {"math" : False}).get("math", False):
-        from advancedlib import _no_science
-    elif union_config.get("import", {"advancedlib" : True}).get("advancedlib", True):
+elif union_config.get("import", {"advancedlib" : True}).get("advancedlib", True):
             from advancedlib import _no_math
 
 __all__ = [
@@ -261,79 +258,5 @@ def get_config_help(config_type:Union[str, Literal["all"]] = ALL):
             print("When you set config,you need use 'paragraph name.config name'")
 
 __version__ = get_version("main")
-
-def main() -> None:
-    import argparse
-
-    class globalAction(argparse.Action):
-        def __call__(self, parser, namespace, values, option_string=None):
-            self.handle_output(parser, namespace, values)
-
-        @staticmethod
-        def handle_output(parser, namespace, values):
-            setattr(namespace, "_global", values)
-
-    class allAction(argparse.Action):
-        def __call__(self, parser, namespace, values, option_string=None):
-            self.handle_output(parser, namespace, values)
-
-        @staticmethod
-        def handle_output(parser, namespace, values):
-            setattr(namespace, "_all", values)
-
-    class localAction(argparse.Action):
-        def __call__(self, parser, namespace, values, option_string=None):
-            self.handle_output(parser, namespace, values)
-
-        @staticmethod
-        def handle_output(parser, namespace, values):
-            setattr(namespace, "_local", values)
-
-    parser = argparse.ArgumentParser(description="imgfit commands")
-    subparsers = parser.add_subparsers(dest="command", required=True)
-
-    config_cmd = subparsers.add_parser("config", help="Set the config setting.Usage 'pyplus get_config' to get all config.")
-    config_namespace = config_cmd.add_subparsers(dest="namespace", required=True)
-    config_namespace.add_parser("local", help="Config file only in your project.Local config in './.xystudio/pyplus/config.toml'")
-    config_namespace.add_parser("global", help="Config file in all project.Global config in 'Users/Appdata/roaming/xystudio/pyplus/config.toml'")
-    config_cmd.add_argument("setting", help="Config setting.")
-    config_cmd.add_argument("value", help="Config value.")
-
-    subparsers.add_parser("version", help="Get the pyplus version.")
-
-    get_conf_help = subparsers.add_parser("get_config_help", help="Get the config help.")
-    get_conf_help.add_argument("-d", "--document_description",nargs="?",help="get one document description.", default=ALL)
-
-    get_conf = subparsers.add_parser("get_config", help="Get the config.")
-    get_conf.add_argument("-l", "--local", nargs="?", action=localAction,help="Output the local config.")
-    get_conf.add_argument("-g", "--global", action=globalAction,nargs="?", help="Output the global config.")
-    get_conf.add_argument("-a","--all", nargs="?", action=allAction, help="Output all the config.")
-
-    args = parser.parse_args()
-
-    if args.command == "config":
-        if args.value.lower() == "true":
-            value = True
-        elif args.value.lower() == "false":
-            value = False
-        else:
-            value = args.value
-        print("Run code again to set the config.")
-        config(args.setting, value, args.namespace) 
-    elif args.command == "version":
-        print("Version : pyplus pre:", get_pre_version)
-        print("Version : pyplus :",get_version())
-    elif args.command == "get_config_help":
-        get_config_help(args.document_description)
-    elif args.command == "get_config":
-        if hasattr(args, "_local"):
-            print(local_config)
-        if hasattr(args, "_global"):
-            print(global_config)
-        if hasattr(args, "_all"):
-            print(union_config)
-
-if __name__ == "__main__":
-    main()
 
 del getsitepackages, Path, getenv, version_info
