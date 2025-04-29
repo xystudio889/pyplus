@@ -13,9 +13,9 @@ from sys import version_info
 from toml import load,dump
 
 if version_info > (3,8):
-    from typing import List, Dict, Union,Literal, Any
+    from typing import Dict, Union,Literal, Any
 else:
-    from typing_extensions import List, Dict, Union, Literal, Any
+    from typing_extensions import Dict, Union, Literal, Any
 
 global_config_path = Path(getenv("appdata"),"xystudio", "pyplus", "config.toml")
 local_config_path = Path(".xystudio", "pyplus", "config.toml").absolute()
