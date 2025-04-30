@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "python-plus-tools"
-version = "2.0.0.dev0"
+version = "2.0.1"
 authors = [{ name = "xystudio", email = "173288240@qq.com" }]
 description = "For the expansion of python content, it covers science, debugging and other fields."
 readme = { file = "README-PYPI.md", content-type = "text/markdown" }
