@@ -1,9 +1,0 @@
-# build
-build
-setuptools
-twine
-
-# Lint & Coverage
-
-flake8
-mypy
