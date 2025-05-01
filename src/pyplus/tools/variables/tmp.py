@@ -1,4 +1,4 @@
-from .. import operators
+import operator as operators
 
 temp_local={}
 

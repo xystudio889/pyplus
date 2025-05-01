@@ -13,12 +13,8 @@ from os import getenv
 
 from . import units
 from . import pyscience
-from . import pyscience as science
 
-from colorama import Style, Fore, init
 from toml import load 
-
-init(autoreset=True)
 
 try:
     o1 = open(Path(getenv("appdata"),"xystudio", "pyplus", "config.toml"))
@@ -31,16 +27,13 @@ try:
 except FileNotFoundError:
     config = {}
 
-if config.get("library", {"showDeprecationWarning" : True}).get("showDeprecationWarning", True):
-    print(Fore.YELLOW + "DeprecationWarning: pyplus.science.science is deprecated since v1.2 and will be removed in v2.0. Please use pyplus.scince.pyscince." + Style.RESET_ALL)
-
 if config.get("import", {"pyscience" : True}).get("pyscience", True):
     from . import pyscience
     from . import pyscience as science
 elif config.get("import", {"math" : False}).get("math", False):
     from advancedlib import math
 
-del Style, Fore, init, load, getenv, Path
+del load, getenv, Path
 
 __all__ = [
     "units", "pyscience", "science", "operators", "operator"
