@@ -76,6 +76,6 @@ update_info = { "1.0.0" = "" }
 update_time = { "1.0.0" = 2025-04-21 }
 
 [pre-release]
-version = "1.3.1"
-update_info = {}
-update_time = {}
+version = "2.0.0b1"
+update_info = { "2.0.dev0" = "Update moudle update -- 1.1.3.", "2.0.dev1" = "", "2.0.0.dev3" = "merge 1.3.0b1", "2.0.0a1" = "Add some functions.", "2.0.0b1" = "Merge 1.3.1rc1." }
+update_time = { "2.0.dev0" = 2025-04-12, "2.0.dev1" = 2025-04-13, "2.0.0.dev3" = 2025-04-23, "2.0.0a1" = 2025-04-24, "2.0.0b1" = 2025-04-25 }

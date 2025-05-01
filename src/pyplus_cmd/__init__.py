@@ -11,16 +11,11 @@ from site import getsitepackages
 from sys import version_info
 from toml import load,dump
 
-if version_info > (3,8):
-    from typing import  Dict, Union,Literal, Any
-else:
-    from typing_extensions import Dict, Union, Literal, Any
-
 global_config_path = Path(getenv("appdata"),"xystudio", "pyplus", "config.toml")
 local_config_path = Path(".xystudio", "pyplus", "config.toml").absolute()
-global_config: Dict[str, Any] = {}
-local_config: Dict[str, Any] = {}
-union_config: Dict[str, Any] = {}
+global_config = {}
+local_config = {}
+union_config = {}
 
 LOCAL = "local"
 GLOBAL = "global"
@@ -48,7 +43,7 @@ try:
 except FileNotFoundError:
     pass
 
-first_used_config: Literal["local", "global"] = global_config.get("library", {"firstUsedConfig" : "local"}).get('firstUsedConfig', "local")
+first_used_config = global_config.get("library", {"firstUsedConfig" : "local"}).get('firstUsedConfig', "local")
 
 if first_used_config == "local":
     union_config = global_config | local_config
@@ -72,7 +67,7 @@ def get_pre_version() -> str:
 def open_doc(doc_name:str):
     raise NotImplementedError("Document is not completed.")
 
-def config(config_name:str, value:Any, config_type: Literal["local", "global"] = first_used_config):
+def config(config_name:str, value, config_type = first_used_config):
     global local_config,global_config
 
     if config_type == LOCAL:
@@ -107,7 +102,7 @@ def config(config_name:str, value:Any, config_type: Literal["local", "global"] =
         raise ValueError("This config type not found.")
     union_config |= config
 
-def get_config(config_name:str) -> Union[None, Dict[str, Any]]:
+def get_config(config_name:str):
     try:
         config_split = config_name.split(".")
         config_char_1 = config_split[0]
@@ -119,7 +114,7 @@ def get_config(config_name:str) -> Union[None, Dict[str, Any]]:
     except KeyError:
         return None
 
-def get_config_help(config_type:Union[str, Literal["all"]] = ALL):
+def get_config_help(config_type = ALL):
     if config_type == ALL:
         for config_t,config_docs in config_help.items():
             print("*" * 22 + "-" * 8 + config_t + "-" * 8 + "*" * 22)

@@ -1,21 +1,8 @@
 from pathlib import Path
 from sys import prefix
 
-INITIALIZED = False
-
 from toml import load, dump
 from site import getsitepackages
-
-with open(getsitepackages()[1] + "/pyplus/data/config/module_config.toml", encoding="utf-8") as f:
-    config = load(f)
-
-if not config["advancedlib"]["itertools"]["initializinged"]:
-    print("Initializing this module...")
-
-config["advancedlib"]["itertools"]["initializinged"] = True
-
-with open(getsitepackages()[1] + "/pyplus/data/config/module_config.toml", "w", encoding="utf-8") as f:
-    dump(config, f)
 
 folder_path = Path(prefix, "Lib")
 all_entries = [entry.name for entry in folder_path.iterdir()]

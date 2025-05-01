@@ -2,7 +2,6 @@ from abc import ABC, abstractclassmethod
 import datetime
 from typing import Union, TypeAlias, List, Dict, Callable, Literal
 from typing_extensions import override
-from advancedlib import operator as operators
 import operator
 
 UnitClass:TypeAlias = Union[List[Union[int, str]], "Unit"]
@@ -106,15 +105,15 @@ class Unit:
             self.unit_list.append(k)
             self.unit_conversion.append(v)
 
-    def conversion(self, end_unit: str): 
+    def convert(self, end_unit: str): 
         '''
         Convert your unit.
-        Before use it,please set the conversion list.
+        Before use it,please set the convert list.
 
         :Example: 
         >>> a = Unit(1,'a')
         >>> a.set_con(a = 1, b = 100)
-        >>> a.conversion('b')
+        >>> a.convert('b')
         '0.01b'
 
         :param str end_unit: The unit you want to convert into.
@@ -123,11 +122,11 @@ class Unit:
         '''
         number = self.number * (self.conversion_list[self.unit.lower()] / self.conversion_list[end_unit.lower()])
         unit = end_unit
-        return self._create_new(number, unit)
+        return self.__create_new(number, unit)
 
-    def syn_type(self, other:"Unit"): 
+    def _syn_type(self, other:"Unit"): 
         """
-        If two Unit's type is same,the other's conversion list is self conversion list..
+        If two Unit's type is same,the other's convert list is self convert list.
 
         :raises TypeError: You input is not a Unit class.
         """
@@ -138,7 +137,7 @@ class Unit:
             raise TypeError("value '"+str(other)+"' is Not same type")
 
     def set_con(self,  **list): 
-        "Set the conversion list."
+        "Set the convert list."
         self.conversion_list = {}
         self.unit_conversion = []
         self.unit_list = []
@@ -148,14 +147,14 @@ class Unit:
             self.unit_list.append(k)
 
     def append_con(self,  **list): 
-        "Append the conversion list."
+        "Append the convert list."
         for k, v in list.items(): 
             self.conversion_list[k] = v
             self.unit_conversion.append(v)
             self.unit_list.append(k)
 
     def delete_con(self, keys:str): 
-        "Delete the conversion list."
+        "Delete the convert list."
         indexs = self.unit_list.index(keys)
         del self.conversion_list[keys]
         del self.unit_list[indexs]
@@ -177,23 +176,23 @@ class Unit:
         '20a'
 
         :param list[int,str] | Unit class value: Unit you want to set.
-        :param bool = False conversion: If you want to set the unit too,set this variable True.
+        :param bool = False convert: If you want to set the unit too,set this variable True.
         :return: The input Unit class
         :rtype: Unit
         '''
         if isinstance(value, self.__class__): 
-            self.syn_type(value)
-            number = value.numbr
+            self._syn_type(value)
+            number = value.number
             if conversion_unit: 
                 unit = value.unit
             else: 
                 unit = self.unit
-            return self._create_new(number, unit)
+            return self.__create_new(number, unit)
         elif isinstance(value, list): 
             if value[1].lower() in self.conversion_list: 
                 unit = value[1]
                 number = value[0]
-                return self._create_new(number, unit)
+                return self.__create_new(number, unit)
             else: 
                 raise KeyError("key'"+self.unit+"'is not in this class")
         else: 
@@ -210,7 +209,7 @@ class Unit:
             temp_dict[k] = v/self.conversion_list[unit]
         self.conversion_list = temp_dict
 
-    def _create_new(self, num: int, unit: str): 
+    def __create_new(self, num: int, unit: str): 
         '''
         If you create a Unit class when inherit is Unit(recommed use this unit when you create create a Unit class).
         Clone a new unit.
@@ -223,7 +222,7 @@ class Unit:
         else:
             n = self.__class__(num, unit)
 
-        self.syn_type(n)
+        self._syn_type(n)
         return n
 
     def change_attr(self, func: Callable, value: UnitClass): 
@@ -245,14 +244,14 @@ class Unit:
         :rtype: Unit
         """
         if isinstance(value, self.__class__): 
-            self.syn_type(value)
-            number = func(self.number, value.conversion(self.unit).number)
-            return self._create_new(number, self.unit)
+            self._syn_type(value)
+            number = func(self.number, value.convert(self.unit).number)
+            return self.__create_new(number, self.unit)
         elif isinstance(value, list): 
             if value[1].lower() in self.conversion_list: 
                 value[0]  *= self.conversion_list[value[1]] / self.conversion_list[self.unit]
                 number = func(self.number, value[0])
-                return self._create_new(number, self.unit)
+                return self.__create_new(number, self.unit)
             else: 
                 raise KeyError("key'"+value[1]+"'is not in this class")
         else: 
@@ -277,8 +276,8 @@ class Unit:
         :rtype: bool
         """
         if isinstance(value, self.__class__): 
-            self.syn_type(value)
-            op = func(self.number, value.conversion(self.unit).number)
+            self._syn_type(value)
+            op = func(self.number, value.convert(self.unit).number)
         elif isinstance(value, list): 
             if value[1].lower() in self.conversion_list: 
                 value[0]  *= (self.conversion_list[value[1]] / self.conversion_list[self.unit])
@@ -303,7 +302,7 @@ class Unit:
             number = other
         else: 
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not Unit or int.")
-        return self._create_new(number, self.unit)
+        return self.__create_new(number, self.unit)
 
     def set_unit(self, other: Union[str, "Unit"]): 
         '''
@@ -319,8 +318,8 @@ class Unit:
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not Unit or str.")
         if self.unit.lower() not in self.conversion_list: 
             self.unit = save_unit
-            raise KeyError("key '"+self.unit+"'not in conversion list.")
-        return self._create_new(self.number, unit)
+            raise KeyError("key '"+self.unit+"'not in convert list.")
+        return self.__create_new(self.number, unit)
 
     def __iter__(self): 
         return iter(self.data)
@@ -347,15 +346,15 @@ class Unit:
 
     def __mul__(self, value): 
         number = self.number * value
-        return self._create_new(number, self.unit)
+        return self.__create_new(number, self.unit)
 
     def __truediv__(self, value): 
         number = self.number/value
-        return self._create_new(number, self.unit)
+        return self.__create_new(number, self.unit)
 
     def __floordiv__(self, value): 
         number = self.number//value
-        return self._create_new(number, self.unit)
+        return self.__create_new(number, self.unit)
     
     def __pow__(self, value): 
         self.change_attr(operator.pow, value)
@@ -417,7 +416,7 @@ class Unit:
             unit = self.unit_list[self.unit_list.index(self.unit) - other]
         else: 
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not Unit or int.")
-        return self._create_new(self.number, unit)
+        return self.__create_new(self.number, unit)
 
     def __rlshift__(self, other): 
         '''
@@ -442,7 +441,7 @@ class Unit:
             unit = self.unit_list[self.unit_list.index(self.unit) + other]
         else: 
             raise TypeError("value '"+str(other)+"' is"+str(type(other))+", not Unit or int.")
-        return self._create_new(self.number, unit)
+        return self.__create_new(self.number, unit)
 
     def __rrshift__(self, other): 
         '''
@@ -474,10 +473,10 @@ class Unit:
         return self.operator(operator.ge, value)
 
     def __neg__(self): 
-        return self._create_new(-self.number, self.unit)
+        return self.__create_new(-self.number, self.unit)
 
     def __pos__(self): 
-        return self._create_new(self.number, self.unit)
+        return self.__create_new(self.number, self.unit)
 
     def __str__(self): 
         return str(self.number) + self.unit
@@ -492,7 +491,7 @@ class ABCUnit(ABC, Unit):
     '''
     Simply to create a customised UnitClass.
 
-    This class must define a method `_create_new`.
+    This class must define a method `__create_new`.
 
     This class cannot be called directly.If you need to use it,you must inherit this type.
     '''
@@ -502,9 +501,9 @@ class ABCUnit(ABC, Unit):
 
     @abstractclassmethod
     @override
-    def _create_new(self, num, unit):
+    def __create_new(self, num, unit):
         '''This method must be defined.'''
-        return super()._create_new(num, unit)
+        return super().__create_new(num, unit)
     
 class NoInputTypeUnit(Unit):
     '''
@@ -581,10 +580,10 @@ class Volume(Unit):
 
     @property
     def capacity(self) -> "Capacity": 
-        return Capacity(self.conversion("dm3").number, "L")
+        return Capacity(self.convert("dm3").number, "L")
     
     def weight(self, mass:"UnitWeight") -> "Weight": 
-        return Weight(self.conversion(mass.unit.unit).number * mass.weight.unit, mass.weight.unit)
+        return Weight(self.convert(mass.unit.unit).number * mass.weight.unit, mass.weight.unit)
 
 class Capacity(Unit): 
     conversion_list = {
@@ -599,10 +598,10 @@ class Capacity(Unit):
 
     @property
     def volume(self) -> "Volume": 
-        return Volume(self.conversion("L").number, "dm3")
+        return Volume(self.convert("L").number, "dm3")
     
     def weight(self, mass:"UnitWeight") -> "Weight": 
-        return Weight(self.conversion(mass.unit.unit).number * mass.weight.number, mass.weight.unit)
+        return Weight(self.convert(mass.unit.unit).number * mass.weight.number, mass.weight.unit)
 
 class Duration(Unit): 
     conversion_list = {"ms": 1, "s": 1000, "h": 60000, "d": 60000 * 24, "u": 60000 * 24 * 365/4, "y": 60000 * 24 * 365, "a": 60000 * 24 * 365 * 10, "c": 60000 * 24 * 365 * 100}
