@@ -3,26 +3,19 @@ from img_fit import latex2text as latex
 
 from . import (
     colors,
-    dec, 
+    dec,
     database_convert,
-    formula, 
+    formula,
+    geohash,
     # password,
-    permission, 
-    pydebugger, 
-    stack, 
-    tag, 
-    type, 
-    update, 
-    # web
-    variables, 
+    permission,
+    pydebugger,
+    stack,
+    tag,
+    type,
+    update,
+    web,
+    variables,
 )
-from . import (
-    jurisdiction, 
-    operators, 
-    dataList_conversion,
-    errors, 
-    ptime, 
-    moudle, 
-    geohash, 
-    errors
-) # deprecated moudle
+
+# from . import () # deprecated moudle

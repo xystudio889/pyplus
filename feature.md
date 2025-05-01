@@ -12,10 +12,8 @@
     src="https://img.shields.io/badge/Open-readme-536af5?color=3004a0&logoColor=white"/></a>
 </div>
 
-## pyplus
-
-## 1.3
-Add some unit.
-
+# pyplus
 ## 2.0
-2.0 will release in May.
+Publish in May 1st.
+## 2.1
+Add some documents.
