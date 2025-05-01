@@ -1,3 +1,1 @@
-from .units import (
-    UnitWeight, 
-    UnitPerUnit)
+from .units import UnitWeight, UnitPerUnit

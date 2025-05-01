@@ -1,27 +1,54 @@
-from operator import add, sub, mul, truediv, floordiv, mod, pow, neg, pos, abs, invert, lshift, rshift, and_, or_, xor, concat, contains, gt, ge, lt, le, eq, ne
+from operator import (
+    add,
+    sub,
+    mul,
+    truediv,
+    floordiv,
+    mod,
+    pow,
+    neg,
+    pos,
+    abs,
+    invert,
+    lshift,
+    rshift,
+    and_,
+    or_,
+    xor,
+    concat,
+    contains,
+    gt,
+    ge,
+    lt,
+    le,
+    eq,
+    ne,
+)
 
-def select(a:object, b:object ,select: bool) -> object:
-    '''
+
+def select(a: object, b: object, select: bool) -> object:
+    """
     Select a value.
 
-    :example: 
+    :example:
     >>> import pyplus
     >>> pyplus.tools.dec.select(1, 2, False)
     >>> 1
     >>> pyplus.tools.dec.select(1, 2, True)
     >>> 2
-    
+
     :param bool select: If select == True,return b, else return a.
     :param object a: If select == False,return a.
     :param object b: If select == True,return b.
 
     :return object: If select == True,return b, else return a.
-    '''
+    """
     return b if select else a
 
+
 def space(a, b) -> int:
-    '''
-    :example: 
+    """
+    :example:
     >>> import pyplus
     >>> pyplus.tools.dec.space(1, 2)
     >>> -1
@@ -30,9 +57,10 @@ def space(a, b) -> int:
     >>> pyplus.tools.dec.select(3, 2)
     >>> 1
 
-    :return int: 
+    :return int:
     If a < b,return -1.If a > b,return 1.If a == b,return 0.
-    '''
+    """
     return (a > b) - (a < b)
+
 
 cmp = space

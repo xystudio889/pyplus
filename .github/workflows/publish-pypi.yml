@@ -1,13 +1,12 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions.
    
 name: build_and_publish
 
 on:
   push:
-    branches: [ "master", "develop", "2.0-update" ]
+    branches: [ "master", "develop", "2.0-update" ] #, "2.0-develop", "2.1-update" ]
   pull_request:
     branches: [ "develop", "2.0-update" ]
-  workflow_dispatch:
 
 permissions:
   contents: write

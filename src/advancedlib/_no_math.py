@@ -1,7 +1,7 @@
 from . import (
-    itertools, 
-    tkinter, 
-    turtle, 
-    importlib, 
+    itertools,
+    tkinter,
+    turtle,
+    importlib,
     time,
 )
