@@ -16,6 +16,15 @@ from . import (
     update,
     web,
     variables,
+    pycppio,
 )
 
 # from . import () # deprecated moudle
+
+
+def wait(operator: bool):
+    """
+    Please use it in subprocess.
+    """
+    while operator:
+        pass

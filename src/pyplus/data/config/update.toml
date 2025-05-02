@@ -77,5 +77,5 @@ update_time = { "1.0.0" = 2025-04-21 }
 
 [pre-release]
 version = "2.0.0b1"
-update_info = { "2.1.0.dev0" = "Add advancedlib.math.joseph_problem." }
-update_time = { "2.1.0.dev0" = 2025-05-02 }
+update_info = { "2.1.0.dev0" = "Add advancedlib.math.joseph_problem.", "2.1.0.dev1" = "Add some pyplus.scinece.unit methods." }
+update_time = { "2.1.0.dev0" = 2025-05-02, "2.1.0.dev1" = 2025-05-03 }
