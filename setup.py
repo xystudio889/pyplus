@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="2.0.1",
+    version="2.1.0.dev0",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -39,13 +39,22 @@ setup(
     },
     extras_require={
         "dev": ["tomlconfigure>=0.1", "backupworkspace==0.1"],
-        "test": ["pytest", "pytest-cov", "pytest-mock", "pytest-xdist", "coverage", "codecov", "black", "mypy"],
+        "test": [
+            "pytest",
+            "pytest-cov",
+            "pytest-mock",
+            "pytest-xdist",
+            "coverage",
+            "codecov",
+            "black",
+            "mypy",
+        ],
         "build": ["build", "setuptools", "twine"],
     },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-    ], 
-    keywords=["debug", "science", "pyplus"]
+    ],
+    keywords=["debug", "science", "pyplus"],
 )

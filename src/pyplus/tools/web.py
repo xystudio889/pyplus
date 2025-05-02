@@ -1,11 +1,13 @@
 import requests
 
+
 def get_country(ip=requests.get("https://ipinfo.io/json").json().get("ip", "8.8.8.8")):
     import requests
 
     url = f"https://ipapi.co/{ip}/json/"
     response = requests.get(url).json()
     return response.get("country_name", "Unknown")
+
 
 def _run_server(html_path, port, auto_open):
     import http.server
