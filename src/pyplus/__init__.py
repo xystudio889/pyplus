@@ -215,6 +215,7 @@ def get_pre_update(version: str) -> Union[Dict[str, str], str]:
     print(out_obj)
     return out_obj
 
+
 def get_pre_version_update_time(version: str) -> Union[Dict[str, str], str]:
     """Get the pre-release version update time."""
     try:
