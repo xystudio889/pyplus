@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="2.1.0a1",
+    version="2.1.0a2",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -22,6 +22,7 @@ setup(
         "pandas>=2",
         "requests>=2.27",
         "sympy==1.13.1",
+        "markdown>=3.3.6",
     ],
     python_requires=">=3.7",
     author="xystudio",
@@ -56,5 +57,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    keywords=["debug", "science", "pyplus"],
+    keywords=["debug", "science", "pyplus", "tools", "python"],
 )
