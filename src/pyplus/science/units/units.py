@@ -34,7 +34,7 @@ CLOSE = False
     OR,
     RLSHIFT,
     RRSHIFT,
-) = range(22)
+) = range(24)
 
 all_command = [
     "CONVERT",
@@ -138,30 +138,32 @@ class Unit(BaseUnit):
     :param str = "" type: Your Unit type.
     """
 
-    CONVERT = 0
-    SYN = 1
-    SET_UNIT = 2
-    SET_ONE = 3
-    CHANGE_UNIT = 4
-    OPERATOR = 5
-    SET_UNIT = 6
-    SET_NUMBER = 7
-    ADD = 8
-    SUB = 9
-    MUL = 10
-    DIV = 11
-    TRUEDIV = DIV
-    FLOORDIV = 12
-    MOD = 13
-    DIVMOD = 22
-    POW = 14
-    LSHIFT = 15
-    RSHIFT = 16
-    AND = 17
-    XOR = 18
-    OR = 19
-    RLSHIFT = 20
-    RRSHIFT = 21
+    (
+        CONVERT,
+        SYN,
+        SET_UNIT,
+        SET_ONE,
+        CHANGE_UNIT,
+        OPERATOR,
+        SET_UNIT,
+        SET_NUMBER,
+        ADD,
+        SUB,
+        MUL,
+        DIV,
+        TRUEDIV,
+        FLOORDIV,
+        MOD,
+        DIVMOD,
+        POW,
+        LSHIFT,
+        RSHIFT,
+        AND,
+        XOR,
+        OR,
+        RLSHIFT,
+        RRSHIFT,
+    ) = range(24)
 
     conversion_list: Dict[str, int] = {}
 

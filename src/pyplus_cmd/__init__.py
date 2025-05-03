@@ -4,15 +4,15 @@ The python Plus - Pyplus
 the python's plus library.\n
 """
 
-from os import makedirs, getenv
+from os import makedirs
 from pathlib import Path
 from site import getsitepackages
 
 from sys import version_info
 from toml import load, dump
 
-global_config_path = Path(getenv("appdata"), "xystudio", "pyplus", "config.toml")
-local_config_path = Path(".xystudio", "pyplus", "config.toml").absolute()
+global_config_path = Path.home() / "appdata" / "xystudio" / "pyplus" / "config.toml"
+local_config_path = Path.cwd() / ".xystudio" / "pyplus" / "config.toml"
 global_config = {}
 local_config = {}
 union_config = {}
@@ -60,11 +60,23 @@ with open(
     updates = load(f)
 
 with open(
-    getsitepackages()[1] + "\\pyplus\\data\\config\\get_config.toml",
+    getsitepackages()[1] + "\\pyplus\\data\\config\\config_help.toml",
     "r",
     encoding="utf-8",
 ) as f:
     config_help = load(f)
+
+with open(
+    getsitepackages()[1] + "\\pyplus\\data\\config\\alias.toml", "r", encoding="utf-8"
+) as f:
+    lang_alias = load(f)
+
+with open(
+    getsitepackages()[1] + "\\pyplus\\data\\config\\doc_help.toml",
+    "r",
+    encoding="utf-8",
+) as f:
+    doc_help = load(f)
 
 
 def get_version(namespace: str) -> str:
@@ -77,12 +89,71 @@ def get_pre_version() -> str:
     return updates["pre-release"]["version"]
 
 
-def open_doc(doc_name: str):
-    raise NotImplementedError("Document is not completed.")
+def open_doc(doc_name: str, lang="en"):
+    from markdown import markdown
+    from os import remove
+    from webbrowser import open as op
+    from time import sleep
+
+    doc_html_path = Path.cwd() / ".xystudio" / "pyplus" / "cache" / "doc.html"
+    doc_name = doc_name.lower()
+
+    for key, values in lang_alias.items():
+        if lang.lower() in values:
+            lang = key
+    lang = lang.lower()
+
+    makedirs(doc_html_path.parent, exist_ok=True)
+
+    if doc_name == "index":
+        op(getsitepackages()[1] + f"\\pyplus\\data\\docs\\web\\{lang}\\index.html")
+    else:
+        with open(
+            getsitepackages()[1]
+            + f"\\pyplus\\data\\docs\\markdown\\{lang}\\{doc_name}.md",
+            "r",
+            encoding="utf-8",
+        ) as f:
+            html = markdown(f.read())
+
+        with open(doc_html_path, "w", encoding="utf-8") as f:
+            f.write(html)
+
+        op(doc_html_path)
+        sleep(1)
+        remove(doc_html_path)
+
+
+
+def get_doc_help(doc_name: str = ALL):   
+    print()
+    if doc_name == ALL:
+        for doc_namespace, doc_des in doc_help.items():
+            print(f"{doc_namespace} : {doc_des}")
+    else:
+        print(f"{doc_name}: {doc_help.get(doc_name, 'Not found.')}")
+
+
+def get_alias(lang: str = ALL):
+    print()
+    match_alias = None
+    for k, v in lang_alias.items():
+        if lang.lower() in v:
+            match_alias = k
+            break
+        
+    if lang == ALL:
+        for k, v in lang_alias.items():
+            print(f"alias {k} -> {', '.join(v)}")
+    elif match_alias is not None:
+        print(f"alias {match_alias} -> {lang}")
+    else:
+        print(f"alias {lang} -> {', '.join(lang_alias.get(lang, ["Not found."]))}")
+
 
 
 def config(config_name: str, value, config_type=first_used_config):
-    global local_config, global_config
+    global local_config, global_config, union_config
 
     if config_type == LOCAL:
         makedirs(local_config_path.parent, exist_ok=True)
@@ -138,7 +209,7 @@ def get_config_help(config_type=ALL):
                 print()
                 print(f"{doc_name} : {doc_des}")
             print(f"\n{'-'*30}\n")
-        print("\nWhen you set config,you need use 'paragraph name.config name'")
+        print("\nWhen you set config,you need use 'pyplus config set local name.config value'")
     else:
         print("*" * 22 + "-" * 8 + config_type + "- " * 8 + "*" * 22)
         try:
@@ -147,7 +218,42 @@ def get_config_help(config_type=ALL):
         except KeyError:
             print("This document is not found.")
         else:
-            print("When you set config,you need use 'paragraph name.config name'")
+            print("When you set config,you need use 'pyplus config set local name.config value'")
+
+
+def open_doc(doc_name: str, lang="en"):
+    from markdown import markdown
+    from os import remove
+    from webbrowser import open as op
+    from time import sleep
+
+    doc_html_path = Path.cwd() / ".xystudio" / "pyplus" / "cache" / "doc.html"
+    doc_name = doc_name.lower()
+
+    for key, values in lang_alias.items():
+        if lang.lower() in values:
+            lang = key
+    lang = lang.lower()
+
+    makedirs(doc_html_path.parent, exist_ok=True)
+
+    if doc_name == "index":
+        op(getsitepackages()[1] + f"\\pyplus\\data\\docs\\web\\{lang}\\index.html")
+    else:
+        with open(
+            getsitepackages()[1]
+            + f"\\pyplus\\data\\docs\\markdown\\{lang}\\{doc_name}.md",
+            "r",
+            encoding="utf-8",
+        ) as f:
+            html = markdown(f.read())
+
+        with open(doc_html_path, "w", encoding="utf-8") as f:
+            f.write(html)
+
+        op(doc_html_path)
+        sleep(1)
+        remove(doc_html_path)
 
 
 __version__ = get_version("main")
@@ -185,36 +291,35 @@ def main() -> None:
 
     config_cmd = subparsers.add_parser(
         "config",
-        help="Set the config setting.Usage 'pyplus get_config' to get all config.",
+        help="Set the config.Usage 'pyplus config get' to get all config.",
     )
-    config_namespace = config_cmd.add_subparsers(dest="namespace", required=True)
-    config_namespace.add_parser(
+    config_namespace = config_cmd.add_subparsers(dest="config_command", required=True)
+    set_cmd = config_namespace.add_parser(
+        "set", help="Set the config"
+    )
+    set_namespace = set_cmd.add_subparsers(dest="set_namespace", required=True)
+    local_config_cmd = set_namespace.add_parser(
         "local",
         help="Config file only in your project.Local config in './.xystudio/pyplus/config.toml'",
     )
-    config_namespace.add_parser(
+    global_config_cmd = set_namespace.add_parser(
         "global",
         help="Config file in all project.Global config in 'Users/Appdata/roaming/xystudio/pyplus/config.toml'",
     )
-    config_cmd.add_argument("setting", help="Config setting.")
-    config_cmd.add_argument("value", help="Config value.")
 
-    subparsers.add_parser("version", help="Get the pyplus version.")
+    local_config_cmd.add_argument("setting", help="Config setting.")
+    local_config_cmd.add_argument("value", help="Config value.")
 
-    get_conf_help = subparsers.add_parser(
-        "get_config_help", help="Get the config help."
-    )
-    get_conf_help.add_argument(
-        "-d",
-        "--document_description",
-        nargs="?",
-        help="get one document description.",
-        default=ALL,
-    )
+    global_config_cmd.add_argument("setting", help="Config setting.")
+    global_config_cmd.add_argument("value", help="Config value.")
 
-    get_conf = subparsers.add_parser("get_config", help="Get the config.")
+    get_conf = config_namespace.add_parser("get", help="Get the config.")
     get_conf.add_argument(
-        "-l", "--local", nargs="?", action=localAction, help="Output the local config."
+        "-l",
+        "--local",
+        action=localAction,
+        nargs="?",
+        help="Get the local config in your project.Local config in './.xystudio/pyplus/config.toml'",
     )
     get_conf.add_argument(
         "-g",
@@ -227,32 +332,91 @@ def main() -> None:
         "-a", "--all", nargs="?", action=allAction, help="Output all the config."
     )
 
+    get_conf_help = config_namespace.add_parser(
+        "get_help", help="Get the config help."
+    )
+    get_conf_help.add_argument(
+        "-d",
+        "--document_description",
+        nargs="?",
+        help="get one document description.",
+        default=ALL,
+    )
+    remove_cmd = config_namespace.add_parser(
+        "remove", help="Remove the config"
+    )
+    remove_namespace = remove_cmd.add_subparsers(dest="remove_namespace", required=True)
+    local_config_cmd = remove_namespace.add_parser(
+        "local",
+        help="Config file only in your project.Local config in './.xystudio/pyplus/config.toml'",
+    )
+    global_config_cmd = remove_namespace.add_parser(
+        "global",
+        help="Config file in all project.Global config in 'Users/Appdata/roaming/xystudio/pyplus/config.toml'",
+    )
+
+    local_config_cmd.add_argument("setting", help="Config setting.")
+    global_config_cmd.add_argument("setting", help="Config setting.")
+
+    doc_command = subparsers.add_parser("document", help="Document name.")
+
+    doc_namespace = doc_command.add_subparsers(dest="doc_namespace", required=True)
+    open_doc_command = doc_namespace.add_parser(
+        "open", help="Open the document."
+    )
+    get_help_command = doc_namespace.add_parser(
+        "get_help", help="Get the document help."
+    )
+    open_doc_command.add_argument("doc_name", help="Document name.")
+    open_doc_command.add_argument(
+        "-l", "--lang", help="Document language.", nargs="?", default="en"
+    )
+    get_help_command.add_argument(
+        "-d",
+        "--document_description",
+        nargs="?",
+        help="get one document description.",
+        default=ALL,
+    )
+
+    subparsers.add_parser("version", help="Get the pyplus version.")
+
     args = parser.parse_args()
 
     if args.command == "config":
-        if args.value.lower() == "true":
-            value = True
-        elif args.value.lower() == "false":
-            value = False
-        else:
-            value = args.value
-        print("Run code again to set the config.")
-        config(args.setting, value, args.namespace)
+        if args.config_command == "set":
+            if args.value.lower() == "true":
+                value = True
+            elif args.value.lower() == "false":
+                value = False
+            else:
+                value = args.value
+            print("Run code again to set the config.")
+            config(args.setting, value, args.set_namespace)
+        elif args.config_command == "get_help":
+            get_config_help(args.document_description)
+        elif args.config_command == "get":
+            if hasattr(args, "_local"):
+                print(local_config)
+            if hasattr(args, "_global"):
+                print(global_config)
+            if hasattr(args, "_all"):
+                print(union_config)
+        elif args.config_command == "remove":
+            print("Not support yet.")
     elif args.command == "version":
-        print("Version : pyplus pre:", get_pre_version)
-        print("Version : pyplus :", get_version())
-    elif args.command == "get_config_help":
-        get_config_help(args.document_description)
-    elif args.command == "get_config":
-        if hasattr(args, "_local"):
-            print(local_config)
-        if hasattr(args, "_global"):
-            print(global_config)
-        if hasattr(args, "_all"):
-            print(union_config)
+        print("Version : pyplus pre:", get_pre_version())
+        print("Version : pyplus :", get_version("main"))
+    elif args.command == "document":
+        if args.doc_namespace == "open":
+            open_doc(args.doc_name, args.lang)
+        elif args.doc_namespace == "get_help":
+            get_doc_help(args.document_description)
+    else:
+        print("Command not found.")
 
 
-del getsitepackages, Path, getenv, version_info
+del version_info
 
 if __name__ == "__main__":
     main()
