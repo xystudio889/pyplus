@@ -8,7 +8,6 @@ from os import makedirs
 from pathlib import Path
 from site import getsitepackages
 
-from sys import version_info
 from toml import load, dump
 
 global_config_path = Path.home() / "appdata" / "xystudio" / "pyplus" / "config.toml"
@@ -79,17 +78,154 @@ with open(
     doc_help = load(f)
 
 
-def get_version(namespace: str) -> str:
+def get_update(namespace, version):
+    """get the version update doc."""
+    try:
+        open_dict = updates["release"][namespace]["update_info"]
+    except KeyError:
+        raise ValueError("This namespace not found.")
+
+    if version == ALL:
+        out_obj = open_dict
+    elif version == NEW:
+        out_obj = open_dict.get(
+            updates["release"][namespace]["version"],
+            "This version is not found. Maybe it is not recorded.",
+        )
+    elif version == WILL:
+        out_obj = open_dict.get(
+            WILL, "This version is not found. Maybe it is not recorded."
+        )
+    else:
+        out_obj = open_dict.get(
+            str(version), "This version is not found. Maybe it is not recorded."
+        )
+
+    print(out_obj)
+    return out_obj
+
+
+def get_version_update_time(namespace, version):
+    """Get the version update time."""
+    try:
+        open_dict = updates["release"][namespace]["update_time"]
+    except KeyError:
+        raise ValueError("This namespace not found.")
+
+    if version == ALL:
+        out_obj = open_dict
+    elif version == NEW:
+        out_obj = open_dict.get(
+            updates["release"][namespace]["version"],
+            "This version is not found. Maybe it is not recorded.",
+        )
+    elif version == WILL:
+        raise ValueError("`get_version_update_time` cannot get will update time.")
+    else:
+        out_obj = open_dict.get(
+            str(version), "This version is not found. Maybe it is not recorded."
+        )
+
+    print(out_obj)
+    return out_obj
+
+
+def get_will(namespace):
+    """Get the will update doc."""
+    return get_update(namespace, WILL)
+
+
+def get_version(namespace):
     """Get the version."""
     return updates["release"][namespace]["version"]
 
 
-def get_pre_version() -> str:
+def get_pre_version():
     """Get the pre version."""
     return updates["pre-release"]["version"]
 
 
-def open_doc(doc_name: str, lang="en"):
+def get_news_update_time(namespace):
+    """Get the new update time."""
+    return get_version_update_time(namespace, NEW)
+
+
+def get_new(namespace):
+    """Get the new update doc."""
+    return get_update(namespace, NEW)
+
+
+def get_all(namespace):
+    """Get the all update doc."""
+    return get_update(namespace, ALL)
+
+
+def get_pre_update(version):
+    """Get the pre-release version update doc."""
+    try:
+        open_dict = updates["pre-release"]["update_info"]
+    except KeyError:
+        raise ValueError("This namespace not found.")
+
+    if version == ALL:
+        out_obj = open_dict
+    elif version == NEW:
+        out_obj = open_dict.get(
+            updates["pre-release"]["version"],
+            "This version is not found. Maybe it is not recorded.",
+        )
+    elif version == WILL:
+        out_obj = open_dict.get(
+            WILL, "This version is not found. Maybe it is not recorded."
+        )
+    else:
+        out_obj = open_dict.get(
+            str(version), "This version is not found. Maybe it is not recorded."
+        )
+
+    print(out_obj)
+    return out_obj
+
+
+def get_pre_version_update_time(version):
+    """Get the pre-release version update time."""
+    try:
+        open_dict = updates["pre-release"]["update_time"]
+    except KeyError:
+        raise ValueError("This namespace not found.")
+
+    if version == NEW:
+        out_obj = open_dict
+    elif version == NEW:
+        out_obj = open_dict.get(
+            updates["pre-release"]["version"],
+            "This version is not found. Maybe it is not recorded.",
+        )
+    elif version == WILL:
+        raise ValueError("`get_version_update_time` cannot get will update time.")
+    else:
+        out_obj = open_dict.get(
+            str(version), "This version is not found. Maybe it is not recorded."
+        )
+    print(out_obj)
+    return out_obj
+
+
+def get_pre_news_update_time():
+    """Get the new update time."""
+    return get_pre_version_update_time(NEW)
+
+
+def get_pre_new():
+    """Get the new pre-release update doc."""
+    return get_pre_update(NEW)
+
+
+def get_pre_all():
+    """Get the all pre-release update doc."""
+    return get_pre_update(ALL)
+
+def open_doc(doc_name, lang="en"):
     from markdown import markdown
     from os import remove
     from webbrowser import open as op
@@ -125,7 +261,7 @@ def open_doc(doc_name: str, lang="en"):
 
 
 
-def get_doc_help(doc_name: str = ALL):   
+def get_doc_help(doc_name = ALL):   
     print()
     if doc_name == ALL:
         for doc_namespace, doc_des in doc_help.items():
@@ -134,7 +270,7 @@ def get_doc_help(doc_name: str = ALL):
         print(f"{doc_name}: {doc_help.get(doc_name, 'Not found.')}")
 
 
-def get_alias(lang: str = ALL):
+def get_alias(lang = ALL):
     print()
     match_alias = None
     for k, v in lang_alias.items():
@@ -152,7 +288,7 @@ def get_alias(lang: str = ALL):
 
 
 
-def config(config_name: str, value, config_type=first_used_config):
+def config(config_name, value, config_type=first_used_config):
     global local_config, global_config, union_config
 
     if config_type == LOCAL:
@@ -188,7 +324,7 @@ def config(config_name: str, value, config_type=first_used_config):
     union_config |= config
 
 
-def get_config(config_name: str):
+def get_config(config_name):
     try:
         config_split = config_name.split(".")
         config_char_1 = config_split[0]
@@ -221,7 +357,7 @@ def get_config_help(config_type=ALL):
             print("When you set config,you need use 'pyplus config set local name.config value'")
 
 
-def open_doc(doc_name: str, lang="en"):
+def open_doc(doc_name, lang="en"):
     from markdown import markdown
     from os import remove
     from webbrowser import open as op
@@ -254,6 +390,23 @@ def open_doc(doc_name: str, lang="en"):
         op(doc_html_path)
         sleep(1)
         remove(doc_html_path)
+
+def remove_config(config_name, config_type = first_used_config):
+    global local_config, global_config, union_config
+
+    if config_type == LOCAL:
+        del local_config[config_name]
+        with open(local_config_path, "w", encoding="utf-8") as f:
+            dump(local_config, f)
+    elif config_type == GLOBAL:
+        del global_config[config_name]
+        with open(global_config_path, "w", encoding="utf-8") as f:
+            dump(global_config, f)
+    else:
+        raise ValueError("This config type not found.")
+
+    del union_config[config_name]
+    return union_config
 
 
 __version__ = get_version("main")
@@ -379,7 +532,14 @@ def main() -> None:
         default=ALL,
     )
 
-    subparsers.add_parser("version", help="Get the pyplus version.")
+    update_command = subparsers.add_parser("update", help="Get the update.")
+
+    update_namespace = update_command.add_subparsers(dest="update_namespace", required=True)
+    open_doc_command = update_namespace.add_parser(
+        "version", help="Get the version." 
+    )
+
+    subparsers.add_parser("version", help="Get the version.")
 
     args = parser.parse_args()
 
@@ -403,7 +563,7 @@ def main() -> None:
             if hasattr(args, "_all"):
                 print(union_config)
         elif args.config_command == "remove":
-            print("Not support yet.")
+            remove_config(args.setting, args.remove_namespace)
     elif args.command == "version":
         print("Version : pyplus pre:", get_pre_version())
         print("Version : pyplus :", get_version("main"))
@@ -412,11 +572,10 @@ def main() -> None:
             open_doc(args.doc_name, args.lang)
         elif args.doc_namespace == "get_help":
             get_doc_help(args.document_description)
+    elif args.command == "update":
+        pass
     else:
         print("Command not found.")
-
-
-del version_info
 
 if __name__ == "__main__":
     main()

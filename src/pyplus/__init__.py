@@ -19,9 +19,9 @@ else:
 
 global_config_path = Path.home() / "appdata" / "xystudio" / "pyplus" / "config.toml"
 local_config_path = Path.cwd() / ".xystudio" / "pyplus" / "config.toml"
-global_config: Dict[str, Any] = {}
-local_config: Dict[str, Any] = {}
-union_config: Dict[str, str] = {}
+global_config: Dict[str, Dict[str, Any]] = {}
+local_config: Dict[str, Dict[str, Any]] = {}
+union_config: Dict[str, Dict[str, Any]] = {}
 
 LOCAL = "local"
 GLOBAL = "global"
@@ -369,7 +369,8 @@ def config(
             dump(config, f)
     else:
         raise ValueError("This config type not found.")
-    union_config |= config
+    union_config = global_config | local_config
+    return union_config
 
 
 def get_config(config_name: str) -> Union[None, Dict[str, Any]]:
@@ -403,6 +404,23 @@ def get_config_help(config_type: Union[str, Literal["all"]] = ALL):
             print(f"This config type {config_type} is not found.")
         else:
             print("When you set config,you need use 'pyplus config set local name.config value'")
+
+def remove_config(config_name: str, config_type: Literal["local", "global"] = first_used_config):
+    global local_config, global_config, union_config
+
+    if config_type == LOCAL:
+        del local_config[config_name]
+        with open(local_config_path, "w", encoding="utf-8") as f:
+            dump(local_config, f)
+    elif config_type == GLOBAL:
+        del global_config[config_name]
+        with open(global_config_path, "w", encoding="utf-8") as f:
+            dump(global_config, f)
+    else:
+        raise ValueError("This config type not found.")
+
+    del union_config[config_name]
+    return union_config
 
 
 __version__ = get_version("main")
