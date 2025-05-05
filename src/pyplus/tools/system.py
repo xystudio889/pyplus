@@ -1,6 +1,12 @@
 from typing_extensions import Callable, Tuple, Any
 
-def get_memory_usage(func:Callable, args:Tuple[Any]=(), kwargs:dict[str, Any]={}, unit:int = 1024**2):
+
+def get_memory_usage(
+    func: Callable,
+    args: Tuple[Any] = (),
+    kwargs: dict[str, Any] = {},
+    unit: int = 1024**2,
+):
     import tracemalloc
 
     tracemalloc.start()
@@ -9,10 +15,11 @@ def get_memory_usage(func:Callable, args:Tuple[Any]=(), kwargs:dict[str, Any]={}
     before_snapshot = tracemalloc.take_snapshot()
 
     func(*args, **kwargs)
-    
+
     after_snapshot = tracemalloc.take_snapshot()
 
     total_increase = sum(
-        stat.size_diff for stat in after_snapshot.compare_to(before_snapshot, "traceback")
+        stat.size_diff
+        for stat in after_snapshot.compare_to(before_snapshot, "traceback")
     )
-    return total_increase/unit, after_snapshot.compare_to(before_snapshot, "lineno")
+    return total_increase / unit, after_snapshot.compare_to(before_snapshot, "lineno")

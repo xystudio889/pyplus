@@ -18,6 +18,7 @@ from . import (
     variables,
     pycppio,
 )
+from argparse import Namespace
 
 # from . import () # deprecated moudle
 
