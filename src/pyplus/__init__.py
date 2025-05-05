@@ -9,6 +9,8 @@ from pathlib import Path
 from site import getsitepackages
 
 from . import tools, science
+from .tools import *
+
 from sys import version_info
 from toml import load, dump
 
@@ -305,8 +307,7 @@ def open_doc(doc_name: str, lang="en"):
         remove(doc_html_path)
 
 
-
-def get_doc_help(doc_name: str = ALL):   
+def get_doc_help(doc_name: str = ALL):
     print()
     if doc_name == ALL:
         for doc_namespace, doc_des in doc_help.items():
@@ -322,7 +323,7 @@ def get_alias(lang: str = ALL):
         if lang.lower() in v:
             match_alias = k
             break
-        
+
     if lang == ALL:
         for k, v in lang_alias.items():
             print(f"alias {k} -> {', '.join(v)}")
@@ -394,7 +395,9 @@ def get_config_help(config_type: Union[str, Literal["all"]] = ALL):
                 print()
                 print(f"{doc_name} : {doc_des}")
             print(f"\n{'-'*30}\n")
-        print("\nWhen you set config,you need use 'pyplus config set local name.config value'")
+        print(
+            "\nWhen you set config,you need use 'pyplus config set local name.config value'"
+        )
     else:
         print("*" * 22 + "-" * 8 + config_type + "- " * 8 + "*" * 22)
         try:
@@ -403,9 +406,14 @@ def get_config_help(config_type: Union[str, Literal["all"]] = ALL):
         except KeyError:
             print(f"This config type {config_type} is not found.")
         else:
-            print("When you set config,you need use 'pyplus config set local name.config value'")
+            print(
+                "When you set config,you need use 'pyplus config set local name.config value'"
+            )
 
-def remove_config(config_name: str, config_type: Literal["local", "global"] = first_used_config):
+
+def remove_config(
+    config_name: str, config_type: Literal["local", "global"] = first_used_config
+):
     global local_config, global_config, union_config
 
     if config_type == LOCAL:

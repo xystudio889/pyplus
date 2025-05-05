@@ -1,9 +1,3 @@
-"""
-The python Plus - Pyplus
-================
-the python's plus library.\n
-"""
-
 from os import makedirs
 from pathlib import Path
 from site import getsitepackages
@@ -130,11 +124,6 @@ def get_version_update_time(namespace, version):
     return out_obj
 
 
-def get_will(namespace):
-    """Get the will update doc."""
-    return get_update(namespace, WILL)
-
-
 def get_version(namespace):
     """Get the version."""
     return updates["release"][namespace]["version"]
@@ -143,21 +132,6 @@ def get_version(namespace):
 def get_pre_version():
     """Get the pre version."""
     return updates["pre-release"]["version"]
-
-
-def get_news_update_time(namespace):
-    """Get the new update time."""
-    return get_version_update_time(namespace, NEW)
-
-
-def get_new(namespace):
-    """Get the new update doc."""
-    return get_update(namespace, NEW)
-
-
-def get_all(namespace):
-    """Get the all update doc."""
-    return get_update(namespace, ALL)
 
 
 def get_pre_update(version):
@@ -210,21 +184,6 @@ def get_pre_version_update_time(version):
     print(out_obj)
     return out_obj
 
-
-def get_pre_news_update_time():
-    """Get the new update time."""
-    return get_pre_version_update_time(NEW)
-
-
-def get_pre_new():
-    """Get the new pre-release update doc."""
-    return get_pre_update(NEW)
-
-
-def get_pre_all():
-    """Get the all pre-release update doc."""
-    return get_pre_update(ALL)
-
 def open_doc(doc_name, lang="en"):
     from markdown import markdown
     from os import remove
@@ -260,8 +219,7 @@ def open_doc(doc_name, lang="en"):
         remove(doc_html_path)
 
 
-
-def get_doc_help(doc_name = ALL):   
+def get_doc_help(doc_name=ALL):
     print()
     if doc_name == ALL:
         for doc_namespace, doc_des in doc_help.items():
@@ -270,14 +228,14 @@ def get_doc_help(doc_name = ALL):
         print(f"{doc_name}: {doc_help.get(doc_name, 'Not found.')}")
 
 
-def get_alias(lang = ALL):
+def get_alias(lang=ALL):
     print()
     match_alias = None
     for k, v in lang_alias.items():
         if lang.lower() in v:
             match_alias = k
             break
-        
+
     if lang == ALL:
         for k, v in lang_alias.items():
             print(f"alias {k} -> {', '.join(v)}")
@@ -285,7 +243,6 @@ def get_alias(lang = ALL):
         print(f"alias {match_alias} -> {lang}")
     else:
         print(f"alias {lang} -> {', '.join(lang_alias.get(lang, ["Not found."]))}")
-
 
 
 def config(config_name, value, config_type=first_used_config):
@@ -345,7 +302,9 @@ def get_config_help(config_type=ALL):
                 print()
                 print(f"{doc_name} : {doc_des}")
             print(f"\n{'-'*30}\n")
-        print("\nWhen you set config,you need use 'pyplus config set local name.config value'")
+        print(
+            "\nWhen you set config,you need use 'pyplus config set local name.config value'"
+        )
     else:
         print("*" * 22 + "-" * 8 + config_type + "- " * 8 + "*" * 22)
         try:
@@ -354,7 +313,9 @@ def get_config_help(config_type=ALL):
         except KeyError:
             print("This document is not found.")
         else:
-            print("When you set config,you need use 'pyplus config set local name.config value'")
+            print(
+                "When you set config,you need use 'pyplus config set local name.config value'"
+            )
 
 
 def open_doc(doc_name, lang="en"):
@@ -391,7 +352,8 @@ def open_doc(doc_name, lang="en"):
         sleep(1)
         remove(doc_html_path)
 
-def remove_config(config_name, config_type = first_used_config):
+
+def remove_config(config_name, config_type=first_used_config):
     global local_config, global_config, union_config
 
     if config_type == LOCAL:
@@ -410,6 +372,59 @@ def remove_config(config_name, config_type = first_used_config):
 
 
 __version__ = get_version("main")
+
+
+def shell():
+    print("starting shell...")
+
+    from pyplus import tools, science
+    import decorators
+    from img_fit import latex2text as latex
+
+    from pyplus.tools import (
+        colors,
+        dec,
+        database_convert,
+        formula,
+        geohash,
+        # password,
+        permission,
+        pydebugger,
+        stack,
+        tag,
+        type,
+        update,
+        web,
+        variables,
+        pycppio,
+    )
+
+    from argparse import Namespace
+
+    # from . import () # deprecated moudle
+
+    def wait(operator: bool):
+        """
+        Please use it in subprocess.
+        """
+        while operator:
+            pass
+
+    print(f'python-plus-tools {get_version("main")} ({get_pre_version()})')
+    print("type exit to exit the shell.")
+    while True:
+        try:
+            code = input("pyplus >>> ")
+            if code == "exit" or code == "quit" or code == "exit()" or code == "quit()":
+                break
+            exec(code)
+        except KeyboardInterrupt:
+            print("^C\nKeyboardInterrupt")
+            break
+        except EOFError:
+            break
+        except Exception as e:
+            print(e)
 
 
 def main() -> None:
@@ -440,16 +455,14 @@ def main() -> None:
             setattr(namespace, "_local", values)
 
     parser = argparse.ArgumentParser(description="imgfit commands")
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(dest="command", required=False)
 
     config_cmd = subparsers.add_parser(
         "config",
         help="Set the config.Usage 'pyplus config get' to get all config.",
     )
     config_namespace = config_cmd.add_subparsers(dest="config_command", required=True)
-    set_cmd = config_namespace.add_parser(
-        "set", help="Set the config"
-    )
+    set_cmd = config_namespace.add_parser("set", help="Set the config")
     set_namespace = set_cmd.add_subparsers(dest="set_namespace", required=True)
     local_config_cmd = set_namespace.add_parser(
         "local",
@@ -485,9 +498,7 @@ def main() -> None:
         "-a", "--all", nargs="?", action=allAction, help="Output all the config."
     )
 
-    get_conf_help = config_namespace.add_parser(
-        "get_help", help="Get the config help."
-    )
+    get_conf_help = config_namespace.add_parser("get_help", help="Get the config help.")
     get_conf_help.add_argument(
         "-d",
         "--document_description",
@@ -495,9 +506,7 @@ def main() -> None:
         help="get one document description.",
         default=ALL,
     )
-    remove_cmd = config_namespace.add_parser(
-        "remove", help="Remove the config"
-    )
+    remove_cmd = config_namespace.add_parser("remove", help="Remove the config")
     remove_namespace = remove_cmd.add_subparsers(dest="remove_namespace", required=True)
     local_config_cmd = remove_namespace.add_parser(
         "local",
@@ -514,9 +523,7 @@ def main() -> None:
     doc_command = subparsers.add_parser("document", help="Document name.")
 
     doc_namespace = doc_command.add_subparsers(dest="doc_namespace", required=True)
-    open_doc_command = doc_namespace.add_parser(
-        "open", help="Open the document."
-    )
+    open_doc_command = doc_namespace.add_parser("open", help="Open the document.")
     get_help_command = doc_namespace.add_parser(
         "get_help", help="Get the document help."
     )
@@ -534,12 +541,75 @@ def main() -> None:
 
     update_command = subparsers.add_parser("update", help="Get the update.")
 
-    update_namespace = update_command.add_subparsers(dest="update_namespace", required=True)
-    open_doc_command = update_namespace.add_parser(
-        "version", help="Get the version." 
+    update_namespace = update_command.add_subparsers(
+        dest="update_namespace", required=True
     )
 
-    subparsers.add_parser("version", help="Get the version.")
+    release_update = update_namespace.add_parser(
+        "release", help="Get the release update."
+    )
+    pre_update = update_namespace.add_parser("pre", help="Get the pre-release update.")
+
+    release_update_namespace = release_update.add_subparsers(
+        dest="release_namespace", required=True
+    )
+    pre_update_namespace = pre_update.add_subparsers(dest="pre", required=True)
+
+    release_update_namespace.add_parser(
+        "version", help="Get a release version."
+    ).add_argument(
+        "namespace", help="A release version namespace."
+    )
+
+    news = release_update_namespace.add_parser(
+        "news", help="Get the news."
+    )
+    news.add_argument(
+        "namespace", help="A release version namespace.", nargs="?"
+    )
+    news.add_argument(
+        "version", help="release version.", nargs="?"
+    )
+
+    time = release_update_namespace.add_parser(
+        "time", help="Get the time."
+    )
+    time.add_argument(
+        "namespace", help="A release version namespace.", nargs="?"
+    )
+    time.add_argument(
+        "version", help="release version.", nargs="?"
+    )
+
+    pre_update_namespace.add_parser(
+        "version", help="Get a pre-release version."
+    )
+
+    news = pre_update_namespace.add_parser(
+        "news", help="Get the pre-release news."
+    )
+    news.add_argument(
+        "version", help="pre-release version.", nargs="?"
+    )
+
+    time = pre_update_namespace.add_parser(
+        "time", help="Get the pre-release time."
+    )
+    time.add_argument(
+        "version", help="pre-release version.", nargs="?"
+    )
+
+    shell_command = subparsers.add_parser("shell", help="run pyplus code.")
+
+    shell_command.add_subparsers(dest="shell_namespace", required=False)
+
+    parser.add_argument("-v", "--version", help="Get the version.", action="store_true")
+
+    get_alias_command = subparsers.add_parser("get_ailas", help="Get the alias.")
+
+    get_alias_command.add_argument(
+        "-l", "--lang", help="Document language.", nargs="?", default=ALL
+    )
 
     args = parser.parse_args()
 
@@ -564,7 +634,7 @@ def main() -> None:
                 print(union_config)
         elif args.config_command == "remove":
             remove_config(args.setting, args.remove_namespace)
-    elif args.command == "version":
+    elif args.version:
         print("Version : pyplus pre:", get_pre_version())
         print("Version : pyplus :", get_version("main"))
     elif args.command == "document":
@@ -573,9 +643,48 @@ def main() -> None:
         elif args.doc_namespace == "get_help":
             get_doc_help(args.document_description)
     elif args.command == "update":
-        pass
+        if args.update_namespace == "release":
+            if args.release_namespace == "version":
+                print(get_version(args.namespace))
+            elif args.release_namespace == "news":
+                print(get_update(args.namespace, args.version))
+            elif args.release_namespace == "time":
+                print(get_version_update_time(args.namespace, args.version))
+        elif args.update_namespace == "pre":
+            if args.pre == "version":
+                print(get_pre_version())
+            elif args.pre == "news":
+                print(get_pre_update(args.version))
+            elif args.pre == "time":
+                print(get_pre_version_update_time(args.version))
+    elif args.command == "shell":
+        shell()
+    elif args.command == "get_ailas":
+        get_alias(args.lang)
     else:
-        print("Command not found.")
+        print("Command not found.Press 'pyplus -h' to get help.")
+
+
+def config_cmd():
+    import os
+    import sys
+
+    os.system(f"pyplus config {" ".join(sys.argv[1:])}")
+
+
+def doc_cmd():
+    import os
+    import sys
+
+    os.system(f"pyplus document {" ".join(sys.argv[1:])}")
+
+
+def update_cmd():
+    import os
+    import sys
+
+    os.system(f"pyplus update {" ".join(sys.argv[1:])}")
+
 
 if __name__ == "__main__":
     main()

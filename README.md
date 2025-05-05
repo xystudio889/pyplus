@@ -8,7 +8,29 @@ index id:001
 [Looking the index list](https://github.com/xystudio889/xystudio889/blob/main/index/python-projects.md)
 
 ---
-[![build and publish](https://github.com/xystudio889/pyplus/workflows/build_and_publish/badge.svg)](https://github.com/xystudio889/pyplus/actions?query=workflow%3Abuild_and_publish)   [![pypi](https://img.shields.io/pypi/v/python-plus-tools.svg)](https://pypi.org/project/python-plus-tools/)   [![support-version](https://img.shields.io/pypi/pyversions/python-plus-tools)](https://img.shields.io/pypi/pyversions/python-plus-tools)  [![license](https://img.shields.io/github/license/xystudio889/pyplus)](https://github.com/gaogaotiantian/viztracer/blob/master/LICENSE)  [![commit](https://img.shields.io/github/last-commit/xystudio889/pyplus/master)](https://github.com/xystudio889/pyplus/commits/master)  [![sponsor](https://img.shields.io/badge/%E2%9D%A4-Sponsor%20me-%23c96198?style=flat&logo=GitHub)](https://github.com/sponsors/xystudio889)
+<div align = "center">
+    <a href="https://github.com/xystudio889/pyplus/actions?query=workflow%3Abuild_and_publish">
+        <img src="https://github.com/xystudio889/pyplus/workflows/build_and_publish/badge.svg"
+            alt="build and publish">
+    </a>
+    <a href="https://pypi.org/project/python-plus-tools/">
+        <img src="https://img.shields.io/pypi/v/python-plus-tools.svg" 
+        alt="pypi">
+    </a>
+    <a href="https://img.shields.io/pypi/pyversions/python-plus-tools">
+        <img src="https://img.shields.io/pypi/pyversions/python-plus-tools" alt="support-version">
+    </a>
+    <a href="https://github.com/gaogaotiantian/viztracer/blob/master/LICENSE">
+        <img src="https://img.shields.io/github/license/xystudio889/pyplus" alt="license">
+    </a>
+    <a href="https://github.com/xystudio889/pyplus/commits/master">
+        <img src="https://img.shields.io/github/last-commit/xystudio889/pyplus/master" alt="commit">
+    </a>
+    <a href="https://github.com/sponsors/xystudio889">
+        <img src="https://img.shields.io/badge/%E2%9D%A4-Sponsor%20me-%23c96198?style=flat&logo=GitHub"
+            alt="sponsor">
+    </a>
+</div>
 <br />
 <div align="center" style="line-height: 1;">
   <a href="./README.md"><img

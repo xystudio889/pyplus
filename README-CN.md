@@ -9,13 +9,28 @@ ID:001
 
 ---
 
-<div align="center" style="line-height: 1;">
-  <a href="https://github.com/xystudio889/pyplus"><img
-    src="https://img.shields.io/badge/源码-github-536af5?color=536af5&logoColor=white"/></a>
-  <a href="https://pypi.org/project/python-plus-tools/"><img
-    src="https://img.shields.io/badge/pypi-536af5?color=7803f1&logoColor=white"/></a>
-  <img
-    src="https://img.shields.io/badge/python-3.6 | 3.7 | 3.8 | 3.9 | 3.10 | 3.11 | 3.12 | 3.13-1c93ea?color=1cb5ea&logoColor=white"/>
+<div align = "center">
+    <a href="https://github.com/xystudio889/pyplus/actions?query=workflow%3Abuild_and_publish">
+        <img src="https://github.com/xystudio889/pyplus/workflows/build_and_publish/badge.svg"
+            alt="build and publish">
+    </a>
+    <a href="https://pypi.org/project/python-plus-tools/">
+        <img src="https://img.shields.io/pypi/v/python-plus-tools.svg" 
+        alt="pypi">
+    </a>
+    <a href="https://img.shields.io/pypi/pyversions/python-plus-tools">
+        <img src="https://img.shields.io/pypi/pyversions/python-plus-tools" alt="support-version">
+    </a>
+    <a href="https://github.com/gaogaotiantian/viztracer/blob/master/LICENSE">
+        <img src="https://img.shields.io/github/license/xystudio889/pyplus" alt="license">
+    </a>
+    <a href="https://github.com/xystudio889/pyplus/commits/master">
+        <img src="https://img.shields.io/github/last-commit/xystudio889/pyplus/master" alt="commit">
+    </a>
+    <a href="https://github.com/sponsors/xystudio889">
+        <img src="https://img.shields.io/badge/%E2%9D%A4-Sponsor%20me-%23c96198?style=flat&logo=GitHub"
+            alt="sponsor">
+    </a>
 </div>
 <br />
 <div align="center" style="line-height: 1;">
