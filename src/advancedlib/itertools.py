@@ -126,7 +126,7 @@ class IteratorCalculator:
 
     def __rsub__(self, value):
         self.number -= value
-        return self
+        return self                                                                                                                                                                                                                                                                                            
 
     def __rmul__(self, value):
         self.number *= value
@@ -167,3 +167,13 @@ class IteratorCalculator:
     def __ror__(self, value):
         self.number |= value
         return self
+
+class SampleIterator:
+    def __init__(self, list):
+        self.list = (i for i in list)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return next(self.list)

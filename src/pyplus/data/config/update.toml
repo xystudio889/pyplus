@@ -76,6 +76,6 @@ update_info = { "1.0.0" = "" }
 update_time = { "1.0.0" = 2025-04-21 }
 
 [pre-release]
-version = "2.1.0a4"
-update_info = { "2.1.0.dev0" = "Add advancedlib.math.joseph_problem.", "2.1.0a1" = "Add some pyplus.scinece.unit methods.", "2.1.0a2" = "Add documenter(bata).\nFix some bug.\nRepair the syntax of pyplus command.", "2.1.0a3" = "Add some pyplus command.\n Fix some bug.", "2.1.0a4" = "Add pyplus command." }
-update_time = { "2.1.0.dev0" = 2025-05-02, "2.1.0a1" = 2025-05-03, "2.1.0a2" = 2025-05-03, "2.1.0a3" = 2025-05-04, "2.1.0a4" = 2025-05-05 }
+version = "2.1.0a5"
+update_info = { "2.1.0a1" = "Add some pyplus.scinece.unit methods.", "2.1.0a2" = "Add documenter(bata).\nFix some bug.\nRepair the syntax of pyplus command.", "2.1.0a3" = "Add some pyplus command.\n Fix some bug.", "2.1.0a4" = "Add some pyplus command.", "2.1.0a5" = "Add some functions:\n\tpyplus.tools\n\t\tupdate:Add Version type.\n\t\tstack:Add default stack.\n\tadvancedlib.itertools:Add SamepleIterator." }
+update_time = { "2.1.0a1" = 2025-05-03, "2.1.0a2" = 2025-05-03, "2.1.0a3" = 2025-05-04, "2.1.0a4" = 2025-05-05 }

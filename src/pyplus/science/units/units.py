@@ -11,7 +11,7 @@ CLOSE = False
 
 (
     CONVERT,
-    SYN,
+    SYNC,
     SET_UNIT,
     SET_ONE,
     CHANGE_UNIT,
@@ -140,7 +140,7 @@ class Unit(BaseUnit):
 
     (
         CONVERT,
-        SYN,
+        SYNC,
         SET_UNIT,
         SET_ONE,
         CHANGE_UNIT,
@@ -213,7 +213,7 @@ class Unit(BaseUnit):
         unit = end_unit
         return self.__create_new(number, unit)
 
-    def _syn_type(self, other: "Unit"):
+    def _sync_converion_list(self, other: "Unit"):
         """
         If two Unit's type is same,the other's convert list is self convert list.
 
@@ -270,7 +270,7 @@ class Unit(BaseUnit):
         :rtype: Unit
         """
         if isinstance(value, self.__class__):
-            self._syn_type(value)
+            self._sync_converion_list(value)
             number = value.number
             if conversion_unit:
                 unit = value.unit
@@ -317,7 +317,7 @@ class Unit(BaseUnit):
         else:
             n = self.__class__(num, unit)
 
-        self._syn_type(n)
+        self._sync_converion_list(n)
         return n
 
     def change_attr(self, func: Callable, value: UnitClass):
@@ -339,7 +339,7 @@ class Unit(BaseUnit):
         :rtype: Unit
         """
         if isinstance(value, self.__class__):
-            self._syn_type(value)
+            self._sync_converion_list(value)
             number = func(self.number, value.convert(self.unit).number)
             return self.__create_new(number, self.unit)
         elif isinstance(value, list):
@@ -379,7 +379,7 @@ class Unit(BaseUnit):
         :rtype: bool
         """
         if isinstance(value, self.__class__):
-            self._syn_type(value)
+            self._sync_converion_list(value)
             op = func(self.number, value.convert(self.unit).number)
         elif isinstance(value, list):
             if value[1].lower() in self.conversion_list:
@@ -462,8 +462,8 @@ class Unit(BaseUnit):
         try:
             if command == CONVERT:
                 return self.convert(value[0])
-            elif command == SYN:
-                self._syn_type(value[0])
+            elif command == SYNC:
+                self._sync_converion_list(value[0])
             elif command == SET_UNIT:
                 return self.set_unit(value[0])
             elif command == SET_ONE:
@@ -532,7 +532,7 @@ class Unit(BaseUnit):
 
     def __pow__(self, value, modulo=None):
         if isinstance(value, self.__class__):
-            self._syn_type(value)
+            self._sync_converion_list(value)
             number = pow(self.number, value.convert(self.unit).number, modulo)
             return self.__create_new(number, self.unit)
         elif isinstance(value, list):
