@@ -60,12 +60,12 @@ if first_used_config == "local":
 else:
     union_config = local_config | global_config
 
-if union_config.get("library", {"showDeprecationWarning": True}).get(
-    "showDeprecationWarning", True
-):
-    print(
-        f"{tools.colors.Fore.MAGENTA}{tools.colors.Style.BRIGHT}note:write 'config('library.showDeprecationWarning', 'false')' and run code again to close this warning."
-    )
+# if union_config.get("library", {"showDeprecationWarning": True}).get(
+#     "showDeprecationWarning", True
+# ):
+#     print(
+#         f"{tools.colors.Fore.MAGENTA}{tools.colors.Style.BRIGHT}note:write 'config('library.showDeprecationWarning', 'false')' and run code again to close this warning."
+#     )
 
 if union_config.get("import", {"pyscience": True}).get("pyscience", True):
     from advancedlib import _all as advancedlib
