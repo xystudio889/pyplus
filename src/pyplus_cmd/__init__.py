@@ -184,6 +184,7 @@ def get_pre_version_update_time(version):
     print(out_obj)
     return out_obj
 
+
 def open_doc(doc_name, lang="en"):
     from markdown import markdown
     from os import remove
@@ -371,6 +372,75 @@ def remove_config(config_name, config_type=first_used_config):
     return union_config
 
 
+def _get_latest_version(
+    package_name, include_prerelease: bool = False, url: str = None
+):
+    import requests
+    from packaging.version import parse
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": "https://pypi.org/",
+    }
+
+    url = (
+        f"https://pypi.org/pypi/{package_name}/json"
+        if url is None
+        else url.replace("%P", package_name)
+    )
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return None
+
+    data = response.json()
+    all_versions = list(data["releases"].keys())  # 获取所有版本列表
+
+    # 解析并过滤版本
+    valid_versions = []
+    for v in all_versions:
+        version = parse(v)
+        if not include_prerelease and version.is_prerelease:
+            continue  # 跳过预发布版本
+        valid_versions.append(version)
+
+    if not valid_versions:
+        return None
+    latest = max(valid_versions)
+    return str(latest)
+
+
+def check_update(
+    package_name: str,
+    include_prerelease: bool = False,
+    auto_update: bool = False,
+    url: str = None,
+):
+    from os import system
+    from importlib.metadata import version
+
+    installed_version = version(package_name)
+    latest_version = _get_latest_version(
+        package_name, include_prerelease, url
+    )  # 使用上述PyPI API方法
+    if latest_version and installed_version != latest_version:
+        if include_prerelease:
+            print(
+                f"New pre-release version available: {installed_version} → {latest_version}"
+            )
+        else:
+            print(f"New version available: {installed_version} → {latest_version}")
+        if auto_update:
+            print("Auto-updating...")
+            if include_prerelease:
+                system(f"pip install --upgrade --pre {package_name}")
+            else:
+                system(f"pip install --upgrade {package_name}")
+            print("Update complete.")
+    else:
+        print("Already up to date.")
+
+
 __version__ = get_version("main")
 
 
@@ -379,7 +449,6 @@ def shell():
 
     from pyplus import tools, science
     import decorators
-    from img_fit import latex2text as latex
 
     from pyplus.tools import (
         colors,
@@ -397,34 +466,30 @@ def shell():
         web,
         variables,
         pycppio,
+        wait,
+        latex,
     )
-
-    from argparse import Namespace
 
     # from . import () # deprecated moudle
 
-    def wait(operator: bool):
-        """
-        Please use it in subprocess.
-        """
-        while operator:
-            pass
-
     print(f'python-plus-tools {get_version("main")} ({get_pre_version()})')
     print("type exit to exit the shell.")
+
+    all_code = []
     while True:
         try:
             code = input("pyplus >>> ")
             if code == "exit" or code == "quit" or code == "exit()" or code == "quit()":
                 break
             exec(code)
+            all_code.append(code)
         except KeyboardInterrupt:
             print("^C\nKeyboardInterrupt")
             break
         except EOFError:
             break
         except Exception as e:
-            print(e)
+            print(e.with_traceback(None))
 
 
 def main() -> None:
@@ -557,51 +622,25 @@ def main() -> None:
 
     release_update_namespace.add_parser(
         "version", help="Get a release version."
-    ).add_argument(
-        "namespace", help="A release version namespace."
-    )
+    ).add_argument("namespace", help="A release version namespace.")
 
-    news = release_update_namespace.add_parser(
-        "news", help="Get the news."
-    )
-    news.add_argument(
-        "namespace", help="A release version namespace.", nargs="?"
-    )
-    news.add_argument(
-        "version", help="release version.", nargs="?"
-    )
+    news = release_update_namespace.add_parser("news", help="Get the news.")
+    news.add_argument("namespace", help="A release version namespace.", nargs="?")
+    news.add_argument("version", help="release version.", nargs="?")
 
-    time = release_update_namespace.add_parser(
-        "time", help="Get the time."
-    )
-    time.add_argument(
-        "namespace", help="A release version namespace.", nargs="?"
-    )
-    time.add_argument(
-        "version", help="release version.", nargs="?"
-    )
+    time = release_update_namespace.add_parser("time", help="Get the time.")
+    time.add_argument("namespace", help="A release version namespace.", nargs="?")
+    time.add_argument("version", help="release version.", nargs="?")
 
-    pre_update_namespace.add_parser(
-        "version", help="Get a pre-release version."
-    )
+    pre_update_namespace.add_parser("version", help="Get a pre-release version.")
 
-    news = pre_update_namespace.add_parser(
-        "news", help="Get the pre-release news."
-    )
-    news.add_argument(
-        "version", help="pre-release version.", nargs="?"
-    )
+    news = pre_update_namespace.add_parser("news", help="Get the pre-release news.")
+    news.add_argument("version", help="pre-release version.", nargs="?")
 
-    time = pre_update_namespace.add_parser(
-        "time", help="Get the pre-release time."
-    )
-    time.add_argument(
-        "version", help="pre-release version.", nargs="?"
-    )
+    time = pre_update_namespace.add_parser("time", help="Get the pre-release time.")
+    time.add_argument("version", help="pre-release version.", nargs="?")
 
     shell_command = subparsers.add_parser("shell", help="run pyplus code.")
-
-    shell_command.add_subparsers(dest="shell_namespace", required=False)
 
     parser.add_argument("-v", "--version", help="Get the version.", action="store_true")
 
@@ -610,6 +649,16 @@ def main() -> None:
     get_alias_command.add_argument(
         "-l", "--lang", help="Document language.", nargs="?", default=ALL
     )
+
+    check_namespace = subparsers.add_parser(
+        "version",
+        help="update & check pyplus.",
+    ).add_subparsers(dest="check_command", required=True)
+
+    check_namespace = subparsers.add_parser(
+        "backup",
+        help="backup your project.",
+    ).add_subparsers(dest="backup_command", required=True)
 
     args = parser.parse_args()
 
@@ -661,29 +710,12 @@ def main() -> None:
         shell()
     elif args.command == "get_ailas":
         get_alias(args.lang)
+    elif args.command == "version":
+        print("This command is not implemented yet.")
+    elif args.command == "backup":
+        print("This command is not implemented yet.")
     else:
         print("Command not found.Press 'pyplus -h' to get help.")
-
-
-def config_cmd():
-    import os
-    import sys
-
-    os.system(f"pyplus config {" ".join(sys.argv[1:])}")
-
-
-def doc_cmd():
-    import os
-    import sys
-
-    os.system(f"pyplus document {" ".join(sys.argv[1:])}")
-
-
-def update_cmd():
-    import os
-    import sys
-
-    os.system(f"pyplus update {" ".join(sys.argv[1:])}")
 
 
 if __name__ == "__main__":

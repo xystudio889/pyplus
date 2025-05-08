@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="2.1.0a5",
+    version="2.1.0b1",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -36,14 +36,15 @@ setup(
     entry_points={
         "console_scripts": [
             "pyplus = pyplus_cmd:main",
-            "pyplus-shell = pyplus_cmd:shell",
-            "pyplus-config = pyplus_cmd:config_cmd",
-            "pyplus-doc = pyplus_cmd:doc_cmd",
-            "pyplus-update = pyplus_cmd:update_cmd",
         ]
     },
     extras_require={
-        "dev": ["tomlconfigure>=0.1", "documenter>=0.1", "backupworkspace==0.1"],
+        "dev": [
+            "tomlconfigure>=0.1",
+            "documenter>=0.1",
+            "backupworkspace==0.1",
+            "python-dotenv>=0.19",
+        ],
         "test": [
             "pytest",
             "pytest-cov",
@@ -53,6 +54,9 @@ setup(
             "codecov",
             "black",
             "mypy",
+            "flake8",
+            "pylint",
+            "pyright",
         ],
         "build": ["build", "setuptools", "twine"],
     },

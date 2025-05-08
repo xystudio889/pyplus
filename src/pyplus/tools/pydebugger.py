@@ -2,6 +2,7 @@ from ..science.units import Version
 from . import update
 from pdb import *
 
+
 class DebugError(BaseException):
     def __init__(self, *args):
         super().__init__(*args)

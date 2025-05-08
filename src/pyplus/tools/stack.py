@@ -3,6 +3,7 @@ from collections import deque
 from typing import TypeAlias, List
 from advancedlib.itertools import IteratorCalculator, IteratorRange, SampleIterator
 
+
 class FIFOStack:
     def __init__(self):
         self.stacks = []
@@ -108,6 +109,7 @@ class ThreadLIFOStack(SimpleQueue):
     def __str__(self):
         return self.__repr__()
 
+
 StackType: List[type] = [FIFOStack, LIFOStack]
 
 Stack: TypeAlias = LIFOStack
@@ -116,6 +118,9 @@ DefaultStack: TypeAlias = LIFOStack
 DefaultPipe: TypeAlias = FIFOStack
 Stack, Pipe = DefaultStack, DefaultPipe
 
+LIFO, FIFO = LIFOStack, FIFOStack
+
+
 def set_default_stack(stack_type: type):
     global Stack, DefaultStack
 
@@ -123,12 +128,14 @@ def set_default_stack(stack_type: type):
         Stack, DefaultStack = stack_type, stack_type
     else:
         raise ValueError(f"Invalid stack type: {type(stack_type)}")
-    
+
+
 def set_default_pipe(pipe_type: type):
     global Pipe, DefaultPipe
     if pipe_type in StackType:
         Pipe, DefaultPipe = pipe_type, pipe_type
     else:
         raise ValueError(f"Invalid pipe type: {type(pipe_type)}")
+
 
 del TypeAlias, List
