@@ -27,5 +27,5 @@ def wait(operator: bool):
     """
     Please use it in subprocess.
     """
-    while operator:
+    while not operator:
         pass

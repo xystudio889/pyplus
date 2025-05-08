@@ -1,34 +1,10 @@
-from importlib import *
-
-from toml import load, dump
-from site import getsitepackages
-
-with open(
-    getsitepackages()[1] + "/pyplus/data/config/module_config.toml", encoding="utf-8"
-) as f:
-    config = load(f)
-
-if not config["advancedlib"]["itertools"]["initializinged"]:
-    from . import all_module
-
-del load, dump, getsitepackages
-
-
-def get_import_moudle_path():
-    from sys import modules
-
-    if __name__ != "__main__":
-        main_moudle = modules["__main__"]
-        if hasattr(main_moudle, "__file__"):
-            return main_moudle.__file__
-        else:
-            return None
+import requests
+from importlib.metadata import version
+from packaging.version import parse
+from os import system
 
 
 def get_latest_version(package_name, include_prerelease: bool = False, url: str = None):
-    import requests
-    from packaging.version import parse
-
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         "Accept-Language": "en-US,en;q=0.9",
@@ -64,12 +40,9 @@ def get_latest_version(package_name, include_prerelease: bool = False, url: str 
 def check_update(
     package_name: str,
     include_prerelease: bool = False,
-    auto_update: bool = False,
     url: str = None,
+    auto_update: bool = False,
 ):
-    from os import system
-    from importlib.metadata import version
-
     installed_version = version(package_name)
     latest_version = get_latest_version(
         package_name, include_prerelease, url
@@ -90,3 +63,12 @@ def check_update(
             print("Update complete.")
     else:
         print("Already up to date.")
+
+
+# 获取单个包版本
+numpy_version = check_update(
+    "python-plus-tools",
+    include_prerelease=False,
+    url="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/json/python-plus-tools",
+    auto_update=True,
+)
