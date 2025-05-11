@@ -7,3 +7,4 @@ math = "If you set this config equal false,It will speed up the import,but advan
 advancedlib = "If you set this config equal false,It will speed up the import,but advancedlib needs to be import independently.Priority is pyscience > math > advancedlib."
 [advancedlib]
 showAntigravityWeb = "If you set this config equal true,every time you import this module,antigravity web will be open."
+[command]

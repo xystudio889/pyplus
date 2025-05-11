@@ -1,4 +1,3 @@
-from .type import _AllSimpleTypes as SimpleType
 from advancedlib.itertools import IteratorCalculator
 from advancedlib.operator.matical import select, space, cmp
 from typing_extensions import override, Union, TypeAlias

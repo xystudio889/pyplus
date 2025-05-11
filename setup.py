@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="2.1.0b1",
+    version="2.1.0rc1",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -17,14 +17,11 @@ setup(
         "matplotlib>=3.4",
         "torch>=2",
         "pandas>=2",
-        "matplotlib>=3.4",
-        "torch>=2",
-        "pandas>=2",
         "requests>=2.27",
         "sympy==1.13.1",
         "markdown>=3.3.6",
     ],
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     author="xystudio",
     author_email="173288240@qq.com",
     description="For the expansion of python content, it covers science, debugging and other fields.",
