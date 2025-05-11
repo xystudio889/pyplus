@@ -1,5 +1,8 @@
 from typing_extensions import Callable, Tuple, Any
-
+import os
+import psutil
+import subprocess
+from pathlib import Path
 
 def get_memory_usage(
     func: Callable,
@@ -11,7 +14,6 @@ def get_memory_usage(
 
     tracemalloc.start()
 
-    # 记录导入前内存快照
     before_snapshot = tracemalloc.take_snapshot()
 
     func(*args, **kwargs)
@@ -23,3 +25,5 @@ def get_memory_usage(
         for stat in after_snapshot.compare_to(before_snapshot, "traceback")
     )
     return total_increase / unit, after_snapshot.compare_to(before_snapshot, "lineno")
+
+del Callable, Tuple, Any

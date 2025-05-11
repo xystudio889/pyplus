@@ -1,8 +1,7 @@
 import requests
-
+from typing import List
 
 def get_country(ip=requests.get("https://ipinfo.io/json").json().get("ip", "8.8.8.8")):
-    import requests
 
     url = f"https://ipapi.co/{ip}/json/"
     response = requests.get(url).json()
@@ -52,3 +51,21 @@ def serve_html(html_path, port, background=True, auto_open=False):
         return process
     else:
         _run_server(html_path, port, auto_open)
+
+def fetch_url(main_url: str, backup_urls: List[str] = [], retries: int = 3, timeout: int = 5):
+    all_urls = [main_url] + backup_urls
+
+    for idx, url in enumerate(all_urls):
+        for attempt in range(retries + 1):
+            try:
+                response = requests.get(url, timeout=timeout)
+                response.raise_for_status()
+                return response
+            except (requests.Timeout, requests.ConnectionError) as e:            
+                if attempt == retries:
+                    if url != all_urls[-1]:
+                        pass
+                    break
+    raise TimeoutError
+
+del List

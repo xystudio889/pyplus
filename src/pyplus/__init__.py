@@ -19,7 +19,7 @@ if version_info > (3, 8):
 else:
     from typing_extensions import Dict, Union, Literal, Any, List
 
-global_config_path = Path.home() / "appdata" / "xystudio" / "pyplus" / "config.toml"
+global_config_path = Path.home() / "appdata" / "Roaming" /  "xystudio" / "pyplus" / "config.toml"
 local_config_path = Path.cwd() / ".xystudio" / "pyplus" / "config.toml"
 global_config: Dict[str, Dict[str, Any]] = {}
 local_config: Dict[str, Dict[str, Any]] = {}

@@ -14,5 +14,4 @@
 
 # pyplus
 ## 2.1
-Add some documents.
-Add remove config.
+Add some documents

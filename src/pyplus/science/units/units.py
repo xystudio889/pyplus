@@ -38,7 +38,7 @@ CLOSE = False
 
 all_command = [
     "CONVERT",
-    "SYN",
+    "SYNC",
     "SET_UNIT",
     "SET_ONE",
     "CHANGE_UNIT",

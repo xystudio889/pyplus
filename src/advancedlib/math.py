@@ -1,6 +1,6 @@
 from decimal import Decimal as long
 from fractions import Fraction as fraction
-from pyplus.tools.dec import dint, SimpleType, Calc
+from pyplus.tools.dec import dint, Calc
 
 import math
 import matplotlib

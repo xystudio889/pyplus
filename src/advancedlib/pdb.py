@@ -1,5 +1,5 @@
-from ..science.units import Version
-from . import update
+from pyplus.science.units import Version
+from pyplus import update
 from pdb import *
 
 
