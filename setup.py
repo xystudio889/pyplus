@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="2.1.0",
+    version="2.2.0.dev0",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -20,7 +20,11 @@ setup(
         "requests>=2.27",
         "sympy==1.13.1",
         "markdown>=3.3.6",
-        "numba>=0.55"
+        "numba>=0.55", 
+        "tomlconfigurer",#>=0.1",
+        "documenter",#>=0.1",
+        "backupworkspace==0.1",
+        "python-dotenv>=0.19",
     ],
     python_requires=">=3.8",
     author="xystudio",
@@ -38,10 +42,6 @@ setup(
     }, 
     extras_require={
         "dev": [
-            "tomlconfigure>=0.1",
-            "documenter>=0.1",
-            "backupworkspace==0.1",
-            "python-dotenv>=0.19",
         ],
         "test": [
             "pytest",
