@@ -76,6 +76,6 @@ update_info = { "1.0.0" = "" }
 update_time = { "1.0.0" = 2025-04-21 }
 
 [pre-release]
-version = "2.1.0a5"
-update_info = { "2.1.0a1" = "Add some pyplus.scinece.unit methods.", "2.1.0a2" = "Add documenter(bata).\nFix some bug.\nRepair the syntax of pyplus command.", "2.1.0a3" = "Add some pyplus command.\n Fix some bug.", "2.1.0a4" = "Add some pyplus command.", "2.1.0a5" = "Add some functions:\n\tpyplus.tools\n\t\tupdate:Add Version type.\n\t\tstack:Add default stack.\n\tadvancedlib.itertools:Add SamepleIterator." }
+version = "2.1.0rc1"
+update_info = { "2.1.0a3" = "Add some pyplus command.\n Fix some bug.", "2.1.0a4" = "Add some pyplus command.", "2.1.0a5" = "Add some functions:\n\tpyplus.tools\n\t\tupdate:Add Version type.\n\t\tstack:Add default stack.\n\tadvancedlib.itertools:Add SamepleIterator.", "2.1.0b1"="Add some functions:\n\tadvancedlib.operator: add some operator.\n\tpyplus.tools.stack: Add LIFO and FIFO class.\nmodulelib: Add get_lastest_version and check_update.", "2.1.0rc1" = "Add pyplus.tools.web.fetch_url.\nMove some pyplus.tools modules to advancedlib:\n\tpydebugger -> pdb, system -> os, type -> types." }
 update_time = { "2.1.0a1" = 2025-05-03, "2.1.0a2" = 2025-05-03, "2.1.0a3" = 2025-05-04, "2.1.0a4" = 2025-05-05 }
