@@ -1,11 +1,17 @@
-if not __import__("os").path.exists(__import__("sys").prefix+"\\share_variables\\") and __import__("os").path.isdir(__import__("sys").prefix+"\\share_variables"): 
-    if __import__("os").path.isdir(__import__("sys").prefix+"\\share_variables\\"): 
-        __import__("os").remove(__import__("sys").prefix+"\\share_variables\\")
-    __import__("os").mkdir(__import__("sys").prefix+"\\share_variables\\")
+from pathlib import Path
 
-share_temp={}
-UPLOAD="upload"
-DELETE="delete"
+if not __import__("os").path.exists(
+    __import__("sys").prefix + "\\share_variables\\"
+) and __import__("os").path.isdir(__import__("sys").prefix + "\\share_variables"):
+    if __import__("os").path.isdir(__import__("sys").prefix + "\\share_variables\\"):
+        __import__("os").remove(__import__("sys").prefix + "\\share_variables\\")
+    __import__("os").mkdir(__import__("sys").prefix + "\\share_variables\\")
+
+var_path = Path(__import__("sys").prefix, "share", "pyplus", "variables")
+share_temp = {}
+UPLOAD = "upload"
+DELETE = "delete"
+
 
 def append(**kwargs): 
     """Add the variable to temp, if variable in temp, set the variable."""
@@ -56,13 +62,26 @@ def share(do_type: str, share_name: str):
     "share the file variables."
     if do_type==UPLOAD: 
         import pickle
-        with open(__import__("sys").prefix+"\\share_variables\\"+share_name+".shr", "wb")as f: pickle.dump(share_temp, f)
-    elif do_type==DELETE: 
-        __import__("os").remove(__import__("sys").prefix+"\\share_variables\\"+share_name+".share")
-    else: 
-        raise KeyError("key"+str(type)+"is not a select.")
+
+        with open(
+            var_path / share_name + ".shr", "wb"
+        ) as f:
+            pickle.dump(share_temp, f)
+    elif do_type == DELETE:
+        __import__("os").remove(
+            var_path / share_name + ".share"
+        )
+    else:
+        raise KeyError("key" + str(type) + "is not a select.")
+
 
 def get_share_file(share_name: str): 
     "get the share file variables."
     from pickle import load
-    with open(__import__("sys").prefix+"\\share_variables\\"+share_name+".shr", "rb")as f: return load(f)
+
+    with open(
+        var_path / (share_name + ".shr"), "rb"
+    ) as f:
+        return load(f)
+
+del Path

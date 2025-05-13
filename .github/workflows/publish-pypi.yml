@@ -4,9 +4,9 @@ name: build_and_publish
 
 on:
   push:
-    branches: [ "master", "develop", "2.0-update" ]
+    branches: [ "master", "develop", "2.2.0" ]
   pull_request:
-    branches: [ "develop", "2.0-update" ]
+    branches: [ "develop", "2.2.0" ]
 
 permissions:
   contents: write

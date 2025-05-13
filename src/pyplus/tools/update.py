@@ -1,4 +1,7 @@
-'''A version control moudle.'''
+"""A version control moudle."""
+
+from ..science.units import Version
+
 VERSION = ""
 UPDATE_DOC = {}
 UPDATE_TIME = {}

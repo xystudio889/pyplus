@@ -189,5 +189,15 @@ class Clock:
             return self.time >= other*1000
         elif isinstance(other, Duration): 
             return self.time >= other.conversion("ms").number
-        else: 
-            raise TypeError(f"unsupported operand type(s) for >=: 'Clock' and '{type(other).__name__}'")
+        else:
+            raise TypeError(
+                f"unsupported operand type(s) for >=: 'Clock' and '{type(other).__name__}'"
+            )
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
+        return self.time
