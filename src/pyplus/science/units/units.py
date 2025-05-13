@@ -1,6 +1,8 @@
 from abc import ABC, abstractclassmethod
 import datetime
 from typing import Union, TypeAlias, List, Dict, Callable, Literal
+from typing import NamedTuple as ABCPoint
+from collections import namedtuple as NamedPoint
 from typing_extensions import override
 import operator
 
@@ -9,77 +11,123 @@ UnitClass:TypeAlias = Union[List[Union[int, str]], "Unit"]
 OPEN = True
 CLOSE = False
 
-CONVERT = 0
-SYN = 1
-SET_UNIT = 2
-SET_ONE = 3
-CHANGE_UNIT = 4
-OPERATOR = 5
-SET_UNIT = 6
-SET_NUMBER = 7 
-ADD = 8
-SUB = 9
-MUL = 10
-DIV = 11
-TRUEDIV = DIV
-FLOORDIV = 12
-MOD = 13
-POW = 14
-LSHIFT = 15
-RSHIFT = 16
-AND = 17
-XOR = 18
-OR = 19
-RLSHIFT = 20
-RRSHIFT = 21
+(
+    CONVERT,
+    SYNC,
+    SET_UNIT,
+    SET_ONE,
+    CHANGE_UNIT,
+    OPERATOR,
+    SET_UNIT,
+    SET_NUMBER,
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    TRUEDIV,
+    FLOORDIV,
+    MOD,
+    DIVMOD,
+    POW,
+    LSHIFT,
+    RSHIFT,
+    AND,
+    XOR,
+    OR,
+    RLSHIFT,
+    RRSHIFT,
+) = range(24)
 
 all_command = [
-"CONVERT", 
-"SYN", 
-"SET_UNIT", 
-"SET_ONE", 
-"CHANGE_UNIT", 
-"OPERATOR", 
-"SET_UNIT", 
-"SET_NUMBER", 
-"ADD", 
-"SUB", 
-"MUL", 
-"DIV", 
-"TRUEDIV", 
-"FLOORDIV", 
-"MOD", 
-"POW", 
-"LSHIFT", 
-"RSHIFT", 
-"AND", 
-"XOR", 
-"OR", 
-"RLSHIFT", 
-"RRSHIFT", 
+    "CONVERT",
+    "SYNC",
+    "SET_UNIT",
+    "SET_ONE",
+    "CHANGE_UNIT",
+    "OPERATOR",
+    "SET_UNIT",
+    "SET_NUMBER",
+    "ADD",
+    "SUB",
+    "MUL",
+    "DIV",
+    "TRUEDIV",
+    "FLOORDIV",
+    "MOD",
+    "POW",
+    "LSHIFT",
+    "RSHIFT",
+    "AND",
+    "XOR",
+    "OR",
+    "RLSHIFT",
+    "RRSHIFT",
 ]
 
 __all__ = all_command + [
-    "Unit", 
-    "ABCUnit", 
-    "Line", 
-    "Area", 
-    "Volume", 
-    "Capacity", 
-    "Duration", 
-    "Version", 
-    "datetime", 
-    "Points", 
-    "NoInputTypeUnit", 
-    "UnitWeight", 
-    "Weight", 
+    "BaseUnit",
+    "Unit",
+    "ABCUnit",
+    "Line",
+    "Area",
+    "Volume",
+    "Capacity",
+    "Duration",
+    "Version",
+    "datetime",
+    "Points",
+    "NoInputTypeUnit",
+    "UnitWeight",
+    "Weight",
     "Length",
-    "UnitPerUnit", 
-    "OPEN", 
-    "CLOSE"
+    "UnitPerUnit",
+    "OPEN",
+    "CLOSE",
 ]
 
-class Unit:
+
+class BaseUnit(object):
+    def __init__(self, unit: str, type: str = ""):
+        self.type = type
+        self.unit = unit
+
+    def __str__(self):
+        return self.unit
+
+    def __repr__(self):
+        return self.unit
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.unit == other.unit
+        else:
+            raise TypeError("value '" + str(other) + "' is Not same type")
+
+    def __ne__(self, value):
+        return not self.__eq__(value)
+
+    def __hash__(self):
+        return hash((self.unit, self.type))
+
+    def __bool__(self):
+        return bool(self.unit)
+
+    def __iter__(self):
+        return iter([self.type, self.unit])
+
+    def __getitem__(self, index):
+        return [self.type, self.unit][index]
+
+    def __setitem__(self, index, value):
+        if index == 0:
+            self.type = value
+        elif index == 1:
+            self.unit = value
+        else:
+            raise IndexError("list index out of range")
+
+
+class Unit(BaseUnit):
     """
         The unit class.It can use in science calculate.
 
@@ -91,12 +139,52 @@ class Unit:
         :param str unit: Your Unit unit.
         :param str = "" type: Your Unit type.
     """
-    conversion_list:Dict[str, int] = {}
 
-    def __init__(self, number: int, unit: str, type: str = "", type_custom: bool = True): 
-        self.type = type
+    (
+        CONVERT,
+        SYNC,
+        SET_UNIT,
+        SET_ONE,
+        CHANGE_UNIT,
+        OPERATOR,
+        SET_UNIT,
+        SET_NUMBER,
+        ADD,
+        SUB,
+        MUL,
+        DIV,
+        TRUEDIV,
+        FLOORDIV,
+        MOD,
+        DIVMOD,
+        POW,
+        LSHIFT,
+        RSHIFT,
+        AND,
+        XOR,
+        OR,
+        RLSHIFT,
+        RRSHIFT,
+    ) = range(24)
+
+    conversion_list: Dict[str, int] = {}
+
+    __slots__ = [
+        "number",
+        "unit",
+        "data",
+        "unit_list",
+        "unit_conversion",
+        "type_custom",
+        "type",
+    ]
+
+    def __init__(
+        self, number: int, unit: str, type: str = "", type_custom: bool = True
+    ):
+        super().__init__(unit, type)
+
         self.number = number
-        self.unit = unit
         self.data = [self.number, self.unit]
         self.unit_list:List[str] = []
         self.unit_conversion:List[int] = []
@@ -124,7 +212,7 @@ class Unit:
         unit = end_unit
         return self.__create_new(number, unit)
 
-    def _syn_type(self, other:"Unit"): 
+    def _sync_converion_list(self, other: "Unit"):
         """
         If two Unit's type is same,the other's convert list is self convert list.
 
@@ -179,9 +267,9 @@ class Unit:
         :param bool = False convert: If you want to set the unit too,set this variable True.
         :return: The input Unit class
         :rtype: Unit
-        '''
-        if isinstance(value, self.__class__): 
-            self._syn_type(value)
+        """
+        if isinstance(value, self.__class__):
+            self._sync_converion_list(value)
             number = value.number
             if conversion_unit: 
                 unit = value.unit
@@ -222,7 +310,7 @@ class Unit:
         else:
             n = self.__class__(num, unit)
 
-        self._syn_type(n)
+        self._sync_converion_list(n)
         return n
 
     def change_attr(self, func: Callable, value: UnitClass): 
@@ -243,8 +331,8 @@ class Unit:
         :return: The changed Unit class
         :rtype: Unit
         """
-        if isinstance(value, self.__class__): 
-            self._syn_type(value)
+        if isinstance(value, self.__class__):
+            self._sync_converion_list(value)
             number = func(self.number, value.convert(self.unit).number)
             return self.__create_new(number, self.unit)
         elif isinstance(value, list): 
@@ -275,8 +363,8 @@ class Unit:
         :return: The operator Unit class result.
         :rtype: bool
         """
-        if isinstance(value, self.__class__): 
-            self._syn_type(value)
+        if isinstance(value, self.__class__):
+            self._sync_converion_list(value)
             op = func(self.number, value.convert(self.unit).number)
         elif isinstance(value, list): 
             if value[1].lower() in self.conversion_list: 
@@ -334,9 +422,57 @@ class Unit:
             self.unit = value
         else: 
             raise IndexError("list index out of range")
-        
-    def __call__(self, command, *value): 
-        pass
+
+    def __call__(self, command, *value):
+        try:
+            if command == CONVERT:
+                return self.convert(value[0])
+            elif command == SYNC:
+                self._sync_converion_list(value[0])
+            elif command == SET_UNIT:
+                return self.set_unit(value[0])
+            elif command == SET_ONE:
+                return self.setone(value[0])
+            elif command == CHANGE_UNIT:
+                return self.change_attr(value[0], value[1])
+            elif command == OPERATOR:
+                return self.operator(value[0], value[1])
+            elif command == SET_NUMBER:
+                return self.set_num(value[0])
+            elif command == ADD:
+                return self.__add__(value[0])
+            elif command == SUB:
+                return self.__sub__(value[0])
+            elif command == MUL:
+                return self.__mul__(value[0])
+            elif command == DIV:
+                return self.__truediv__(value[0])
+            elif command == FLOORDIV:
+                return self.__floordiv__(value[0])
+            elif command == MOD:
+                return self.__mod__(value[0])
+            elif command == DIVMOD:
+                return self.__divmod__(value[0])
+            elif command == POW:
+                return self.__pow__(value[0])
+            elif command == LSHIFT:
+                return self.__lshift__(value[0])
+            elif command == RSHIFT:
+                return self.__rshift__(value[0])
+            elif command == AND:
+                return self.__and__(value[0])
+            elif command == XOR:
+                return self.__xor__(value[0])
+            elif command == OR:
+                return self.__or__(value[0])
+            elif command == RLSHIFT:
+                return self.__rlshift__(value[0])
+            elif command == RRSHIFT:
+                return self.__rrshift__(value[0])
+            else:
+                raise ValueError("command not found")
+        except IndexError:
+            raise ValueError(f"This command need more value.(got {len(value)})")
 
     def __add__(self, value): 
         return self.change_attr(operator.add, value)
@@ -355,9 +491,58 @@ class Unit:
     def __floordiv__(self, value): 
         number = self.number//value
         return self.__create_new(number, self.unit)
-    
-    def __pow__(self, value): 
-        self.change_attr(operator.pow, value)
+
+    def __divmod__(self, value):
+        return self.change_attr(divmod, value)
+
+    def __pow__(self, value, modulo=None):
+        if isinstance(value, self.__class__):
+            self._sync_converion_list(value)
+            number = pow(self.number, value.convert(self.unit).number, modulo)
+            return self.__create_new(number, self.unit)
+        elif isinstance(value, list):
+            if value[1].lower() in self.conversion_list:
+                value[0] *= (
+                    self.conversion_list[value[1]] / self.conversion_list[self.unit]
+                )
+                number = pow(self.number, value[0], modulo)
+                return self.__create_new(number, self.unit)
+            else:
+                raise KeyError("key'" + value[1] + "'is not in this class")
+        else:
+            raise TypeError(
+                "value '"
+                + str(value)
+                + "' is"
+                + str(type(value))
+                + ", not Unit or list."
+            )
+
+    def __setitem__(self, index, value):
+        if index == 0:
+            self.set_num(value)
+        elif index == 1:
+            self.set_unit(value)
+        else:
+            raise IndexError("list index out of range")
+
+    def __round__(self, n=None):
+        return self.__create_new(round(self.number, n), self.unit)
+
+    def __floor__(self):
+        import math
+
+        return self.__create_new(math.floor(self.number), self.unit)
+
+    def __ceil__(self):
+        import math
+
+        return self.__create_new(math.ceil(self.number), self.unit)
+
+    def __trunc__(self):
+        import math
+
+        return self.__create_new(math.trunc(self.number), self.unit)
 
     def __mod__(self, value): 
         self.change_attr(operator.mod, value)
@@ -487,6 +672,49 @@ class Unit:
     def __hash__(self):
         return hash(tuple(self.data))
 
+    def __bytes__(self):
+        return bytes([self.number] + [ord(c) for c in self.unit])
+
+    def __format__(self, format_spec):
+        if format_spec == "m":
+            return str(self.number) + "" + self.unit
+        elif format_spec == "s":
+            return str(self.number) + " " + self.unit
+        elif format_spec == "c":
+            return str(self.number) + "," + self.unit
+        elif format_spec == "n":
+            return str(self.number)
+        elif format_spec == "f":
+            return f"{self.number:.2f}" + self.unit
+        elif format_spec == "u":
+            return self.unit
+        elif format_spec == "r":
+            return self.unit + str(self.number)
+
+    def __bool__(self):
+        return bool(self.number)
+
+    def __getattr__(self, name):
+        raise AttributeError(
+            f"{self.__class__.__name__} object has no attribute '{name}'"
+        )
+
+    def __contains__(self, item):
+        return item in self.conversion_list
+
+    def __len__(self):
+        return len(self.conversion_list)
+
+    def __length_hint__(self):
+        return 2
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+
 class ABCUnit(ABC, Unit):
     '''
     Simply to create a customised UnitClass.
@@ -499,8 +727,8 @@ class ABCUnit(ABC, Unit):
     def __init__(self, number, unit, type = ""):
         super().__init__(number, unit, type)
 
-    @abstractclassmethod
     @override
+    @abstractclassmethod
     def __create_new(self, num, unit):
         '''This method must be defined.'''
         return super().__create_new(num, unit)
@@ -654,8 +882,11 @@ class Version:
     def __repr__(self): 
         return self.version
 
-class Points: 
-    def __init__(self, *dots): 
+
+class Points:
+    __slots__ = ["dots"]
+
+    def __init__(self, *dots):
         self.dots = dots
     
     @property

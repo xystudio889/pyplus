@@ -1,4 +1,33 @@
-from operator import add, sub, mul, truediv, floordiv, mod, pow, neg, pos, abs, invert, lshift, rshift, and_, or_, xor, concat, contains, gt, ge, lt, le, eq, ne
+from operator import (
+    add,
+    sub,
+    mul,
+    truediv,
+    floordiv,
+    mod,
+    pow,
+    neg,
+    pos,
+    abs,
+    invert,
+    lshift,
+    rshift,
+    and_,
+    or_,
+    xor,
+    iadd,
+    isub,
+    imul,
+    itruediv,
+    ifloordiv,
+    imod,
+    ipow,
+    ilshift,
+    irshift,
+    iand,
+    ior,
+    ixor,
+)
 
 def select(a:object, b:object ,select: bool) -> object:
     '''

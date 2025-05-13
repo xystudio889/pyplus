@@ -9,19 +9,21 @@ from pathlib import Path
 from site import getsitepackages
 
 from . import tools, science
+from .tools import *
+
 from sys import version_info
 from toml import load,dump
 
-if version_info > (3,8):
-    from typing import Dict, Union,Literal, Any
+if version_info > (3, 8):
+    from typing import Dict, Union, Literal, Any, List
 else:
-    from typing_extensions import Dict, Union, Literal, Any
+    from typing_extensions import Dict, Union, Literal, Any, List
 
-global_config_path = Path(getenv("appdata"),"xystudio", "pyplus", "config.toml")
-local_config_path = Path(".xystudio", "pyplus", "config.toml").absolute()
-global_config: Dict[str, Any] = {}
-local_config: Dict[str, Any] = {}
-union_config: Dict[str, Any] = {}
+global_config_path = Path.home() / "appdata" / "Roaming" /  "xystudio" / "pyplus" / "config.toml"
+local_config_path = Path.cwd() / ".xystudio" / "pyplus" / "config.toml"
+global_config: Dict[str, Dict[str, Any]] = {}
+local_config: Dict[str, Dict[str, Any]] = {}
+union_config: Dict[str, Dict[str, Any]] = {}
 
 LOCAL = "local"
 GLOBAL = "global"
@@ -56,8 +58,12 @@ if first_used_config == "local":
 else:
     union_config = local_config | global_config
 
-if union_config.get("library", {"showDeprecationWarning" : True}).get("showDeprecationWarning", True):
-    print(f"{tools.colors.Fore.MAGENTA}{tools.colors.Style.BRIGHT}note:write 'config('library.showDeprecationWarning', 'false')' and run code again to close this warning.")
+# if union_config.get("library", {"showDeprecationWarning": True}).get(
+#     "showDeprecationWarning", True
+# ):
+#     print(
+#         f"{tools.colors.Fore.MAGENTA}{tools.colors.Style.BRIGHT}note:write 'config('library.showDeprecationWarning', 'false')' and run code again to close this warning."
+#     )
 
 if union_config.get("import", {"pyscience" : True}).get("pyscience", True):
     from advancedlib import _all as advancedlib
@@ -65,22 +71,59 @@ elif union_config.get("import", {"advancedlib" : True}).get("advancedlib", True)
             from advancedlib import _no_math
 
 __all__ = [
-    "science" ,"tools",
-    "ALL", "NEW", "WILL", 
-    "get_update", "get_version_update_time", "get_version", "get_pre_version", "get_news_update_time", "get_new", "get_all", "get_will", "get_pre_update", "get_pre_version_update_time", "get_pre_news_update_time", "get_pre_new", "get_pre_all", 
-    "config", "get_config", "get_config_help"
+    "science",
+    "tools",
+    "ALL",
+    "NEW",
+    "WILL",
+    "get_update",
+    "get_version_update_time",
+    "get_version",
+    "get_pre_version",
+    "get_news_update_time",
+    "get_new",
+    "get_all",
+    "get_will",
+    "get_pre_update",
+    "get_pre_version_update_time",
+    "get_pre_news_update_time",
+    "get_pre_new",
+    "get_pre_all",
+    "get_all_alias",
+    "get_doc_help",
+    "open_doc",
+    "config",
+    "get_config",
+    "get_config_help",
 ]
 
 with open(getsitepackages()[1] + "\\pyplus\\data\\config\\update.toml", "r", encoding="utf-8") as f:
     updates = load(f)
 
-with open(getsitepackages()[1] + "\\pyplus\\data\\config\\get_config.toml", "r", encoding="utf-8") as f:
+with open(
+    getsitepackages()[1] + "\\pyplus\\data\\config\\config_help.toml",
+    "r",
+    encoding="utf-8",
+) as f:
     config_help = load(f)
 
-def get_update(namespace:str, version: str) -> Union[str, Dict[str, str]]: 
-    '''get the version update doc.'''
+with open(
+    getsitepackages()[1] + "\\pyplus\\data\\config\\alias.toml", "r", encoding="utf-8"
+) as f:
+    lang_alias = load(f)
+
+with open(
+    getsitepackages()[1] + "\\pyplus\\data\\config\\doc_help.toml",
+    "r",
+    encoding="utf-8",
+) as f:
+    doc_help = load(f)
+
+
+def get_update(namespace: str, version: str) -> Union[str, Dict[str, str]]:
+    """get the version update doc."""
     try:
-        open_dict: Dict[str, str] = updates['release'][namespace]['update_info']
+        open_dict = updates["release"][namespace]["update_info"]
     except KeyError:
         raise ValueError('This namespace not found.')
 
@@ -99,7 +142,7 @@ def get_update(namespace:str, version: str) -> Union[str, Dict[str, str]]:
 def get_version_update_time(namespace:str, version: str) -> Union[Dict[str, str], str]: 
     '''Get the version update time.'''
     try:
-        open_dict: Dict[str, str] = updates['release'][namespace]['update_time']
+        open_dict = updates["release"][namespace]["update_time"]
     except KeyError:
         raise ValueError('This namespace not found.')
 
@@ -142,7 +185,7 @@ def get_all(namespace:str):
 def get_pre_update(version: str) -> Union[Dict[str, str], str]: 
     '''Get the pre-release version update doc.'''
     try:
-        open_dict: Dict[str, Any] = updates['pre-release']['update_info']
+        open_dict: Dict[str, Any] = updates["pre-release"]["update_info"]
     except KeyError:
         raise ValueError('This namespace not found.')
 
@@ -158,10 +201,11 @@ def get_pre_update(version: str) -> Union[Dict[str, str], str]:
     print(out_obj)
     return out_obj
 
-def get_pre_version_update_time(version: str) -> Union[Dict[str, str], str]: 
-    '''Get the pre-release version update time.'''
+
+def get_pre_version_update_time(version: str) -> Union[Dict[str, str], str]:
+    """Get the pre-release version update time."""
     try:
-        open_dict: Dict[str, Any] = updates['pre-release']['update_time']
+        open_dict: Dict[str, Any] = updates["pre-release"]["update_time"]
     except KeyError:
         raise ValueError('This namespace not found.')
 
@@ -188,11 +232,74 @@ def get_pre_all():
     '''Get the all pre-release update doc.'''
     return get_pre_update(ALL)
 
-def open_doc(doc_name:str):
-    raise NotImplementedError("Document is not completed.")
 
-def config(config_name:str, value:Any, config_type: Literal["local", "global"] = first_used_config):
-    global local_config,global_config
+def open_doc(doc_name: str, lang="en"):
+    from markdown import markdown
+    from os import remove
+    from webbrowser import open as op
+    from time import sleep
+
+    doc_html_path = Path.cwd() / ".xystudio" / "pyplus" / "cache" / "doc.html"
+    doc_name = doc_name.lower()
+
+    for key, values in lang_alias.items():
+        if lang.lower() in values:
+            lang = key
+    lang = lang.lower()
+
+    makedirs(doc_html_path.parent, exist_ok=True)
+
+    if doc_name == "index":
+        op(getsitepackages()[1] + f"\\pyplus\\data\\docs\\web\\{lang}\\index.html")
+    else:
+        with open(
+            getsitepackages()[1]
+            + f"\\pyplus\\data\\docs\\markdown\\{lang}\\{doc_name}.md",
+            "r",
+            encoding="utf-8",
+        ) as f:
+            html = markdown(f.read())
+
+        with open(doc_html_path, "w", encoding="utf-8") as f:
+            f.write(html)
+
+        op(doc_html_path)
+        sleep(1)
+        remove(doc_html_path)
+
+
+def get_doc_help(doc_name: str = ALL):
+    print()
+    if doc_name == ALL:
+        for doc_namespace, doc_des in doc_help.items():
+            print(f"{doc_namespace} : {doc_des}")
+    else:
+        print(f"{doc_name}: {doc_help.get(doc_name, 'Not found.')}")
+
+
+def get_alias(lang: str = ALL):
+    print()
+    match_alias = None
+    for k, v in lang_alias.items():
+        if lang.lower() in v:
+            match_alias = k
+            break
+
+    if lang == ALL:
+        for k, v in lang_alias.items():
+            print(f"alias {k} -> {', '.join(v)}")
+    elif match_alias is not None:
+        print(f"alias {match_alias} -> {lang}")
+    else:
+        print(f"alias {lang} -> {', '.join(lang_alias.get(lang, ["Not found."]))}")
+
+
+def config(
+    config_name: str,
+    value: Any,
+    config_type: Literal["local", "global"] = first_used_config,
+):
+    global local_config, global_config, union_config
 
     if config_type == LOCAL:
         makedirs(local_config_path.parent, exist_ok=True)
@@ -224,7 +331,8 @@ def config(config_name:str, value:Any, config_type: Literal["local", "global"] =
             dump(config, f)
     else:
         raise ValueError("This config type not found.")
-    union_config |= config
+    union_config = global_config | local_config
+    return union_config
 
 def get_config(config_name:str) -> Union[None, Dict[str, Any]]:
     try:
@@ -246,17 +354,41 @@ def get_config_help(config_type:Union[str, Literal["all"]] = ALL):
                 print()
                 print(f"{doc_name} : {doc_des}")
             print(f"\n{'-'*30}\n")
-        print("\nWhen you set config,you need use 'paragraph name.config name'")
+        print(
+            "\nWhen you set config,you need use 'pyplus config set local name.config value'"
+        )
     else:
         print("*" * 22 + "-" * 8 + config_type + "- " * 8 + "*" * 22)
         try:
             for doc_name, doc_des in config_help[config_type].items():
                 print(f"{doc_name} : {doc_des}")
         except KeyError:
-            print("This document is not found.")
+            print(f"This config type {config_type} is not found.")
         else:
-            print("When you set config,you need use 'paragraph name.config name'")
+            print(
+                "When you set config,you need use 'pyplus config set local name.config value'"
+            )
+
+
+def remove_config(
+    config_name: str, config_type: Literal["local", "global"] = first_used_config
+):
+    global local_config, global_config, union_config
+
+    if config_type == LOCAL:
+        del local_config[config_name]
+        with open(local_config_path, "w", encoding="utf-8") as f:
+            dump(local_config, f)
+    elif config_type == GLOBAL:
+        del global_config[config_name]
+        with open(global_config_path, "w", encoding="utf-8") as f:
+            dump(global_config, f)
+    else:
+        raise ValueError("This config type not found.")
+
+    del union_config[config_name]
+    return union_config
 
 __version__ = get_version("main")
 
-del getsitepackages, Path, getenv, version_info
+del version_info, Dict, Union, Literal, Any
