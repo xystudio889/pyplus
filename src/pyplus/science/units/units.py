@@ -1,6 +1,8 @@
 from abc import ABC, abstractclassmethod
 import datetime
 from typing import Union, TypeAlias, List, Dict, Callable, Literal
+from typing import NamedTuple as ABCPoint
+from collections import namedtuple as NamedPoint
 from typing_extensions import override
 import operator
 

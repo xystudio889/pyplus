@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="2.1.0rc1",
+    version="2.1.0rc2",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -20,6 +20,7 @@ setup(
         "requests>=2.27",
         "sympy==1.13.1",
         "markdown>=3.3.6",
+        "numba>=0.55"
     ],
     python_requires=">=3.8",
     author="xystudio",

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 if not __import__("os").path.exists(
     __import__("sys").prefix + "\\share_variables\\"
 ) and __import__("os").path.isdir(__import__("sys").prefix + "\\share_variables"):
@@ -5,6 +7,7 @@ if not __import__("os").path.exists(
         __import__("os").remove(__import__("sys").prefix + "\\share_variables\\")
     __import__("os").mkdir(__import__("sys").prefix + "\\share_variables\\")
 
+var_path = Path(__import__("sys").prefix, "share", "pyplus", "variables")
 share_temp = {}
 UPLOAD = "upload"
 DELETE = "delete"
@@ -69,12 +72,12 @@ def share(do_type: str, share_name: str):
         import pickle
 
         with open(
-            __import__("sys").prefix + "\\share_variables\\" + share_name + ".shr", "wb"
+            var_path / share_name + ".shr", "wb"
         ) as f:
             pickle.dump(share_temp, f)
     elif do_type == DELETE:
         __import__("os").remove(
-            __import__("sys").prefix + "\\share_variables\\" + share_name + ".share"
+            var_path / share_name + ".share"
         )
     else:
         raise KeyError("key" + str(type) + "is not a select.")
@@ -85,6 +88,8 @@ def get_share_file(share_name: str):
     from pickle import load
 
     with open(
-        __import__("sys").prefix + "\\share_variables\\" + share_name + ".shr", "rb"
+        var_path / (share_name + ".shr"), "rb"
     ) as f:
         return load(f)
+
+del Path

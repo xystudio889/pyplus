@@ -4,9 +4,10 @@ from pyplus.tools.dec import dint, Calc
 
 import math
 import matplotlib
+
+import numba
 import numpy as np
 import numpy
-
 from sympy import *
 
 
