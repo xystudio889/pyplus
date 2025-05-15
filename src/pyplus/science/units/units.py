@@ -267,7 +267,7 @@ class Unit(BaseUnit):
         :param bool = False convert: If you want to set the unit too,set this variable True.
         :return: The input Unit class
         :rtype: Unit
-        """
+        '''
         if isinstance(value, self.__class__):
             self._sync_converion_list(value)
             number = value.number

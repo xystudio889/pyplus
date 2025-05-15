@@ -1,7 +1,7 @@
 import requests
 from typing import List
 
-def get_country(ip=requests.get("https://ipinfo.io/json").json().get("ip", "8.8.8.8")):
+def get_country(ip=requests.get("https://ipinfo.io/json", timeout=10).json()["ip"]):
 
     url = f"https://ipapi.co/{ip}/json/"
     response = requests.get(url).json()
