@@ -4,33 +4,35 @@ The python Plus - Pyplus
 the python's plus library.\n
 '''
 
-from os import makedirs, getenv
+from os import makedirs
 from pathlib import Path
 from site import getsitepackages
 
 from . import tools, science
 from .tools import *
 
-from sys import version_info
-from toml import load,dump
+import configurer
+import documenter
 
-if version_info > (3, 8):
-    from typing import Dict, Union, Literal, Any, List
-else:
-    from typing_extensions import Dict, Union, Literal, Any, List
+from configurer import get_config, config, remove_config, LOCAL, GLOBAL, ALL
+#from documenter import open_doc
+from toml import load
+from typing import Dict, Union, Literal, Any
 
 global_config_path = Path.home() / "appdata" / "Roaming" /  "xystudio" / "pyplus" / "config.toml"
 local_config_path = Path.cwd() / ".xystudio" / "pyplus" / "config.toml"
 global_config: Dict[str, Dict[str, Any]] = {}
 local_config: Dict[str, Dict[str, Any]] = {}
-union_config: Dict[str, Dict[str, Any]] = {}
 
-LOCAL = "local"
-GLOBAL = "global"
-
-ALL = "all"
 NEW = "news"
 WILL = "will"
+
+configurer.init(
+    default_config_type=LOCAL,
+    global_config_path=global_config_path,
+    local_config_path=local_config_path,
+    must_two_texts=True,
+)
 
 makedirs(global_config_path.parent, exist_ok=True)
 
@@ -40,7 +42,7 @@ else:
     with open(global_config_path, 'r', encoding="utf-8") as f:
         global_config = load(f)
 
-if global_config.get("library", {"autoCreateLocalConfig" : True}).get("autoCreateLocalConfig", True):
+if configurer.get_config("library", {"autoCreateLocalConfig": True}).get("autoCreateLocalConfig", True):
     makedirs(local_config_path.parent, exist_ok=True)
     if not(local_config_path.exists()):
         local_config_path.touch()
@@ -51,12 +53,8 @@ try:
 except FileNotFoundError:
     pass
 
-first_used_config: Literal["local", "global"] = global_config.get("library", {"firstUsedConfig" : "local"}).get('firstUsedConfig', "local")
-
-if first_used_config == "local":
-    union_config = global_config | local_config
-else:
-    union_config = local_config | global_config
+configurer.init(default_config_type=configurer.get_config("library", {"firstUsedConfig": LOCAL}).get("firstUsedConfig", LOCAL))
+first_used_config = configurer.initsettings["default_config_type"]
 
 # if union_config.get("library", {"showDeprecationWarning": True}).get(
 #     "showDeprecationWarning", True
@@ -65,15 +63,18 @@ else:
 #         f"{tools.colors.Fore.MAGENTA}{tools.colors.Style.BRIGHT}note:write 'config('library.showDeprecationWarning', 'false')' and run code again to close this warning."
 #     )
 
-if union_config.get("import", {"pyscience" : True}).get("pyscience", True):
+if configurer.get_config("library", {"autoCreateLocalConfig": True}).get("pyscience", True):
     from advancedlib import _all as advancedlib
-elif union_config.get("import", {"advancedlib" : True}).get("advancedlib", True):
+
+elif configurer.get_config("import", {"advancedlib" : True}).get("advancedlib", True):
             from advancedlib import _no_math
 
 __all__ = [
     "science",
     "tools",
     "ALL",
+    "LOCAL",
+    "GLOBAL",
     "NEW",
     "WILL",
     "get_update",
@@ -95,6 +96,7 @@ __all__ = [
     "config",
     "get_config",
     "get_config_help",
+    "remove_config"
 ]
 
 with open(getsitepackages()[1] + "\\pyplus\\data\\config\\update.toml", "r", encoding="utf-8") as f:
@@ -118,7 +120,6 @@ with open(
     encoding="utf-8",
 ) as f:
     doc_help = load(f)
-
 
 def get_update(namespace: str, version: str) -> Union[str, Dict[str, str]]:
     """get the version update doc."""
@@ -294,58 +295,6 @@ def get_alias(lang: str = ALL):
         print(f"alias {lang} -> {', '.join(lang_alias.get(lang, ["Not found."]))}")
 
 
-def config(
-    config_name: str,
-    value: Any,
-    config_type: Literal["local", "global"] = first_used_config,
-):
-    global local_config, global_config, union_config
-
-    if config_type == LOCAL:
-        makedirs(local_config_path.parent, exist_ok=True)
-        if not(local_config_path.exists()):
-            local_config_path.touch()
-
-        config_split = config_name.split(".", 1)
-        config_char_1 = config_split[0]
-        try:
-            config_char_2 = config_split[1]
-        except IndexError:
-            raise ValueError("config name must use 'a.b'.")
-
-        with open(local_config_path, "w+", encoding="utf-8") as f:
-            config = load(f) | {config_char_1 : {config_char_2 : value}}
-            local_config |= config
-            dump(config, f)
-    elif config_type == GLOBAL:
-        config_split = config_name.split(".")
-        config_char_1 = config_split[0]
-        try:
-            config_char_2 = config_split[1]
-        except IndexError:
-            raise ValueError("config name must use 'a.b'.")
-
-        with open(global_config_path, "w+", encoding="utf-8") as f:
-            config = load(f) | {config_char_1 : {config_char_2 : value}}
-            global_config |= config
-            dump(config, f)
-    else:
-        raise ValueError("This config type not found.")
-    union_config = global_config | local_config
-    return union_config
-
-def get_config(config_name:str) -> Union[None, Dict[str, Any]]:
-    try:
-        config_split = config_name.split(".")
-        config_char_1 = config_split[0]
-        try:
-            config_char_2 = config_split[1]
-            return union_config[config_char_1][config_char_2]
-        except IndexError:
-            raise ValueError("config name must use two texts, example : 'a.b'.")
-    except KeyError:
-        return None
-
 def get_config_help(config_type:Union[str, Literal["all"]] = ALL):
     if config_type == ALL:
         for config_t,config_docs in config_help.items():
@@ -370,25 +319,6 @@ def get_config_help(config_type:Union[str, Literal["all"]] = ALL):
             )
 
 
-def remove_config(
-    config_name: str, config_type: Literal["local", "global"] = first_used_config
-):
-    global local_config, global_config, union_config
-
-    if config_type == LOCAL:
-        del local_config[config_name]
-        with open(local_config_path, "w", encoding="utf-8") as f:
-            dump(local_config, f)
-    elif config_type == GLOBAL:
-        del global_config[config_name]
-        with open(global_config_path, "w", encoding="utf-8") as f:
-            dump(global_config, f)
-    else:
-        raise ValueError("This config type not found.")
-
-    del union_config[config_name]
-    return union_config
-
 __version__ = get_version("main")
 
-del version_info, Dict, Union, Literal, Any
+del Dict, Union, Literal, Any, configurer, Path, makedirs, load, getsitepackages
