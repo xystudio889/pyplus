@@ -1,8 +1,4 @@
-confidential.md
-debug.py
-.xystudio
-
-.venv/
+.*/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
