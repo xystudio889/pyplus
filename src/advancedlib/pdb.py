@@ -1,5 +1,4 @@
 from pyplus.science.units import Version
-from pyplus import update
 from pdb import *
 
 class DebugError(BaseException): 
