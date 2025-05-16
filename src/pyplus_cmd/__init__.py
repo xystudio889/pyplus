@@ -1,3 +1,5 @@
+import configurer
+
 from importlib.metadata import version
 from markdown import markdown
 from os import remove, system, makedirs
@@ -8,6 +10,7 @@ from site import getsitepackages
 from time import sleep
 from webbrowser import open as op
 
+from configurer import config, get_config, remove_config
 from toml import load, dump
 
 global_config_path = Path.home() / "appdata" / "xystudio" / "pyplus" / "config.toml"
@@ -22,6 +25,14 @@ GLOBAL = "global"
 ALL = "all"
 NEW = "news"
 WILL = "will"
+
+configurer.init(
+    default_config_type=LOCAL,
+    global_config_path=global_config_path,
+    local_config_path=local_config_path,
+    must_two_texts=True,
+)
+configurer.init(default_config_type=configurer.get_config("library", {"firstUsedConfig": LOCAL}).get("firstUsedConfig", LOCAL))
 
 makedirs(global_config_path.parent, exist_ok=True)
 
@@ -241,54 +252,6 @@ def get_alias(lang=ALL):
         print(f"alias {lang} -> {', '.join(lang_alias.get(lang, ["Not found."]))}")
 
 
-def config(config_name, value, config_type=first_used_config):
-    global local_config, global_config, union_config
-
-    if config_type == LOCAL:
-        makedirs(local_config_path.parent, exist_ok=True)
-        if not(local_config_path.exists()):
-            local_config_path.touch()
-
-        config_split = config_name.split(".", 1)
-        config_char_1 = config_split[0]
-        try:
-            config_char_2 = config_split[1]
-        except IndexError:
-            raise ValueError("config name must use 'a.b'.")
-
-        with open(local_config_path, "w+", encoding="utf-8") as f:
-            config = load(f) | {config_char_1 : {config_char_2 : value}}
-            local_config |= config
-            dump(config, f)
-    elif config_type == GLOBAL:
-        config_split = config_name.split(".")
-        config_char_1 = config_split[0]
-        try:
-            config_char_2 = config_split[1]
-        except IndexError:
-            raise ValueError("config name must use 'a.b'.")
-
-        with open(global_config_path, "w+", encoding="utf-8") as f:
-            config = load(f) | {config_char_1 : {config_char_2 : value}}
-            global_config |= config
-            dump(config, f)
-    else:
-        raise ValueError("This config type not found.")
-    union_config |= config
-
-
-def get_config(config_name):
-    try:
-        config_split = config_name.split(".")
-        config_char_1 = config_split[0]
-        try:
-            config_char_2 = config_split[1]
-            return union_config[config_char_1][config_char_2]
-        except IndexError:
-            raise ValueError("config name must use two texts, example : 'a.b'.")
-    except KeyError:
-        return None
-
 def get_config_help(config_type = ALL):
     if config_type == ALL:
         for config_t,config_docs in config_help.items():
@@ -342,23 +305,6 @@ def open_doc(doc_name, lang="en"):
         sleep(1)
         remove(doc_html_path)
 
-
-def remove_config(config_name, config_type=first_used_config):
-    global local_config, global_config, union_config
-
-    if config_type == LOCAL:
-        del local_config[config_name]
-        with open(local_config_path, "w", encoding="utf-8") as f:
-            dump(local_config, f)
-    elif config_type == GLOBAL:
-        del global_config[config_name]
-        with open(global_config_path, "w", encoding="utf-8") as f:
-            dump(global_config, f)
-    else:
-        raise ValueError("This config type not found.")
-
-    del union_config[config_name]
-    return union_config
 
 def xml_to_json(xmlFile, jsonFile):
     from xmltodict import parse
