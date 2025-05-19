@@ -11,8 +11,6 @@ start_time = time()  # 记录开始时间
 # 记录导入前内存快照
 before_snapshot = tracemalloc.take_snapshot()
 
-import pyplus  # 目标导入操作
-
 end_time = time()  # 记录结束时间
 
 print(f"\n【导入耗时】{end_time-start_time:.2f} s\n")  # 打印导入耗时

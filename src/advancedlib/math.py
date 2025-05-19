@@ -1,13 +1,15 @@
 from decimal import Decimal as long
 from fractions import Fraction as fraction
+from functools import cache
 from pyplus.tools.dec import dint, Calc
 
 import math
 import matplotlib
-
+import matplotlib.pyplot as plt
 import numba
 import numpy as np
 import numpy
+
 from sympy import *
 
 def safe_formula_solver(formula, **variables):
@@ -40,3 +42,29 @@ def joseph_problem(n: int) -> int:
         return 1
     else:
         return (joseph_problem(n - 1) + n - 1) % n + 1
+
+@cache
+def fib(n):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return fib(n-1) + fib(n-2)
+    
+def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, int(n**0.5)+1):
+        if n % i == 0:
+            return False
+    return True
+
+def is_palindrome(n):
+    return str(n) == str(n)[::-1]
+
+def is_even(n):
+    return n % 2 == 0
+
+def is_odd(n):
+        return n % 2 == 1

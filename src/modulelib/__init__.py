@@ -41,14 +41,13 @@ def get_latest_version(package_name, include_prerelease: bool = False, url: str 
         return None
 
     data = response.json()
-    all_versions = list(data["releases"].keys())  # 获取所有版本列表
+    all_versions = list(data["releases"].keys())
 
-    # 解析并过滤版本
     valid_versions = []
     for v in all_versions:
         version = parse(v)
         if not include_prerelease and version.is_prerelease:
-            continue  # 跳过预发布版本
+            continue
         valid_versions.append(version)
 
     if not valid_versions:
@@ -58,19 +57,32 @@ def get_latest_version(package_name, include_prerelease: bool = False, url: str 
 
 
 def check_update(
-    package_name: str,
-    include_prerelease: bool = False,
-    auto_update: bool = False,
-    url: str = None,
+    package_name,
+    include_prerelease = False,
+    auto_update = False,
+    first_url = "https://pypi.org/pypi/%P/json",
+    extra_urls = [], 
+    retry_times = 3, 
+    timeout = 10, 
+    **kwargs
 ):
-    from os import system
     from importlib.metadata import version
+    from packaging.version import parse
+    from os import system
 
     installed_version = version(package_name)
     latest_version = get_latest_version(
-        package_name, include_prerelease, url
-    )  # 使用上述PyPI API方法
-    if latest_version and installed_version != latest_version:
+        package_name, first_url, extra_urls, retry_times, timeout, include_prerelease, **kwargs
+    )
+    
+    if latest_version:
+        installed_parsed = parse(installed_version)
+        latest_parsed = parse(latest_version)
+        needs_update = installed_parsed < latest_parsed
+    else:
+        needs_update = False
+
+    if latest_version and needs_update:
         if include_prerelease:
             print(
                 f"New pre-release version available: {installed_version} → {latest_version}"

@@ -1,23 +1,23 @@
 import configurer
 
 from importlib.metadata import version
-from markdown import markdown
 from os import remove, system, makedirs
 from packaging.version import parse
 from pathlib import Path
 from requests import get, Timeout, ConnectionError
 from site import getsitepackages
+from sys import argv
 from time import sleep
 from webbrowser import open as op
 
 from configurer import config, get_config, remove_config
-from toml import load, dump
+from markdown import markdown
+from toml import load
 
 global_config_path = Path.home() / "appdata" / "xystudio" / "pyplus" / "config.toml"
 local_config_path = Path.cwd() / ".xystudio" / "pyplus" / "config.toml"
 global_config = {}
 local_config = {}
-union_config = {}
 
 LOCAL = "local"
 GLOBAL = "global"
@@ -32,7 +32,7 @@ configurer.init(
     local_config_path=local_config_path,
     must_two_texts=True,
 )
-configurer.init(default_config_type=configurer.get_config("library", {"firstUsedConfig": LOCAL}).get("firstUsedConfig", LOCAL))
+configurer.init(default_config_type=configurer.get_config("library.firstUsedConfig", LOCAL))
 
 makedirs(global_config_path.parent, exist_ok=True)
 
@@ -42,7 +42,7 @@ else:
     with open(global_config_path, 'r', encoding="utf-8") as f:
         global_config = load(f)
 
-if global_config.get("library", {"autoCreateLocalConfig" : True}).get("autoCreateLocalConfig", True):
+if global_config.get("library.autoCreateLocalConfig"):
     makedirs(local_config_path.parent, exist_ok=True)
     if not(local_config_path.exists()):
         local_config_path.touch()
@@ -53,12 +53,7 @@ try:
 except FileNotFoundError:
     pass
 
-first_used_config = global_config.get("library", {"firstUsedConfig" : "local"}).get('firstUsedConfig', "local")
-
-if first_used_config == "local":
-    union_config = global_config | local_config
-else:
-    union_config = local_config | global_config
+first_used_config = configurer.initsettings.get("library", {"firstUsedConfig": LOCAL}).get("firstUsedConfig", LOCAL)
 
 with open(getsitepackages()[1] + "\\pyplus\\data\\config\\update.toml", "r", encoding="utf-8") as f:
      updates = load(f)
@@ -451,139 +446,6 @@ def json_to_toml(jsonFile, tomlFile):
     ) as f2:
         dump(load(f1), f2, allow_unicode=True)
 
-
-def xml_to_jsons(xml):
-    from xmltodict import parse
-    from json import dumps
-
-    json = dumps(parse(xml), indent=4)
-
-    return "".join(json)
-
-
-def csv_to_tsvs(csv):
-    o = []
-
-    for i in csv:
-        o.append(i.replace(", ", "\t"))
-
-    return o
-
-
-def tsv_to_csvs(tsv):
-    o = []
-
-    for i in tsv:
-        o.append(i.replace("\t", ", "))
-
-    return o
-
-
-def csv_to_jsons(csv):
-    return "".join(csv.split(","))
-
-
-def json_to_xmls(json):
-    from json import loads
-    from xml.etree.ElementTree import Element, tostring
-
-    json_obj = loads(json)
-
-    if isinstance(json_obj, dict):
-        element = Element(json_obj.get("tag", "root"))
-        for key, value in json_obj.items():
-            if key == "tag":
-                continue  # Skip the 'tag' key
-            sub_element = Element(key)
-            sub_element.text = str(value)
-            element.append(sub_element)
-    elif isinstance(json_obj, list):
-        element = Element("root")
-        for item in json_obj:
-            sub_element = Element("item")
-            if isinstance(item, dict):
-                for k, v in item.items():
-                    sub_sub_element = Element(k)
-                    sub_sub_element.text = str(v)
-                    sub_element.append(sub_sub_element)
-            else:
-                sub_element.text = str(item)
-            element.append(sub_element)
-
-    o = (
-        tostring(element, encoding="utf-8", method="xml", xml_declaration=True).decode(
-            "utf-8"
-        )
-    ).splitlines()[1]
-
-    return o
-
-
-def yaml_to_jsons(yaml):
-    from yaml import load
-    from json import dumps
-    from os import remove
-
-    with open("convert_cache", "w", encoding="utf-8") as f:
-        f.write(yaml)
-
-    with open("convert_cache", "r", encoding="utf-8") as f:
-        return dumps(load(f))
-
-    remove("convert_cache")
-
-
-def json_to_yamls(json):
-    from json import load
-    from yaml import dump
-    from os import remove
-
-    with open("convert_cache", "w", encoding="utf-8") as f:
-        f.write(json)
-
-    with open("convert_cache", "r", encoding="utf-8") as f:
-        return dump(load(f))
-
-    remove("convert_cache")
-
-
-def toml_to_jsons(toml):
-    from toml import load
-    from json import dumps
-    from os import remove
-
-    with open("convert_cache", "w", encoding="utf-8") as f:
-        f.write(toml)
-
-    with open("convert_cache", "r", encoding="utf-8") as f:
-        return dumps(load(f))
-
-    remove("convert_cache")
-
-
-def json_to_tomls(jsonFile, tomlFile):
-    from json import load
-    from toml import dump
-
-    with open(jsonFile, "r", encoding="utf-8") as f1, open(
-        tomlFile, "w", encoding="utf-8"
-    ) as f2:
-        dump(load(f1), f2, allow_unicode=True)
-
-
-def json_to_tomls(toml):
-    from json import load
-    from toml import dumps
-    from os import remove
-
-    with open("convert_cache", "w", encoding="utf-8") as f:
-        f.write(toml)
-
-    with open("convert_cache", "r", encoding="utf-8") as f:
-        return dumps(load(f))
-
-    remove("convert_cache")
-
 def fetch_url(main_url, backup_urls = [], retries = 3, timeout = 5, **kwargs):
     all_urls = [main_url] + backup_urls
 
@@ -639,7 +501,15 @@ def check_update(
     latest_version = _get_latest_version(
         package_name, first_url, extra_urls, retry_times, timeout, include_prerelease, **kwargs
     )
-    if latest_version and installed_version != latest_version:
+    
+    if latest_version:
+        installed_parsed = parse(installed_version)
+        latest_parsed = parse(latest_version)
+        needs_update = installed_parsed < latest_parsed
+    else:
+        needs_update = False
+
+    if latest_version and needs_update:
         if include_prerelease:
             print(
                 f"New pre-release version available: {installed_version} → {latest_version}"
@@ -663,31 +533,7 @@ __version__ = get_version("main")
 def shell():
     print("starting shell...")
 
-    from pyplus import tools, science
-    import decorators
-
-    from pyplus.tools import (
-        colors,
-        dec,
-        database_convert,
-        formula,
-        geohash,
-        # password,
-        permission,
-        pydebugger,
-        stack,
-        tag,
-        type,
-        update,
-        web,
-        variables,
-        pycppio,
-        wait,
-        latex,
-        geohash
-    )
-
-    # from . import () # deprecated moudle
+    import pyplus
 
     print(f'python-plus-tools {get_version("main")} ({get_pre_version()})')
     print("type exit to exit the shell.")
@@ -858,14 +704,53 @@ def main() -> None:
     )
 
     check_namespace = subparsers.add_parser(
-        "version",
+        "check",
         help="update & check pyplus.",
-    ).add_subparsers(dest="check_command", required=True)
+    )
+    check_namespace.add_argument(
+        "-a", "--auto_update", help="Auto update pyplus.", action="store_true"
+    )
+    check_namespace.add_argument(
+        "-p", "--pre", help="Include pre-release version.", action="store_true"
+    )
+    check_namespace.add_argument(
+        "-f", "--first-url", help="The first url to get the update.", default="https://pypi.org/pypi/%P/json"
+    )
+    check_namespace.add_argument(
+        "-e", "--extra-urls", help="The extra urls to get the update.", nargs="+"
+    )
+    check_namespace.add_argument(
+        "-r", "--retry-times", help="The retry times to get the update.", type=int, default=3
+    )
+    check_namespace.add_argument(
+        "-t", "--timeout", help="The timeout to get the update.", type=int, default=10
+    )
 
-    backup_namespace = subparsers.add_parser(
+    subparsers.add_parser(
         "backup",
         help="backup your project.",
     ).add_subparsers(dest="backup_command", required=True)
+
+    convert_namespace = subparsers.add_parser(
+        "convert",
+        help="convert some datafile.",
+    ).add_subparsers(dest="convert_command", required=True)
+    convert_namespace.add_parser(
+        "types_to_convert", 
+        help="convert types to convert."
+    )
+    convert_namespace.add_parser(
+        "convert_types", 
+        help="convert datafile to types."
+    )
+    convert_namespace.add_parser(
+        "convert_file", 
+        help="convert datafile."
+    )
+    convert_namespace.add_parser(
+        "output_file", 
+        help="output datafile."
+    )
 
     args = parser.parse_args()
 
@@ -882,12 +767,23 @@ def main() -> None:
         elif args.config_command == "get_help":
             get_config_help(args.document_description)
         elif args.config_command == "get":
+            print(args)
             if hasattr(args, "_local"):
-                print(local_config)
+                if args._local is None:
+                    print(local_config)
+                else:
+                    print(args._local)
+                    print(get_config(args._local, namespace=LOCAL))
             if hasattr(args, "_global"):
-                print(global_config)
+                if args._global is None:
+                    print(global_config)
+                else:
+                    print(get_config(args._global, namespace=GLOBAL))
             if hasattr(args, "_all"):
-                print(union_config)
+                if args._all is None:
+                    print(local_config | global_config)
+                else:
+                    print(get_config(args._all, namespace=ALL))
         elif args.config_command == "remove":
             remove_config(args.setting, args.remove_namespace)
     elif args.version:
@@ -917,14 +813,13 @@ def main() -> None:
         shell()
     elif args.command == "get_ailas":
         get_alias(args.lang)
-    elif args.command == "version":
-        print("This command is not implemented yet.")
+    elif args.command == "check":
+        check_update("python-plus-tools", args.pre, args.auto_update, args.first_url, [] if args.extra_urls is None else args.extra_urls, args.retry_times, args.timeout)
     elif args.command == "backup":
-        print("This command is not implemented yet.")
+        system(f"backup {argv[2:]}")
     else:
         print("Command not found.Press 'pyplus -h' to get help.")
 
 
 if __name__ == "__main__":
-    check_update("numpy", first_url="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/json/%P", include_prerelease=True, timeout=5)
     main()
