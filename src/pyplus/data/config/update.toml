@@ -77,5 +77,5 @@ update_time = { "1.0.0" = 2025-04-21 }
 
 [pre-release]
 version = "2.2.0.dev3"
-update_info = { "2.2.0.dev1" = "Fix some bug.", "2.2.0.dev3" = "Fix some bug.\nAdd some command." }
-update_time = { "2.2.0.dev1" = 2025-05-15, "2.2.0.dev3" = 2025-05-19 }
+update_info = { "2.2.0.dev1" = "Fix some bug.", "2.2.0.dev2" = "Modify some code.", "2.2.0.dev3" = "Fix some bug.\nAdd some command." }
+update_time = { "2.2.0.dev1" = 2025-05-15, "2.2.0.dev2" = 2025-05-16, "2.2.0.dev3" = 2025-05-19 }
