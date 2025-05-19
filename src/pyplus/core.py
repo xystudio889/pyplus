@@ -14,7 +14,7 @@ from typing import Dict, Union, Literal, Any
 
 colorama.init(autoreset=True)
 
-global_config_path = Path.home() / "appdata" / "Roaming" /  "xystudio" / "pyplus" / "config.toml"
+global_config_path = Path.home() / ".xystudio" / "pyplus" / "config.toml"
 local_config_path = Path.cwd() / ".xystudio" / "pyplus" / "config.toml"
 global_config: Dict[str, Dict[str, Any]] = {}
 local_config: Dict[str, Dict[str, Any]] = {}
@@ -28,7 +28,7 @@ configurer.init(
     local_config_path=local_config_path,
     must_two_texts=True,
 )
-configurer.init(default_config_type=configurer.get_config("library", {"firstUsedConfig": LOCAL}).get("firstUsedConfig", LOCAL))
+configurer.init(default_config_type=configurer.get_config("library.firstUsedConfig"))
 
 makedirs(global_config_path.parent, exist_ok=True)
 
@@ -38,7 +38,7 @@ else:
     with open(global_config_path, 'r', encoding="utf-8") as f:
         global_config = load(f)
 
-if configurer.get_config("library", {"autoCreateLocalConfig": True}).get("autoCreateLocalConfig", True):
+if configurer.get_config("library.autoCreateLocalConfig"):
     makedirs(local_config_path.parent, exist_ok=True)
     if not(local_config_path.exists()):
         local_config_path.touch()
@@ -108,9 +108,7 @@ with open(
 ) as f:
     deprecated_modules = load(f)
 
-if configurer.get_config("library", {"showDeprecationWarning": True}).get(
-    "showDeprecationWarning", True
-) and deprecated_modules:
+if configurer.get_config("library.showDeprecationWarning", {"showDeprecationWarning": True}) and deprecated_modules:
     for k, v in deprecated_modules.items():
         print(f"{colorama.Fore.YELLOW}{colorama.Style.BRIGHT}warning: {k} module is deprecated scice {v["deprecated_version"]} and will be removed in {v['remove_version']} version.Please use {v['replace_module']} instead.{colorama.Style.RESET_ALL}")
     print(
@@ -314,4 +312,4 @@ def get_config_help(config_type:Union[str, Literal["all"]] = ALL):
                 "When you set config,you need use 'pyplus config set local name.config value'"
             )
 
-del Dict, Union, Literal, Any, configurer, Path, makedirs, load, getsitepackages
+del Dict, Union, Literal, Any, configurer, Path, colorama, makedirs, load, getsitepackages
