@@ -446,6 +446,27 @@ def json_to_toml(jsonFile, tomlFile):
     ) as f2:
         dump(load(f1), f2, allow_unicode=True)
 
+def json_to_csv(jsonFile, csvFile):
+    from json import load
+    import csv
+
+    with open(jsonFile, "r", encoding="utf-8") as f1, open(
+        csvFile, "w", encoding="utf-8", newline=""
+    ) as f2:
+        json_obj = load(f1)
+        if isinstance(json_obj, dict):
+            writer = csv.DictWriter(f2, fieldnames=json_obj.keys())
+            writer.writeheader()
+            writer.writerow(json_obj)
+        elif isinstance(json_obj, list):
+            keys = set()
+            for item in json_obj:
+                keys.update(item.keys())
+            writer = csv.DictWriter(f2, fieldnames=keys)
+            writer.writeheader()
+            for item in json_obj:
+                writer.writerow(item)
+
 def fetch_url(main_url, backup_urls = [], retries = 3, timeout = 5, **kwargs):
     all_urls = [main_url] + backup_urls
 
@@ -734,20 +755,20 @@ def main() -> None:
     convert_namespace = subparsers.add_parser(
         "convert",
         help="convert some datafile.",
-    ).add_subparsers(dest="convert_command", required=True)
-    convert_namespace.add_parser(
+    )
+    convert_namespace.add_argument(
         "types_to_convert", 
         help="convert types to convert."
     )
-    convert_namespace.add_parser(
+    convert_namespace.add_argument(
         "convert_types", 
         help="convert datafile to types."
     )
-    convert_namespace.add_parser(
+    convert_namespace.add_argument(
         "convert_file", 
         help="convert datafile."
     )
-    convert_namespace.add_parser(
+    convert_namespace.add_argument(
         "output_file", 
         help="output datafile."
     )
@@ -817,6 +838,47 @@ def main() -> None:
         check_update("python-plus-tools", args.pre, args.auto_update, args.first_url, [] if args.extra_urls is None else args.extra_urls, args.retry_times, args.timeout)
     elif args.command == "backup":
         system(f"backup {argv[2:]}")
+    elif args.command == "convert":
+        if args.types_to_convert == "json":
+            if args.convert_types == "xml":
+                xml_to_json(args.convert_file, args.output_file)
+            elif args.convert_types == "csv":
+                csv_to_json(args.convert_file, args.output_file)
+            elif args.convert_types == "yaml":
+                yaml_to_json(args.convert_file, args.output_file)
+            elif args.convert_types == "toml":
+                toml_to_json(args.convert_file, args.output_file)
+            elif args.convert_types == "pickle":
+                pickle_to_json(args.convert_file, args.output_file)
+            else:
+                print("Not support convert to json.(choose from `xml`, `csv`, `yaml`, `toml`, `pickle`.")
+        elif args.types_to_convert == "xml":
+            if args.convert_types == "json":
+                json_to_xml(args.convert_file, args.output_file)
+            else:
+                print("Not support convert to xml.(choose from `json`)")
+        elif args.types_to_convert == "csv":
+            if args.convert_types == "json":
+                json_to_csv(args.convert_file, args.output_file)
+            else:
+                print("Not support convert to csv.(choose from `json`)")
+        elif args.types_to_convert == "yaml":
+            if args.convert_types == "json":
+                json_to_yaml(args.convert_file, args.output_file)
+            else:
+                print("Not support convert to yaml.(choose from `json`)")
+        elif args.types_to_convert == "toml":
+            if args.convert_types == "json":
+                json_to_toml(args.convert_file, args.output_file)
+            else:
+                print("Not support convert to toml.(choose from `json`)")
+        elif args.types_to_convert == "pickle":
+            if args.convert_types == "json":
+                json_to_pickle(args.convert_file, args.output_file)
+            else:
+                print("Not support convert to pickle.(choose from `json`)")
+        else:
+            print(f"Not support convert from {args.types_to_convert} to {args.convert_types}.(choose from `json`, `xml`, `csv`, `yaml`, `toml`, `pickle.")
     else:
         print("Command not found.Press 'pyplus -h' to get help.")
 
