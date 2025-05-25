@@ -1,3 +1,4 @@
+import backup
 import configurer
 
 from importlib.metadata import version
@@ -492,14 +493,13 @@ def _get_latest_version(
     response = fetch_url(url, extra_urls, retries, timeout, **kwargs)
 
     data = response.json()
-    all_versions = list(data["releases"].keys())  # 获取所有版本列表
+    all_versions = list(data["releases"].keys())
 
-    # 解析并过滤版本
     valid_versions = []
     for v in all_versions:
         version = parse(v)
         if not include_prerelease and version.is_prerelease:
-            continue  # 跳过预发布版本
+            continue
         valid_versions.append(version)
 
     if not valid_versions:
@@ -747,11 +747,6 @@ def main() -> None:
         "-t", "--timeout", help="The timeout to get the update.", type=int, default=10
     )
 
-    subparsers.add_parser(
-        "backup",
-        help="backup your project.",
-    ).add_subparsers(dest="backup_command", required=True)
-
     convert_namespace = subparsers.add_parser(
         "convert",
         help="convert some datafile.",
@@ -772,6 +767,39 @@ def main() -> None:
         "output_file", 
         help="output datafile."
     )
+
+    backup_namespace = subparsers.add_parser(
+        "backup",
+        help="backup your project.",
+    ).add_subparsers(dest="backup_command", required=True)
+
+    backup.manager.exclude_rules = backup._read_exclude_rules()
+
+    create_parser = backup_namespace.add_parser("create", help="Create a backup")
+    create_parser.add_argument("name", help="Name of the backup")
+
+    delete_parser = backup_namespace.add_parser("delete", help="Delete a backup")
+    delete_parser.add_argument("name", help="Name of the backup")
+    delete_parser.add_argument("-i", "--index", type=int, help="Index of the backup to delete")
+
+    extract_parser = backup_namespace.add_parser("extract", help="Extract a backup")
+    extract_parser.add_argument("name", help="Name of the backup")
+    extract_parser.add_argument("-i", "--index", type=int, help="Index of the backup to extract")
+
+    verify_parser = backup_namespace.add_parser("verify", help="Verify a backup")
+    verify_parser.add_argument("name", help="Name of the backup")
+    verify_parser.add_argument("hash", help="Expected SHA256 hash of the backup")
+    verify_parser.add_argument("-i", "--index", type=int, help="Index of the backup to verify")
+
+    exclude_parser = backup_namespace.add_parser("exclude", help="Add an exclusion rule")
+    exclude_parser.add_argument("pattern", help="Pattern to exclude")
+    exclude_parser.add_argument(
+        "-t", "--type", default="wildcard", choices=["exact", "wildcard"], help="Type of match"
+    )
+
+    get_hash_parser = backup_namespace.add_parser("get_hash", help="Get the SHA256 hash of a backup")
+    get_hash_parser.add_argument("name", help="Name of the backup")
+    get_hash_parser.add_argument("-i", "--index", type=int, help="Index of the backup to get the hash")
 
     args = parser.parse_args()
 
@@ -837,7 +865,25 @@ def main() -> None:
     elif args.command == "check":
         check_update("python-plus-tools", args.pre, args.auto_update, args.first_url, [] if args.extra_urls is None else args.extra_urls, args.retry_times, args.timeout)
     elif args.command == "backup":
-        system(f"backup {argv[2:]}")
+        if args.backup_command == "create":
+            backup_path = backup.manager.create_backup(args.name)
+            print(f"Backup created: {backup_path}")
+        elif args.backup_command == "delete":
+            backup.manager.delete_backup(args.name, args.index)
+            print(f"Backup deleted: {args.name}")
+        elif args.backup_command == "extract":
+            backup.manager.extract_backup(args.name, args.index)
+        elif args.backup_command == "verify":
+            if backup.manager.verify_backup_hash(args.name, args.hash, args.index):
+                print(f"Backup verified: {args.name}, result: {True}")
+            else:
+                print(f"Backup verification failed: {args.name}, result: {False}")
+        elif args.backup_command == "exclude":
+            backup.manager.add_exclusion_rule(args.pattern, args.type)
+            backup._write_exclude_rules(backup.manager.exclude_rules)
+            print(f"Exclusion rule added: {args.pattern}")
+        elif args.backup_command == "get_hash":
+            print(backup.manager.get_backup_hash(args.name, args.index))
     elif args.command == "convert":
         if args.types_to_convert == "json":
             if args.convert_types == "xml":
@@ -880,7 +926,7 @@ def main() -> None:
         else:
             print(f"Not support convert from {args.types_to_convert} to {args.convert_types}.(choose from `json`, `xml`, `csv`, `yaml`, `toml`, `pickle.")
     else:
-        print("Command not found.Press 'pyplus -h' to get help.")
+        parser.print_help()
 
 
 if __name__ == "__main__":
