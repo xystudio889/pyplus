@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="2.2.0a1",
+    version="2.1.1",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -23,7 +23,7 @@ setup(
         "numba>=0.55", 
         "tomlconfigurer>=0.2",
         "documenter",#>=0.1",
-        "backupworkspace==0.1",#==0.2",
+        "backupworkspace==0.2.1",
         "python-dotenv>=0.19",
     ],
     python_requires=">=3.8",
@@ -41,8 +41,7 @@ setup(
         ]
     }, 
     extras_require={
-        "dev": [
-        ],
+        "dev": [],
         "test": [
             "pytest",
             "pytest-cov",

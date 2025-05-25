@@ -68,3 +68,34 @@ def is_even(n):
 
 def is_odd(n):
         return n % 2 == 1
+
+def c(n, r):
+    return math.factorial(n) // (math.factorial(r) * math.factorial(n-r))
+
+def lcm(a, b):
+    return abs(a*b) // math.gcd(a, b)
+
+def hcf(a, b):
+    return math.gcd(a, b)
+
+def prime_factors(n):
+    factors = []
+    d = 2
+    while d*d <= n:
+        while (n % d) == 0:
+            factors.append(d)
+            n //= d
+        d += 1
+    if n > 1:
+        factors.append(n)
+    return factors
+
+def prime_divisors(n):
+    factors = prime_factors(n)
+    divisors = []
+    for factor in factors:
+        divisors.append(c(n, factor))
+    return divisors
+
+def p(n, r):
+    return c(n, r) // math.factorial(r)

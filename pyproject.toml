@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "python-plus-tools"
-version = "2.2.0a1"
+version = "2.1.1"
 authors = [{ name = "xystudio", email = "173288240@qq.com" }]
 description = "For the expansion of python content, it covers science, debugging and other fields."
 readme = { file = "README-PYPI.md", content-type = "text/markdown" }
@@ -33,7 +33,7 @@ dependencies = [
     "numba>=0.55", 
     "tomlconfigurer>=0.2", 
     "documenter", #>=0.1",
-    "backupworkspace==0.1",
+    "backupworkspace==0.2.1",
     "python-dotenv>=0.19",
 ]
 keywords = ["debug", "science", "pyplus", "tools", "python"]
