@@ -2,12 +2,12 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="2.1.1",
+    version="2.1.2.dev0",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
         "toml>=0.10", 
-        "indently-decorators>=1.0,<=1.1", 
+        "indently-decorators==1.0", 
         "cryptography>=3.4", 
         "imgfit>=0.3", 
         "colorama>=0.1", 
@@ -18,11 +18,11 @@ setup(
         "torch>=2",
         "pandas>=2",
         "requests>=2.27",
-        "sympy==1.13.1",
+        "sympy>=1.8",
         "markdown>=3.3.6",
         "numba>=0.55", 
         "tomlconfigurer>=0.2",
-        "documenter",#>=0.1",
+        "documenter>=0.1",
         "backupworkspace==0.2.1",
         "python-dotenv>=0.19",
     ],
