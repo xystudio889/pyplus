@@ -1,5 +1,7 @@
+# pyplus main packages
+
 toml>=0.10 
-indently-decorators>=1.0, <=1.1 
+indently-decorators==1.0 
 cryptography>=3.4 
 imgfit>=0.3 
 colorama>=0.1 
@@ -10,28 +12,29 @@ matplotlib>=3.4
 torch>=2
 pandas>=2
 requests>=2.27
-sympy==1.13.1
+sympy>=1.8
 markdown>=3.3.6
 numba>=0.55 
-tomlconfigurer>=0.1
-documenter 
-#>=0.1
-backupworkspace==0.1
-#==0.2
+tomlconfigurer>=0.2
+documenter>=0.1
+backupworkspace==0.2.1
 python-dotenv>=0.19
-# test module
-pytest>=6.2
-pytest-cov>=2.12
-pytest-mock>=3.6
-pytest-xdist>=2.5
-coverage>=6.2
-codecov>=2.1.12
-black>=22.3.0
-mypy>=0.931
-flake8>=4.0.1
-pylint>=2.12.2
-pyright>=1.1.213
-# build module
-setuptools>=61
-twine>=4.0.0
-build>=0.7.0
+
+# dev
+
+# test
+pytest
+pytest-cov
+pytest-mock
+pytest-xdist
+coverage
+codecov
+black
+mypy
+flake8
+pylint
+pyright
+# build
+build
+setuptools
+twine

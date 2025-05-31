@@ -1,6 +1,5 @@
 from os import makedirs
 from pathlib import Path
-from site import getsitepackages
 
 import colorama
 
@@ -16,6 +15,7 @@ colorama.init(autoreset=True)
 
 global_config_path = Path.home() / ".xystudio" / "pyplus" / "config.toml"
 local_config_path = Path.cwd() / ".xystudio" / "pyplus" / "config.toml"
+data_path = Path(__file__).parent / "data" / "config"
 global_config: Dict[str, Dict[str, Any]] = {}
 local_config: Dict[str, Dict[str, Any]] = {}
 
@@ -79,30 +79,30 @@ __all__ = [
     "remove_config", 
 ]
 
-with open(getsitepackages()[1] + "\\pyplus\\data\\config\\update.toml", "r", encoding="utf-8") as f:
+with open(data_path / "update.toml", "r", encoding="utf-8") as f:
     updates = load(f)
 
 with open(
-    getsitepackages()[1] + "\\pyplus\\data\\config\\config_help.toml",
+    data_path / "config_help.toml",
     "r",
     encoding="utf-8",
 ) as f:
     config_help = load(f)
 
 with open(
-    getsitepackages()[1] + "\\pyplus\\data\\config\\alias.toml", "r", encoding="utf-8"
+    data_path / "alias.toml", "r", encoding="utf-8"
 ) as f:
     lang_alias = load(f)
 
 with open(
-    getsitepackages()[1] + "\\pyplus\\data\\config\\doc_help.toml",
+    data_path / "doc_help.toml",
     "r",
     encoding="utf-8",
 ) as f:
     doc_help = load(f)
 
 with open(
-    getsitepackages()[1] + "\\pyplus\\data\\config\\deprecated.toml",
+    data_path / "deprecated.toml",
     "r",
     encoding="utf-8",
 ) as f:
@@ -245,11 +245,10 @@ def open_doc(doc_name: str, lang="en"):
     makedirs(doc_html_path.parent, exist_ok=True)
 
     if doc_name == "index":
-        op(getsitepackages()[1] + f"\\pyplus\\data\\docs\\web\\{lang}\\index.html")
+        op(data_path.parent / "docs" / "web" / lang / "index.html")
     else:
         with open(
-            getsitepackages()[1]
-            + f"\\pyplus\\data\\docs\\markdown\\{lang}\\{doc_name}.md",
+            data_path.parent / "docs" / "markdown" / lang / f"{doc_name}.md"
             "r",
             encoding="utf-8",
         ) as f:
@@ -312,4 +311,4 @@ def get_config_help(config_type:Union[str, Literal["all"]] = ALL):
                 "When you set config,you need use 'pyplus config set local name.config value'"
             )
 
-del Dict, Union, Literal, Any, configurer, Path, colorama, makedirs, load, getsitepackages
+del Dict, Union, Literal, Any, configurer, Path, colorama, makedirs, load

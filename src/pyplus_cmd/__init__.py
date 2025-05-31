@@ -6,8 +6,6 @@ from os import remove, system, makedirs
 from packaging.version import parse
 from pathlib import Path
 from requests import get, Timeout, ConnectionError
-from site import getsitepackages
-from sys import argv
 from time import sleep
 from webbrowser import open as op
 
@@ -17,6 +15,7 @@ from toml import load
 
 global_config_path = Path.home() / "appdata" / "xystudio" / "pyplus" / "config.toml"
 local_config_path = Path.cwd() / ".xystudio" / "pyplus" / "config.toml"
+data_path = Path(__file__).parents[1] / "pyplus" / "data" / "config"
 global_config = {}
 local_config = {}
 
@@ -56,23 +55,23 @@ except FileNotFoundError:
 
 first_used_config = configurer.initsettings.get("library", {"firstUsedConfig": LOCAL}).get("firstUsedConfig", LOCAL)
 
-with open(getsitepackages()[1] + "\\pyplus\\data\\config\\update.toml", "r", encoding="utf-8") as f:
+with open(data_path / "update.toml", "r", encoding="utf-8") as f:
      updates = load(f)
 
 with open(
-    getsitepackages()[1] + "\\pyplus\\data\\config\\config_help.toml",
+    data_path / "config_help.toml",
     "r",
     encoding="utf-8",
 ) as f:
     config_help = load(f)
 
 with open(
-    getsitepackages()[1] + "\\pyplus\\data\\config\\alias.toml", "r", encoding="utf-8"
+    data_path / "alias.toml", "r", encoding="utf-8"
 ) as f:
     lang_alias = load(f)
 
 with open(
-    getsitepackages()[1] + "\\pyplus\\data\\config\\doc_help.toml",
+    data_path / "doc_help.toml",
     "r",
     encoding="utf-8",
 ) as f:
@@ -204,11 +203,10 @@ def open_doc(doc_name, lang="en"):
     makedirs(doc_html_path.parent, exist_ok=True)
 
     if doc_name == "index":
-        op(getsitepackages()[1] + f"\\pyplus\\data\\docs\\web\\{lang}\\index.html")
+        op(data_path.parent / "docs" / "web" / lang / "index.html")
     else:
         with open(
-            getsitepackages()[1]
-            + f"\\pyplus\\data\\docs\\markdown\\{lang}\\{doc_name}.md",
+            data_path.parent / f"docs" / "markdown" / lang / f"{doc_name}.md",
             "r",
             encoding="utf-8",
         ) as f:
@@ -284,11 +282,10 @@ def open_doc(doc_name, lang="en"):
     makedirs(doc_html_path.parent, exist_ok=True)
 
     if doc_name == "index":
-        op(getsitepackages()[1] + f"\\pyplus\\data\\docs\\web\\{lang}\\index.html")
+        op(data_path.parent / "docs" / "web" / lang / "index.html")
     else:
         with open(
-            getsitepackages()[1]
-            + f"\\pyplus\\data\\docs\\markdown\\{lang}\\{doc_name}.md",
+            data_path.parent / f"docs" / "markdown" / lang / f"{doc_name}.md",
             "r",
             encoding="utf-8",
         ) as f:
