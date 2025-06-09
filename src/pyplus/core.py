@@ -7,7 +7,7 @@ import configurer
 import documenter
 
 from configurer import get_config, config, remove_config, LOCAL, GLOBAL, ALL
-#from documenter import open_doc
+from documenter import open_doc, get_alias
 from toml import load
 from typing import Dict, Union, Literal, Any
 
@@ -29,6 +29,13 @@ configurer.init(
     must_two_texts=True,
 )
 configurer.init(default_config_type=configurer.get_config("library.firstUsedConfig"))
+documenter.init(have_alias=True, 
+                have_lang=True, 
+                cache_path=Path.cwd() / ".xystudio" / "pyplus" / "cache" / "doc.html", 
+                doc_path=data_path.parent / "docs" / "markdown", 
+                use_index_path=True,
+                index_path=data_path.parent / "docs" / "web",
+                )
 
 makedirs(global_config_path.parent, exist_ok=True)
 
@@ -228,40 +235,6 @@ def get_pre_all():
     return get_pre_update(ALL)
 
 
-def open_doc(doc_name: str, lang="en"):
-    from markdown import markdown
-    from os import remove
-    from webbrowser import open as op
-    from time import sleep
-
-    doc_html_path = Path.cwd() / ".xystudio" / "pyplus" / "cache" / "doc.html"
-    doc_name = doc_name.lower()
-
-    for key, values in lang_alias.items():
-        if lang.lower() in values:
-            lang = key
-    lang = lang.lower()
-
-    makedirs(doc_html_path.parent, exist_ok=True)
-
-    if doc_name == "index":
-        op(data_path.parent / "docs" / "web" / lang / "index.html")
-    else:
-        with open(
-            data_path.parent / "docs" / "markdown" / lang / f"{doc_name}.md"
-            "r",
-            encoding="utf-8",
-        ) as f:
-            html = markdown(f.read())
-
-        with open(doc_html_path, "w", encoding="utf-8") as f:
-            f.write(html)
-
-        op(doc_html_path)
-        sleep(1)
-        remove(doc_html_path)
-
-
 def get_doc_help(doc_name: str = ALL):
     print()
     if doc_name == ALL:
@@ -269,23 +242,6 @@ def get_doc_help(doc_name: str = ALL):
             print(f"{doc_namespace} : {doc_des}")
     else:
         print(f"{doc_name}: {doc_help.get(doc_name, 'Not found.')}")
-
-
-def get_alias(lang: str = ALL):
-    print()
-    match_alias = None
-    for k, v in lang_alias.items():
-        if lang.lower() in v:
-            match_alias = k
-            break
-
-    if lang == ALL:
-        for k, v in lang_alias.items():
-            print(f"alias {k} -> {', '.join(v)}")
-    elif match_alias is not None:
-        print(f"alias {match_alias} -> {lang}")
-    else:
-        print(f"alias {lang} -> {', '.join(lang_alias.get(lang, ["Not found."]))}")
 
 
 def get_config_help(config_type:Union[str, Literal["all"]] = ALL):
@@ -311,4 +267,4 @@ def get_config_help(config_type:Union[str, Literal["all"]] = ALL):
                 "When you set config,you need use 'pyplus config set local name.config value'"
             )
 
-del Dict, Union, Literal, Any, configurer, Path, colorama, makedirs, load
+del Dict, Union, Literal, Any, configurer, Path, colorama, makedirs, load, documenter
