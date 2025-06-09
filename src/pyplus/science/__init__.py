@@ -10,9 +10,9 @@ from advancedlib import operator as operators
 
 from pathlib import Path
 from os import getenv
+from advancedlib.importlib import LazyImport
 
 from . import units
-from . import pyscience
 
 from toml import load 
 
@@ -27,13 +27,12 @@ try:
 except FileNotFoundError:
     config = {}
 
-if config.get("import", {"pyscience" : True}).get("pyscience", True):
+if config.get("import", {}).get("lazy", True):
+    pyscience = LazyImport("pyplus.science.pyscience")
+else:
     from . import pyscience
-    from . import pyscience as science
-elif config.get("import", {"math" : False}).get("math", False):
-    from advancedlib import math
 
-del load, getenv, Path
+del load, getenv, Path, LazyImport
 
 __all__ = [
     "units", "pyscience", "science", "operators", "operator"
