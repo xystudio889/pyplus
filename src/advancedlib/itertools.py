@@ -1,5 +1,6 @@
 from itertools import *
 from functools import reduce
+from typing import Iterable, Callable
 
 def create_generator(values: list):
     return (i for i in values)
@@ -177,3 +178,5 @@ class SampleIterator:
 
 
 Iterator = SampleIterator
+
+del Iterable, Callable

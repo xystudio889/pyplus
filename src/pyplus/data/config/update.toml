@@ -76,6 +76,6 @@ update_info = { "1.0.0" = "", "1.1.0" = "Add all_module function", "1.1.1" = "Ad
 update_time = { "1.0.0" = 2025-04-21, "1.1.0" = 2025-05-02, "1.1.1" = 2025-05-10 }
 
 [pre-release]
-version = "2.1.2.dev1"
-update_info = { "2.2.0.dev1" = "" }
-update_time = { "2.2.0.dev1" = 2025-05-25 }
+version = "2.1.2a2"
+update_info = { "2.1.2a2"="Optimize performance\nDeprecated some config:import.advancedlib,import.pyscience,import.math -> Default use lazy import,set config 'import.lazy' to disenable lazy import." }
+update_time = {  }
