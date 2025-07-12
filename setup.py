@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="2.1.2a3",
+    version="2.1.2a4",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -56,6 +56,10 @@ setup(
             "pyright",
         ],
         "build": ["build", "setuptools", "twine"],
+        "visualenv": ["uv", "pipenv", "visualenv"],
+        "web": ["django", "flask"],
+        "studio": ["AI-APIChat","auto-upgrade-pip", "linecode", "imgfit", "ACE-calc"],
+        "other": ["pygame", "jupyterlab"],
     },
     classifiers=[
         "Programming Language :: Python :: 3",

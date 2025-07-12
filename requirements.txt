@@ -24,6 +24,7 @@ python-dotenv>=0.19
 
 # test
 pytest
+flake8
 pytest-cov
 pytest-mock
 pytest-xdist
@@ -34,7 +35,28 @@ mypy
 flake8
 pylint
 pyright
+
 # build
 build
 setuptools
 twine
+
+# virtualenv
+uv
+pipenv
+virtualenv
+
+# web
+django
+flask
+
+# this studio
+AI-APIChat
+auto-upgrade-pip
+linecode
+imgfit
+ACE-calc
+
+#other
+jupyterlab
+pygame
