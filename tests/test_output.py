@@ -11,6 +11,7 @@ def check_value(input_value):
     else:
         print(f"输入值: {input_value}")
 
+
 # 测试用例
 check_value(123)  # 输出: 输入值: 123
 check_value("hello")  # 输出: 输入值: hello

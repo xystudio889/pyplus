@@ -2,20 +2,24 @@ from importlib import *
 
 from toml import load, dump
 from site import getsitepackages
+from pathlib import Path
 
-with open(getsitepackages()[1] + "/pyplus/data/config/module_config.toml", encoding="utf-8") as f:
+with open(
+    Path(__file__).parents[1] / "pyplus/data/config/module_config.toml",
+    encoding="utf-8",
+) as f:
     config = load(f)
 
 if not config["advancedlib"]["itertools"]["initializinged"]:
     from . import all_module
 
-del load, dump, getsitepackages
 
 def get_import_moudle_path():
     from sys import modules
+
     if __name__ != "__main__":
-        main_moudle = modules['__main__']
-        if hasattr(main_moudle, '__file__'):
+        main_moudle = modules["__main__"]
+        if hasattr(main_moudle, "__file__"):
             return main_moudle.__file__
         else:
             return None
@@ -58,13 +62,13 @@ def get_latest_version(package_name, include_prerelease: bool = False, url: str 
 
 def check_update(
     package_name,
-    include_prerelease = False,
-    auto_update = False,
-    first_url = "https://pypi.org/pypi/%P/json",
-    extra_urls = [], 
-    retry_times = 3, 
-    timeout = 10, 
-    **kwargs
+    include_prerelease=False,
+    auto_update=False,
+    first_url="https://pypi.org/pypi/%P/json",
+    extra_urls=[],
+    retry_times=3,
+    timeout=10,
+    **kwargs,
 ):
     from importlib.metadata import version
     from packaging.version import parse
@@ -72,9 +76,15 @@ def check_update(
 
     installed_version = version(package_name)
     latest_version = get_latest_version(
-        package_name, first_url, extra_urls, retry_times, timeout, include_prerelease, **kwargs
+        package_name,
+        first_url,
+        extra_urls,
+        retry_times,
+        timeout,
+        include_prerelease,
+        **kwargs,
     )
-    
+
     if latest_version:
         installed_parsed = parse(installed_version)
         latest_parsed = parse(latest_version)
@@ -98,3 +108,17 @@ def check_update(
             print("Update complete.")
     else:
         print("Already up to date.")
+
+
+class LazyImport:
+    def __init__(self, module_name):
+        self.module_name = module_name
+        self._module = None
+
+    def __getattr__(self, name):
+        if self._module is None:
+            self._module = import_module(self.module_name)
+        return getattr(self._module, name)
+
+
+del Path, load, dump, getsitepackages

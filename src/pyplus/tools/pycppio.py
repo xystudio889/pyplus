@@ -2,19 +2,20 @@ class _OStream:
     def __lshift__(self, value):
         print(value, end="")
         return self
-    
+
+
 class _IStream:
     def __init__(self):
         self.inputs = []
 
-    def __rshift__(self, value:object):
+    def __rshift__(self, value: object):
         self.inputs.append(input())
         return self
 
     def clear_inputs(self):
         self.inputs.clear()
         return self
-    
+
     def get_inputs(self):
         return self.inputs
 

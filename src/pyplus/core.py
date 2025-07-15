@@ -29,29 +29,30 @@ configurer.init(
     must_two_texts=True,
 )
 configurer.init(default_config_type=configurer.get_config("library.firstUsedConfig"))
-documenter.init(have_alias=True, 
-                have_lang=True, 
-                cache_path=Path.cwd() / ".xystudio" / "pyplus" / "cache" / "doc.html", 
-                doc_path=data_path.parent / "docs" / "markdown", 
-                use_index_path=True,
-                index_path=data_path.parent / "docs" / "web",
-                )
+documenter.init(
+    have_alias=True,
+    have_lang=True,
+    cache_path=Path.cwd() / ".xystudio" / "pyplus" / "cache" / "doc.html",
+    doc_path=data_path.parent / "docs" / "markdown",
+    use_index_path=True,
+    index_path=data_path.parent / "docs" / "web",
+)
 
 makedirs(global_config_path.parent, exist_ok=True)
 
 if not global_config_path.exists():
     global_config_path.touch()
 else:
-    with open(global_config_path, 'r', encoding="utf-8") as f:
+    with open(global_config_path, "r", encoding="utf-8") as f:
         global_config = load(f)
 
 if configurer.get_config("library.autoCreateLocalConfig"):
     makedirs(local_config_path.parent, exist_ok=True)
-    if not(local_config_path.exists()):
+    if not (local_config_path.exists()):
         local_config_path.touch()
 
 try:
-    with open(local_config_path, 'r', encoding="utf-8") as f:
+    with open(local_config_path, "r", encoding="utf-8") as f:
         local_config = load(f)
 except FileNotFoundError:
     pass
@@ -83,7 +84,7 @@ __all__ = [
     "config",
     "get_config",
     "get_config_help",
-    "remove_config", 
+    "remove_config",
 ]
 
 with open(data_path / "update.toml", "r", encoding="utf-8") as f:
@@ -96,9 +97,7 @@ with open(
 ) as f:
     config_help = load(f)
 
-with open(
-    data_path / "alias.toml", "r", encoding="utf-8"
-) as f:
+with open(data_path / "alias.toml", "r", encoding="utf-8") as f:
     lang_alias = load(f)
 
 with open(
@@ -115,90 +114,125 @@ with open(
 ) as f:
     deprecated_modules = load(f)
 
-if configurer.get_config("library.showDeprecationWarning", {"showDeprecationWarning": True}) and deprecated_modules:
+if (
+    configurer.get_config(
+        "library.showDeprecationWarning", {"showDeprecationWarning": True}
+    )
+    and deprecated_modules
+):
     for k, v in deprecated_modules.items():
-        print(f"{colorama.Fore.YELLOW}{colorama.Style.BRIGHT}warning: {k} module is deprecated scice {v["deprecated_version"]} and will be removed in {v['remove_version']} version.Please use {v['replace_module']} instead.{colorama.Style.RESET_ALL}")
+        print(
+            f"{colorama.Fore.YELLOW}{colorama.Style.BRIGHT}warning: {k} module is deprecated scice {v["deprecated_version"]} and will be removed in {v['remove_version']} version.Please use {v['replace_module']} instead.{colorama.Style.RESET_ALL}"
+        )
     print(
         f"{colorama.Fore.MAGENTA}{colorama.Style.BRIGHT}note:write 'config('library.showDeprecationWarning', 'false')' and run code again to close this warning.{colorama.Style.RESET_ALL}"
     )
+
 
 def get_update(namespace: str, version: str) -> Union[str, Dict[str, str]]:
     """get the version update doc."""
     try:
         open_dict = updates["release"][namespace]["update_info"]
     except KeyError:
-        raise ValueError('This namespace not found.')
+        raise ValueError("This namespace not found.")
 
-    if version == ALL: 
-        out_obj: Union[Dict[str, str], str]  = open_dict
-    elif version == NEW: 
-        out_obj = open_dict.get(updates['release'][namespace]['version'], "This version is not found. Maybe it is not recorded.")
-    elif version == WILL: 
-        out_obj = open_dict.get(WILL, "This version is not found. Maybe it is not recorded.")
-    else: 
-        out_obj = open_dict.get(str(version), "This version is not found. Maybe it is not recorded.")
-    
+    if version == ALL:
+        out_obj: Union[Dict[str, str], str] = open_dict
+    elif version == NEW:
+        out_obj = open_dict.get(
+            updates["release"][namespace]["version"],
+            "This version is not found. Maybe it is not recorded.",
+        )
+    elif version == WILL:
+        out_obj = open_dict.get(
+            WILL, "This version is not found. Maybe it is not recorded."
+        )
+    else:
+        out_obj = open_dict.get(
+            str(version), "This version is not found. Maybe it is not recorded."
+        )
+
     print(out_obj)
     return out_obj
 
-def get_version_update_time(namespace:str, version: str) -> Union[Dict[str, str], str]: 
-    '''Get the version update time.'''
+
+def get_version_update_time(namespace: str, version: str) -> Union[Dict[str, str], str]:
+    """Get the version update time."""
     try:
         open_dict = updates["release"][namespace]["update_time"]
     except KeyError:
-        raise ValueError('This namespace not found.')
+        raise ValueError("This namespace not found.")
 
-    if version == ALL: 
+    if version == ALL:
         out_obj = open_dict
-    elif version == NEW: 
-        out_obj = open_dict.get(updates['release'][namespace]['version'], "This version is not found. Maybe it is not recorded.")
-    elif version == WILL: 
-        raise ValueError('`get_version_update_time` cannot get will update time.')
-    else: 
-        out_obj = open_dict.get(str(version), "This version is not found. Maybe it is not recorded.")
-    
+    elif version == NEW:
+        out_obj = open_dict.get(
+            updates["release"][namespace]["version"],
+            "This version is not found. Maybe it is not recorded.",
+        )
+    elif version == WILL:
+        raise ValueError("`get_version_update_time` cannot get will update time.")
+    else:
+        out_obj = open_dict.get(
+            str(version), "This version is not found. Maybe it is not recorded."
+        )
+
     print(out_obj)
     return out_obj
 
-def get_will(namespace:str): 
-    '''Get the will update doc.'''
+
+def get_will(namespace: str):
+    """Get the will update doc."""
     return get_update(namespace, WILL)
 
-def get_version(namespace:str) -> str:
-    '''Get the version.'''
-    return updates['release'][namespace]['version']
+
+def get_version(namespace: str) -> str:
+    """Get the version."""
+    return updates["release"][namespace]["version"]
+
 
 def get_pre_version() -> str:
-    '''Get the pre version.'''
-    return updates['pre-release']['version']
+    """Get the pre version."""
+    return updates["pre-release"]["version"]
 
-def get_news_update_time(namespace:str): 
-    '''Get the new update time.'''
+
+def get_news_update_time(namespace: str):
+    """Get the new update time."""
     return get_version_update_time(namespace, NEW)
 
-def get_new(namespace:str): 
-    '''Get the new update doc.'''
+
+def get_new(namespace: str):
+    """Get the new update doc."""
     return get_update(namespace, NEW)
 
-def get_all(namespace:str): 
-    '''Get the all update doc.'''
+
+def get_all(namespace: str):
+    """Get the all update doc."""
     return get_update(namespace, ALL)
 
-def get_pre_update(version: str) -> Union[Dict[str, str], str]: 
-    '''Get the pre-release version update doc.'''
+
+def get_pre_update(version: str) -> Union[Dict[str, str], str]:
+    """Get the pre-release version update doc."""
     try:
         open_dict: Dict[str, Any] = updates["pre-release"]["update_info"]
     except KeyError:
-        raise ValueError('This namespace not found.')
+        raise ValueError("This namespace not found.")
 
-    if version == ALL: 
+    if version == ALL:
         out_obj = open_dict
-    elif version == NEW: 
-        out_obj = open_dict.get(updates['pre-release']['version'], "This version is not found. Maybe it is not recorded.")
-    elif version == WILL: 
-        out_obj = open_dict.get(WILL, "This version is not found. Maybe it is not recorded.")
-    else: 
-        out_obj = open_dict.get(str(version), "This version is not found. Maybe it is not recorded.")
+    elif version == NEW:
+        out_obj = open_dict.get(
+            updates["pre-release"]["version"],
+            "This version is not found. Maybe it is not recorded.",
+        )
+    elif version == WILL:
+        out_obj = open_dict.get(
+            WILL, "This version is not found. Maybe it is not recorded."
+        )
+    else:
+        out_obj = open_dict.get(
+            str(version), "This version is not found. Maybe it is not recorded."
+        )
 
     print(out_obj)
     return out_obj
@@ -209,29 +243,37 @@ def get_pre_version_update_time(version: str) -> Union[Dict[str, str], str]:
     try:
         open_dict: Dict[str, Any] = updates["pre-release"]["update_time"]
     except KeyError:
-        raise ValueError('This namespace not found.')
+        raise ValueError("This namespace not found.")
 
-    if version == NEW: 
+    if version == NEW:
         out_obj = open_dict
-    elif version == NEW: 
-        out_obj = open_dict.get(updates['pre-release']['version'], "This version is not found. Maybe it is not recorded.")
-    elif version == WILL: 
-        raise ValueError('`get_version_update_time` cannot get will update time.')
-    else: 
-        out_obj = open_dict.get(str(version), "This version is not found. Maybe it is not recorded.")
+    elif version == NEW:
+        out_obj = open_dict.get(
+            updates["pre-release"]["version"],
+            "This version is not found. Maybe it is not recorded.",
+        )
+    elif version == WILL:
+        raise ValueError("`get_version_update_time` cannot get will update time.")
+    else:
+        out_obj = open_dict.get(
+            str(version), "This version is not found. Maybe it is not recorded."
+        )
     print(out_obj)
     return out_obj
 
-def get_pre_news_update_time(): 
-    '''Get the new update time.'''
+
+def get_pre_news_update_time():
+    """Get the new update time."""
     return get_pre_version_update_time(NEW)
 
-def get_pre_new(): 
-    '''Get the new pre-release update doc.'''
+
+def get_pre_new():
+    """Get the new pre-release update doc."""
     return get_pre_update(NEW)
 
-def get_pre_all(): 
-    '''Get the all pre-release update doc.'''
+
+def get_pre_all():
+    """Get the all pre-release update doc."""
     return get_pre_update(ALL)
 
 
@@ -244,9 +286,9 @@ def get_doc_help(doc_name: str = ALL):
         print(f"{doc_name}: {doc_help.get(doc_name, 'Not found.')}")
 
 
-def get_config_help(config_type:Union[str, Literal["all"]] = ALL):
+def get_config_help(config_type: Union[str, Literal["all"]] = ALL):
     if config_type == ALL:
-        for config_t,config_docs in config_help.items():
+        for config_t, config_docs in config_help.items():
             print("*" * 22 + "-" * 8 + config_t + "-" * 8 + "*" * 22)
             for doc_name, doc_des in config_docs.items():
                 print()
@@ -266,5 +308,6 @@ def get_config_help(config_type:Union[str, Literal["all"]] = ALL):
             print(
                 "When you set config,you need use 'pyplus config set local name.config value'"
             )
+
 
 del Dict, Union, Literal, Any, configurer, Path, colorama, makedirs, load, documenter

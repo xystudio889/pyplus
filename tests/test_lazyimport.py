@@ -2,9 +2,11 @@ import os
 import importlib
 from psutil import Process
 
+
 def get_memory_usage():
     process = Process(os.getpid())
     return process.memory_info().rss
+
 
 class LazyImport:
     def __init__(self, module_name):
@@ -16,8 +18,9 @@ class LazyImport:
             self._module = importlib.import_module(self.module_name)
         return getattr(self._module, name)
 
-if __name__ == '__main__':
-    lazy_import = LazyImport('numpy')
+
+if __name__ == "__main__":
+    lazy_import = LazyImport("numpy")
     while True:
         a = input()
         if a == "pi":
