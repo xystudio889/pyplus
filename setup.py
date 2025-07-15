@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="2.2.0a2",
+    version="3.0.0.dev0",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
