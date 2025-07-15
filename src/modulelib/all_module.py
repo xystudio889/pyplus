@@ -19,10 +19,12 @@ for i in filtered_list:
     try:
         __import__(i.split(".py")[0])
         texts.append(f"import {i.split('.py')[0]}")
-    except (ImportError,ModuleNotFoundError):
+    except (ImportError, ModuleNotFoundError):
         pass
 
-with open(getsitepackages()[1] + "/pyplus/data/config/all_module.py", "w", encoding="utf-8") as f:
+with open(
+    getsitepackages()[1] + "/pyplus/data/config/all_module.py", "w", encoding="utf-8"
+) as f:
     f.write("\n".join(texts))
 
 del load, dump, getsitepackages

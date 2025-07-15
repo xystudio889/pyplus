@@ -32,31 +32,35 @@ configurer.init(
     local_config_path=local_config_path,
     must_two_texts=True,
 )
-configurer.init(default_config_type=configurer.get_config("library.firstUsedConfig", LOCAL))
+configurer.init(
+    default_config_type=configurer.get_config("library.firstUsedConfig", LOCAL)
+)
 
 makedirs(global_config_path.parent, exist_ok=True)
 
 if not global_config_path.exists():
     global_config_path.touch()
 else:
-    with open(global_config_path, 'r', encoding="utf-8") as f:
+    with open(global_config_path, "r", encoding="utf-8") as f:
         global_config = load(f)
 
 if global_config.get("library.autoCreateLocalConfig"):
     makedirs(local_config_path.parent, exist_ok=True)
-    if not(local_config_path.exists()):
+    if not (local_config_path.exists()):
         local_config_path.touch()
 
 try:
-    with open(local_config_path, 'r', encoding="utf-8") as f:
+    with open(local_config_path, "r", encoding="utf-8") as f:
         local_config = load(f)
 except FileNotFoundError:
     pass
 
-first_used_config = configurer.initsettings.get("library", {"firstUsedConfig": LOCAL}).get("firstUsedConfig", LOCAL)
+first_used_config = configurer.initsettings.get(
+    "library", {"firstUsedConfig": LOCAL}
+).get("firstUsedConfig", LOCAL)
 
 with open(data_path / "update.toml", "r", encoding="utf-8") as f:
-     updates = load(f)
+    updates = load(f)
 
 with open(
     data_path / "config_help.toml",
@@ -65,9 +69,7 @@ with open(
 ) as f:
     config_help = load(f)
 
-with open(
-    data_path / "alias.toml", "r", encoding="utf-8"
-) as f:
+with open(data_path / "alias.toml", "r", encoding="utf-8") as f:
     lang_alias = load(f)
 
 with open(
@@ -246,9 +248,9 @@ def get_alias(lang=ALL):
         print(f"alias {lang} -> {', '.join(lang_alias.get(lang, ["Not found."]))}")
 
 
-def get_config_help(config_type = ALL):
+def get_config_help(config_type=ALL):
     if config_type == ALL:
-        for config_t,config_docs in config_help.items():
+        for config_t, config_docs in config_help.items():
             print("*" * 22 + "-" * 8 + config_t + "-" * 8 + "*" * 22)
             for doc_name, doc_des in config_docs.items():
                 print()
@@ -444,6 +446,7 @@ def json_to_toml(jsonFile, tomlFile):
     ) as f2:
         dump(load(f1), f2, allow_unicode=True)
 
+
 def json_to_csv(jsonFile, csvFile):
     from json import load
     import csv
@@ -465,7 +468,8 @@ def json_to_csv(jsonFile, csvFile):
             for item in json_obj:
                 writer.writerow(item)
 
-def fetch_url(main_url, backup_urls = [], retries = 3, timeout = 5, **kwargs):
+
+def fetch_url(main_url, backup_urls=[], retries=3, timeout=5, **kwargs):
     all_urls = [main_url] + backup_urls
 
     for idx, url in enumerate(all_urls):
@@ -474,19 +478,26 @@ def fetch_url(main_url, backup_urls = [], retries = 3, timeout = 5, **kwargs):
                 response = get(url, timeout=timeout, **kwargs)
                 response.raise_for_status()
                 return response
-            except (Timeout, ConnectionError) as e:            
+            except (Timeout, ConnectionError) as e:
                 if attempt == retries:
                     if url != all_urls[-1]:
                         pass
                     break
     raise TimeoutError
 
+
 def _get_latest_version(
-    package_name, url = "https://pypi.org/pypi/%P/json", extra_urls = [], retries = 3, timeout = 5, include_prerelease: bool = False, **kwargs
+    package_name,
+    url="https://pypi.org/pypi/%P/json",
+    extra_urls=[],
+    retries=3,
+    timeout=5,
+    include_prerelease: bool = False,
+    **kwargs,
 ):
     url = url.replace("%P", package_name)
     extra_urls = [i.replace("%P", package_name) for i in extra_urls]
-    
+
     response = fetch_url(url, extra_urls, retries, timeout, **kwargs)
 
     data = response.json()
@@ -507,19 +518,25 @@ def _get_latest_version(
 
 def check_update(
     package_name,
-    include_prerelease = False,
-    auto_update = False,
-    first_url = "https://pypi.org/pypi/%P/json",
-    extra_urls = [], 
-    retry_times = 3, 
-    timeout = 10, 
-    **kwargs
+    include_prerelease=False,
+    auto_update=False,
+    first_url="https://pypi.org/pypi/%P/json",
+    extra_urls=[],
+    retry_times=3,
+    timeout=10,
+    **kwargs,
 ):
     installed_version = version(package_name)
     latest_version = _get_latest_version(
-        package_name, first_url, extra_urls, retry_times, timeout, include_prerelease, **kwargs
+        package_name,
+        first_url,
+        extra_urls,
+        retry_times,
+        timeout,
+        include_prerelease,
+        **kwargs,
     )
-    
+
     if latest_version:
         installed_parsed = parse(installed_version)
         latest_parsed = parse(latest_version)
@@ -652,7 +669,9 @@ def main() -> None:
         default=ALL,
     )
 
-    remove_namespace = config_namespace.add_parser("remove", help="Remove the config").add_subparsers(dest="remove_namespace", required=True)
+    remove_namespace = config_namespace.add_parser(
+        "remove", help="Remove the config"
+    ).add_subparsers(dest="remove_namespace", required=True)
     local_config_cmd = remove_namespace.add_parser(
         "local",
         help="Config file only in your project.Local config in './.xystudio/pyplus/config.toml'",
@@ -664,16 +683,16 @@ def main() -> None:
 
     local_config_cmd.add_argument("setting", help="Config setting.")
     global_config_cmd.add_argument("setting", help="Config setting.")
-    doc_namespace = subparsers.add_parser("document", help="Document name.").add_subparsers(dest="doc_namespace", required=True)
+    doc_namespace = subparsers.add_parser(
+        "document", help="Document name."
+    ).add_subparsers(dest="doc_namespace", required=True)
     open_doc_command = doc_namespace.add_parser("open", help="Open the document.")
     open_doc_command.add_argument("doc_name", help="Document name.")
     open_doc_command.add_argument(
         "-l", "--lang", help="Document language.", nargs="?", default="en"
     )
 
-    doc_namespace.add_parser(
-        "get_help", help="Get the document help."
-    ).add_argument(
+    doc_namespace.add_parser("get_help", help="Get the document help.").add_argument(
         "-d",
         "--document_description",
         nargs="?",
@@ -681,17 +700,17 @@ def main() -> None:
         default=ALL,
     )
 
-    update_namespace = subparsers.add_parser("update", help="Get the update.").add_subparsers(
-        dest="update_namespace", required=True
-    )
+    update_namespace = subparsers.add_parser(
+        "update", help="Get the update."
+    ).add_subparsers(dest="update_namespace", required=True)
 
-    pre_update_namespace = update_namespace.add_parser("pre", help="Get the pre-release update.").add_subparsers(dest="pre", required=True)
+    pre_update_namespace = update_namespace.add_parser(
+        "pre", help="Get the pre-release update."
+    ).add_subparsers(dest="pre", required=True)
 
     release_update_namespace = update_namespace.add_parser(
         "release", help="Get the release update."
-    ).add_subparsers(
-        dest="release_namespace", required=True
-    )
+    ).add_subparsers(dest="release_namespace", required=True)
 
     release_update_namespace.add_parser(
         "version", help="Get a release version."
@@ -707,9 +726,13 @@ def main() -> None:
 
     pre_update_namespace.add_parser("version", help="Get a pre-release version.")
 
-    pre_update_namespace.add_parser("news", help="Get the pre-release news.").add_argument("version", help="pre-release version.", nargs="?")
+    pre_update_namespace.add_parser(
+        "news", help="Get the pre-release news."
+    ).add_argument("version", help="pre-release version.", nargs="?")
 
-    pre_update_namespace.add_parser("time", help="Get the pre-release time.").add_argument("version", help="pre-release version.", nargs="?")
+    pre_update_namespace.add_parser(
+        "time", help="Get the pre-release time."
+    ).add_argument("version", help="pre-release version.", nargs="?")
 
     subparsers.add_parser("shell", help="run pyplus code.")
 
@@ -732,13 +755,20 @@ def main() -> None:
         "-p", "--pre", help="Include pre-release version.", action="store_true"
     )
     check_namespace.add_argument(
-        "-f", "--first-url", help="The first url to get the update.", default="https://pypi.org/pypi/%P/json"
+        "-f",
+        "--first-url",
+        help="The first url to get the update.",
+        default="https://pypi.org/pypi/%P/json",
     )
     check_namespace.add_argument(
         "-e", "--extra-urls", help="The extra urls to get the update.", nargs="+"
     )
     check_namespace.add_argument(
-        "-r", "--retry-times", help="The retry times to get the update.", type=int, default=3
+        "-r",
+        "--retry-times",
+        help="The retry times to get the update.",
+        type=int,
+        default=3,
     )
     check_namespace.add_argument(
         "-t", "--timeout", help="The timeout to get the update.", type=int, default=10
@@ -748,22 +778,10 @@ def main() -> None:
         "convert",
         help="convert some datafile.",
     )
-    convert_namespace.add_argument(
-        "types_to_convert", 
-        help="convert types to convert."
-    )
-    convert_namespace.add_argument(
-        "convert_types", 
-        help="convert datafile to types."
-    )
-    convert_namespace.add_argument(
-        "convert_file", 
-        help="convert datafile."
-    )
-    convert_namespace.add_argument(
-        "output_file", 
-        help="output datafile."
-    )
+    convert_namespace.add_argument("types_to_convert", help="convert types to convert.")
+    convert_namespace.add_argument("convert_types", help="convert datafile to types.")
+    convert_namespace.add_argument("convert_file", help="convert datafile.")
+    convert_namespace.add_argument("output_file", help="output datafile.")
 
     backup_namespace = subparsers.add_parser(
         "backup",
@@ -777,26 +795,42 @@ def main() -> None:
 
     delete_parser = backup_namespace.add_parser("delete", help="Delete a backup")
     delete_parser.add_argument("name", help="Name of the backup")
-    delete_parser.add_argument("-i", "--index", type=int, help="Index of the backup to delete")
+    delete_parser.add_argument(
+        "-i", "--index", type=int, help="Index of the backup to delete"
+    )
 
     extract_parser = backup_namespace.add_parser("extract", help="Extract a backup")
     extract_parser.add_argument("name", help="Name of the backup")
-    extract_parser.add_argument("-i", "--index", type=int, help="Index of the backup to extract")
+    extract_parser.add_argument(
+        "-i", "--index", type=int, help="Index of the backup to extract"
+    )
 
     verify_parser = backup_namespace.add_parser("verify", help="Verify a backup")
     verify_parser.add_argument("name", help="Name of the backup")
     verify_parser.add_argument("hash", help="Expected SHA256 hash of the backup")
-    verify_parser.add_argument("-i", "--index", type=int, help="Index of the backup to verify")
-
-    exclude_parser = backup_namespace.add_parser("exclude", help="Add an exclusion rule")
-    exclude_parser.add_argument("pattern", help="Pattern to exclude")
-    exclude_parser.add_argument(
-        "-t", "--type", default="wildcard", choices=["exact", "wildcard"], help="Type of match"
+    verify_parser.add_argument(
+        "-i", "--index", type=int, help="Index of the backup to verify"
     )
 
-    get_hash_parser = backup_namespace.add_parser("get_hash", help="Get the SHA256 hash of a backup")
+    exclude_parser = backup_namespace.add_parser(
+        "exclude", help="Add an exclusion rule"
+    )
+    exclude_parser.add_argument("pattern", help="Pattern to exclude")
+    exclude_parser.add_argument(
+        "-t",
+        "--type",
+        default="wildcard",
+        choices=["exact", "wildcard"],
+        help="Type of match",
+    )
+
+    get_hash_parser = backup_namespace.add_parser(
+        "get_hash", help="Get the SHA256 hash of a backup"
+    )
     get_hash_parser.add_argument("name", help="Name of the backup")
-    get_hash_parser.add_argument("-i", "--index", type=int, help="Index of the backup to get the hash")
+    get_hash_parser.add_argument(
+        "-i", "--index", type=int, help="Index of the backup to get the hash"
+    )
 
     args = parser.parse_args()
 
@@ -860,7 +894,15 @@ def main() -> None:
     elif args.command == "get_ailas":
         get_alias(args.lang)
     elif args.command == "check":
-        check_update("python-plus-tools", args.pre, args.auto_update, args.first_url, [] if args.extra_urls is None else args.extra_urls, args.retry_times, args.timeout)
+        check_update(
+            "python-plus-tools",
+            args.pre,
+            args.auto_update,
+            args.first_url,
+            [] if args.extra_urls is None else args.extra_urls,
+            args.retry_times,
+            args.timeout,
+        )
     elif args.command == "backup":
         if args.backup_command == "create":
             backup_path = backup.manager.create_backup(args.name)
@@ -894,7 +936,9 @@ def main() -> None:
             elif args.convert_types == "pickle":
                 pickle_to_json(args.convert_file, args.output_file)
             else:
-                print("Not support convert to json.(choose from `xml`, `csv`, `yaml`, `toml`, `pickle`.")
+                print(
+                    "Not support convert to json.(choose from `xml`, `csv`, `yaml`, `toml`, `pickle`."
+                )
         elif args.types_to_convert == "xml":
             if args.convert_types == "json":
                 json_to_xml(args.convert_file, args.output_file)
@@ -921,7 +965,9 @@ def main() -> None:
             else:
                 print("Not support convert to pickle.(choose from `json`)")
         else:
-            print(f"Not support convert from {args.types_to_convert} to {args.convert_types}.(choose from `json`, `xml`, `csv`, `yaml`, `toml`, `pickle.")
+            print(
+                f"Not support convert from {args.types_to_convert} to {args.convert_types}.(choose from `json`, `xml`, `csv`, `yaml`, `toml`, `pickle."
+            )
     else:
         parser.print_help()
 

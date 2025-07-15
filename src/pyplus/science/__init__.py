@@ -1,9 +1,9 @@
-'''
+"""
 This is a moudle for python unit calculation
-Use this moudle,plese write: 
+Use this moudle,plese write:
 `Unit()` or other class in this moudle.
-If you want to create new unit class,please use: 
-'''
+If you want to create new unit class,please use:
+"""
 
 import operator
 from advancedlib import operator as operators
@@ -14,13 +14,13 @@ from advancedlib.importlib import LazyImport
 
 from . import units
 
-from toml import load 
+from toml import load
 
 try:
-    o1 = open(Path(getenv("appdata"),"xystudio", "pyplus", "config.toml"))
+    o1 = open(Path(getenv("appdata"), "xystudio", "pyplus", "config.toml"))
     o2 = open(Path(".xystudio", "pyplus", "config.toml").absolute())
 
-    config = (load(o1) | load(o2))
+    config = load(o1) | load(o2)
 
     o1.close()
     o2.close()
@@ -34,6 +34,4 @@ else:
 
 del load, getenv, Path, LazyImport
 
-__all__ = [
-    "units", "pyscience", "science", "operators", "operator"
-]
+__all__ = ["units", "pyscience", "science", "operators", "operator"]

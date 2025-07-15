@@ -12,6 +12,7 @@ import numpy
 
 from sympy import *
 
+
 def safe_formula_solver(formula, **variables):
     allowed_symbols = {k: symbols(k) for k in variables.keys()}
     try:
@@ -43,6 +44,7 @@ def joseph_problem(n: int) -> int:
     else:
         return (joseph_problem(n - 1) + n - 1) % n + 1
 
+
 @cache
 def fib(n):
     if n == 0:
@@ -50,38 +52,37 @@ def fib(n):
     elif n == 1:
         return 1
     else:
-        return fib(n-1) + fib(n-2)
-    
-def is_prime(n):
-    if n < 2:
-        return False
-    for i in range(2, int(n**0.5)+1):
-        if n % i == 0:
-            return False
-    return True
+        return fib(n - 1) + fib(n - 2)
+
 
 def is_palindrome(n):
     return str(n) == str(n)[::-1]
 
+
 def is_even(n):
     return n % 2 == 0
 
+
 def is_odd(n):
-        return n % 2 == 1
+    return n % 2 == 1
+
 
 def c(n, r):
-    return math.factorial(n) // (math.factorial(r) * math.factorial(n-r))
+    return math.factorial(n) // (math.factorial(r) * math.factorial(n - r))
+
 
 def lcm(a, b):
-    return abs(a*b) // math.gcd(a, b)
+    return abs(a * b) // math.gcd(a, b)
+
 
 def hcf(a, b):
     return math.gcd(a, b)
 
+
 def prime_factors(n):
     factors = []
     d = 2
-    while d*d <= n:
+    while d * d <= n:
         while (n % d) == 0:
             factors.append(d)
             n //= d
@@ -90,6 +91,7 @@ def prime_factors(n):
         factors.append(n)
     return factors
 
+
 def prime_divisors(n):
     factors = prime_factors(n)
     divisors = []
@@ -97,5 +99,63 @@ def prime_divisors(n):
         divisors.append(c(n, factor))
     return divisors
 
+
 def p(n, r):
     return c(n, r) // math.factorial(r)
+
+
+def is_prime(n):
+    """检查一个数是否为素数"""
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    w = 2
+    while i * i <= n:
+        if n % i == 0:
+            return False
+        i += w
+        w = 6 - w
+    return True
+
+
+def get_primes(n):
+    primes = []
+    i = 2
+    while len(primes) < n:
+        if is_prime(i):
+            primes.append(i)
+        i += 1
+    return primes[-1]
+
+
+def perfect_number(n):
+    count = 0
+    p = 2
+    while True:
+        mersenne = (1 << p) - 1
+        if is_prime(p) and is_prime(mersenne):
+            perfect_num = (1 << (p - 1)) * mersenne
+            count += 1
+            if count == n:
+                return perfect_num
+        p += 1
+
+
+def is_perfect_number(num):
+    if num % 2 != 0:
+        return False
+
+    p = 2
+    while True:
+        mersenne = (1 << p) - 1
+        perfect_num = (1 << (p - 1)) * mersenne
+
+        if perfect_num == num:
+            return is_prime(p) and is_prime(mersenne)
+        elif perfect_num > num:
+            return False
+        p += 1

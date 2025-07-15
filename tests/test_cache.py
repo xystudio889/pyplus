@@ -1,14 +1,16 @@
 from functools import cache
 from time import time
 
+
 def fib_nocache(n):
     if n == 0:
         return 0
     elif n == 1:
         return 1
     else:
-        return fib_nocache(n-1) + fib_nocache(n-2)
-    
+        return fib_nocache(n - 1) + fib_nocache(n - 2)
+
+
 @cache
 def fib_cache(n):
     if n == 0:
@@ -16,7 +18,8 @@ def fib_cache(n):
     elif n == 1:
         return 1
     else:
-        return fib_cache(n-1) + fib_cache(n-2)
+        return fib_cache(n - 1) + fib_cache(n - 2)
+
 
 start_time = time()
 print(fib_nocache(35))

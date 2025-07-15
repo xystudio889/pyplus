@@ -3,7 +3,7 @@ from img_fit import latex2text as latex
 
 from . import (
     colors,
-    dec, 
+    dec,
     database_convert,
     formula,
     # password,
@@ -27,6 +27,7 @@ def wait(operator: bool):
     """
     while not operator:
         pass
+
 
 def geohash(latitude, longitude, datedow):
     import hashlib
