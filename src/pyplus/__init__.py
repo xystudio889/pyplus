@@ -19,7 +19,8 @@ if get_config("import.lazy", True, ALL):
             if self._module is None:
                 self._module = import_module(self.module_name)
             return getattr(self._module, name)
-    LazyImport("advancedlib.all")
-    LazyImport("modulelib")
+    
+    advancedlib = LazyImport("advancedlib.all")
+    modulellib = LazyImport("modulelib")
 
 __version__ = get_version("main")

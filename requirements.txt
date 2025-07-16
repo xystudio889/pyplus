@@ -21,6 +21,7 @@ backupworkspace==0.2.1
 python-dotenv>=0.19
 
 # dev
+sqlmodel>=0.0.4
 
 # test
 pytest

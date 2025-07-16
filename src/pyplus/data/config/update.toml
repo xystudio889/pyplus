@@ -77,5 +77,5 @@ update_time = { "1.0.0" = 2025-04-21, "1.1.0" = 2025-05-02, "1.1.1" = 2025-05-10
 
 [pre-release]
 version = "3.0.0.dev0"
-update_info = { "3.0.0.dev0" = "Merge to 2.1.2b1.\nModify file tree.All the library are in pyplus library." }
+update_info = { "3.0.0.dev0" = "Modify file tree.All the library are in pyplus library." }
 update_time = {"3.0.0.dev0" = 2025-07-15 }
