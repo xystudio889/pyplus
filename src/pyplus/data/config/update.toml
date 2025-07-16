@@ -77,5 +77,5 @@ update_time = { "1.0.0" = 2025-04-21, "1.1.0" = 2025-05-02, "1.1.1" = 2025-05-10
 
 [pre-release]
 version = "2.2.0a2"
-update_info = { "2.2.0a2" = "Merge to 2.1.2b1." }
-update_time = {"2.2.0a2" = 2025-07-15 }
+update_info = { "2.1.2a2" = "Optimize performance\nDeprecated some config:import.advancedlib,import.pyscience,import.math -> Default use lazy import,set config 'import.lazy' to disenable lazy import.", "2.1.2a4" = "Add some optional dependencies", "2.1.2b1" = "Update advancedlib.math functions:\n\tprime_number\n\tperfect_number\n\tis_perfect_number\nAdd pyplus.plus.This library is copy in py+(https://github.com/alexbahnisch/pyplus).\nPyplus can direct use modulelib.Now can use pyplus.modulelib\npyplus.moduulelib and pyplus.advancedlib now use lazy import.", "2.1.2rc2" = "Fix some bug." }
+update_time = { "2.1.2a2" = 2025-06-09, "2.1.2a4" = 2025-07-12, "2.1.2b1" = 2026-07-15 }
