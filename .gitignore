@@ -1,4 +1,6 @@
-.*/
+.venv/
+.vscode/
+.xystudio/
 *.tmp
 benchmark.py
 
