@@ -256,6 +256,16 @@ class Calc:
     def __ror__(self, value: Union[int, float, dint]) -> Union[int, float, dint]:
         return value | self.num
 
+class Div0Int(int):
+    def __truediv__(self, other):
+        if other == 0:
+            return float("inf")
+        return super().__truediv__(other)
+
+    def __floordiv__(self, other):
+        if other == 0:
+            return float("inf")
+        return super().__floordiv__(other)
 
 Calculator: TypeAlias = Calc
 
