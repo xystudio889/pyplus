@@ -33,6 +33,7 @@ def show_lirary_deprecated_warning(library: str, version: str, message: str = ""
         local_config_path=Path.cwd() / ".xystudio" / "pyplus" / "config.toml",
         must_two_texts=True,
     )
+    warnings.filterwarnings('default', category=DeprecationWarning)
 
     if configurer.get_config(f"library.showDeprecatedWarning", True, "all") and configurer.get_config(f"{library}.showDeprecatedWarning", True, "all"):
         warnings.warn(f"{colorama.Fore.YELLOW}{library} is deprecated since version {version}. {message}", DeprecationWarning)

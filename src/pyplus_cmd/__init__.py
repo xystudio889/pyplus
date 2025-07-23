@@ -13,7 +13,7 @@ from configurer import config, get_config, remove_config
 from markdown import markdown
 from toml import load
 
-global_config_path = Path.home() / "appdata" / "xystudio" / "pyplus" / "config.toml"
+global_config_path = Path.home() / ".xystudio" / "pyplus" / "config.toml"
 local_config_path = Path.cwd() / ".xystudio" / "pyplus" / "config.toml"
 data_path = Path(__file__).parents[1] / "pyplus" / "data" / "config"
 global_config = {}
@@ -842,8 +842,8 @@ def main() -> None:
                 value = False
             else:
                 value = args.value
-            print("Run code again to set the config.")
             config(args.setting, value, args.set_namespace)
+            print(f"{args.set_namespace} config {args.setting} is set to {args.value}.")
         elif args.config_command == "get_help":
             get_config_help(args.document_description)
         elif args.config_command == "get":
