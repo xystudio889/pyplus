@@ -46,7 +46,7 @@ studio = ["AI-APIChat","auto-upgrade-pip", "linecode", "imgfit", "ACE-calc"]
 web = ["django"] 
 other = ["pygame", "jupyterlab"]
 [project.scripts]
-pyplus = "modulelib.pyplus_cmd:main"
+pyplus = "pyplus_cmd:main"
 
 [tool.setuptools]
 include-package-data = true
