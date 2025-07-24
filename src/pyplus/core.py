@@ -10,6 +10,7 @@ from configurer import get_config, config, remove_config, LOCAL, GLOBAL, ALL
 from documenter import open_doc, get_alias
 from toml import load
 from typing import Dict, Union, Literal, Any
+from warnings import filterwarnings
 
 colorama.init(autoreset=True)
 
@@ -28,7 +29,7 @@ configurer.init(
     local_config_path=local_config_path,
     must_two_texts=True,
 )
-configurer.init(default_config_type=configurer.get_config("library.firstUsedConfig"))
+configurer.init(default_config_type=get_config("library.firstUsedConfig"))
 documenter.init(
     have_alias=True,
     have_lang=True,
@@ -37,6 +38,7 @@ documenter.init(
     use_index_path=True,
     index_path=data_path.parent / "docs" / "web",
 )
+filterwarnings('default', category=DeprecationWarning)
 
 makedirs(global_config_path.parent, exist_ok=True)
 
@@ -46,7 +48,7 @@ else:
     with open(global_config_path, "r", encoding="utf-8") as f:
         global_config = load(f)
 
-if configurer.get_config("library.autoCreateLocalConfig"):
+if get_config("library.autoCreateLocalConfig"):
     makedirs(local_config_path.parent, exist_ok=True)
     if not (local_config_path.exists()):
         local_config_path.touch()
@@ -115,17 +117,18 @@ with open(
     deprecated_modules = load(f)
 
 if (
-    configurer.get_config(
-        "library.showDeprecationWarning", {"showDeprecationWarning": True}
+    get_config(
+        "library.showDeprecationWarning", True, "all"
     )
     and deprecated_modules
 ):
     for k, v in deprecated_modules.items():
-        print(
-            f"{colorama.Fore.YELLOW}{colorama.Style.BRIGHT}warning: {k} module is deprecated scice {v["deprecated_version"]} and will be removed in {v['remove_version']} version.Please use {v['replace_module']} instead.{colorama.Style.RESET_ALL}"
-        )
+        if get_config(f"{k}.showDeprecationWarning", True, "all"):
+            print(
+                f"{colorama.Fore.YELLOW}{colorama.Style.BRIGHT}warning: {k} is deprecated scice {v["deprecated_version"]} and will be removed in {v['remove_version']} version.Please use {v['replace_module']} instead.{colorama.Style.RESET_ALL}"
+            )
     print(
-        f"{colorama.Fore.MAGENTA}{colorama.Style.BRIGHT}note:write 'config('library.showDeprecationWarning', 'false')' and run code again to close this warning.{colorama.Style.RESET_ALL}"
+        f"{colorama.Fore.MAGENTA}{colorama.Style.BRIGHT}note:write 'pyplus config set global library.showDeprecationWarning false' in command to close this text\nnote:write 'pyplus config set global [library name].showDeprecationWarning false' in command to select close warning.{colorama.Style.RESET_ALL}"
     )
 
 
@@ -310,4 +313,4 @@ def get_config_help(config_type: Union[str, Literal["all"]] = ALL):
             )
 
 
-del Dict, Union, Literal, Any, configurer, Path, colorama, makedirs, load, documenter
+del Dict, Union, Literal, Any, configurer, Path, colorama, makedirs, load, documenter, filterwarnings

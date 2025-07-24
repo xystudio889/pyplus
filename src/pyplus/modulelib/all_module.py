@@ -4,6 +4,7 @@ from sys import prefix
 from toml import load, dump
 from site import getsitepackages
 
+INITIALIZED = False
 folder_path = Path(prefix, "Lib")
 all_entries = [entry.name for entry in folder_path.iterdir()]
 files = [entry.name for entry in folder_path.iterdir() if entry.is_file()]
@@ -19,7 +20,7 @@ for i in filtered_list:
     try:
         __import__(i.split(".py")[0])
         texts.append(f"import {i.split('.py')[0]}")
-    except (ImportError, ModuleNotFoundError):
+    except (ImportError, ModuleNotFoundError, DeprecationWarning):
         pass
 
 with open(

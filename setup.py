@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="3.0.0.dev0",
+    version="3.0.0.dev1",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -37,7 +37,7 @@ setup(
     include_package_data=True,
     entry_points={
         "console_scripts": [
-            "pyplus = modulelib.pyplus_cmd:main",
+            "pyplus = pyplus_cmd:main",
         ]
     },
     extras_require={
