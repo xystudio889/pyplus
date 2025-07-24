@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "python-plus-tools"
-version = "3.0.0.dev0"
+version = "3.0.0.dev1"
 authors = [{ name = "xystudio", email = "173288240@qq.com" }]
 description = "For the expansion of python content, it covers science, debugging and other fields."
 readme = { file = "README-PYPI.md", content-type = "text/markdown" }
@@ -71,7 +71,7 @@ studio = ["AI-APIChat","auto-upgrade-pip", "linecode", "imgfit", "ACE-calc"]
 web = ["django"] 
 other = ["pygame", "jupyterlab"]
 [project.scripts]
-pyplus = "modulelib.pyplus_cmd:main"
+pyplus = "pyplus_cmd:main"
 
 [tool.setuptools]
 include-package-data = true

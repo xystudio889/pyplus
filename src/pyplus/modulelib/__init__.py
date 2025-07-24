@@ -5,7 +5,7 @@ from site import getsitepackages
 from pathlib import Path
 
 with open(
-    Path(__file__).parents[1] / "pyplus/data/config/module_config.toml",
+    Path(__file__).parents[1] / "data/config/module_config.toml",
     encoding="utf-8",
 ) as f:
     config = load(f)
