@@ -26,7 +26,9 @@ class _JsonMixin(object):
         return rarg
 
     def _merge(self, index, item):
-        if (isinstance(self[index], Object) and isinstance(item, dict)) or (isinstance(self[index], Array) and isinstance(item, list)):
+        if (isinstance(self[index], Object) and isinstance(item, dict)) or (
+            isinstance(self[index], Array) and isinstance(item, list)
+        ):
             self[index].merge(item.copy())
         else:
             self[index] = _deepcopy(item)
@@ -189,9 +191,16 @@ class Object(_OrderedDict, _JsonMixin):
                 if str(item[0]) not in kwargs:
                     kwargs[str(item[0])] = item[1]
             elif _common.issequence(item) and len(item) > 2:
-                raise ValueError("json update sequence element #%s has length %s; 2 is required" % index, len(item))
+                raise ValueError(
+                    "json update sequence element #%s has length %s; 2 is required"
+                    % index,
+                    len(item),
+                )
             else:
-                raise TypeError("cannot convert json update sequence element #%s to a sequence" % index)
+                raise TypeError(
+                    "cannot convert json update sequence element #%s to a sequence"
+                    % index
+                )
 
         return kwargs
 
@@ -246,14 +255,18 @@ class JSON(object):
 
         else:
             if bool(errors):
-                raise FileNotFoundError("[Errno 2] No such file or directory: '{}'".format(path))
+                raise FileNotFoundError(
+                    "[Errno 2] No such file or directory: '{}'".format(path)
+                )
             else:
                 return None
 
     @classmethod
     def from_collection(cls, collection):
         if isinstance(collection, dict):
-            return cls.__OBJECT__({key: cls.from_collection(value) for key, value in collection.items()})
+            return cls.__OBJECT__(
+                {key: cls.from_collection(value) for key, value in collection.items()}
+            )
         elif isinstance(collection, list):
             return cls.__ARRAY__(cls.from_collection(item) for item in collection)
         else:

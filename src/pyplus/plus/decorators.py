@@ -6,6 +6,7 @@ from .singleton import singleton
 
 def decorator(method):
     if callable(method):
+
         @_wraps(method)
         def wrapped(*args, **kwargs):
             return method(*args, **kwargs)
@@ -45,7 +46,9 @@ def spliter(method):
             return [item.encode() if isinstance(item, str) else item for item in items]
         elif isinstance(string, str):
             items = method(string, **kwargs)
-            return [item.decode() if isinstance(item, bytes) else item for item in items]
+            return [
+                item.decode() if isinstance(item, bytes) else item for item in items
+            ]
         else:
             raise TypeError("'%s' object is not a string" % type(string).__name__)
 
@@ -71,6 +74,7 @@ class Timer:
             return method
 
         else:
+
             @_wraps(method)
             def wrapped(*args, **kwargs):
                 start = _datetime.now()
@@ -86,10 +90,14 @@ class Timer:
             return method
 
         else:
+
             @_wraps(method)
             def wrapped(*args, **kwargs):
                 start = _datetime.now()
-                self.__logger(self.__level * "  " + "%s starting %s ..." % (start, method.__name__))
+                self.__logger(
+                    self.__level * "  "
+                    + "%s starting %s ..." % (start, method.__name__)
+                )
                 self.__level += 1
 
                 output = method(*args, **kwargs)
@@ -97,7 +105,10 @@ class Timer:
 
                 end = _datetime.now()
                 self.__logger(
-                    self.__level * "  " + "... %s finished %s, completed in %s" % (end, method.__name__, end - start))
+                    self.__level * "  "
+                    + "... %s finished %s, completed in %s"
+                    % (end, method.__name__, end - start)
+                )
                 return output
 
             return wrapped

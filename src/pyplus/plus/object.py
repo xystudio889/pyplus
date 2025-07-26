@@ -40,7 +40,9 @@ class LazyObject:
         if hasattr(self, key):
             object.__setattr__(self, key, value)
         else:
-            raise AttributeError("'%s' object has no attribute '%s'" % (type(self).__name__, key))
+            raise AttributeError(
+                "'%s' object has no attribute '%s'" % (type(self).__name__, key)
+            )
 
     def copy(self):
         return _copy(self)
@@ -56,7 +58,10 @@ class AssignableLazyObject(LazyObject):
 
 class ImmutableLazyObject(LazyObject):
     def __setattr__(self, key, value):
-        raise AttributeError("can't set attribute '%s', '%s' instances are immutable" % (key, type(self).__name__))
+        raise AttributeError(
+            "can't set attribute '%s', '%s' instances are immutable"
+            % (key, type(self).__name__)
+        )
 
 
 # noinspection PyCallByClass
@@ -107,9 +112,18 @@ class LazyObjects:
         if _ispathlike(path):
             list_ = _table2list(path, parse=parse, delimiter=delimiter)
             headers = {key: _snake_case(key) for key in list_[0]}
-            return cls([cls.__CLASS__(**{header: dict_[key] for key, header in headers.items()}) for dict_ in list_])
+            return cls(
+                [
+                    cls.__CLASS__(
+                        **{header: dict_[key] for key, header in headers.items()}
+                    )
+                    for dict_ in list_
+                ]
+            )
         else:
-            raise TypeError("'path' argument must be a bytes or unicode string or pathlib.Path")
+            raise TypeError(
+                "'path' argument must be a bytes or unicode string or pathlib.Path"
+            )
 
     def length(self):
         return len(self)
@@ -123,7 +137,10 @@ class LazyObjects:
     def push(self, *args):
         for arg in args:
             if not isinstance(arg, self.__CLASS__):
-                raise TypeError("'%s' object is not an instance of %s" % (type(arg).__name__, self.__CLASS__))
+                raise TypeError(
+                    "'%s' object is not an instance of %s"
+                    % (type(arg).__name__, self.__CLASS__)
+                )
             elif arg not in self:
                 self.__objects.append(arg)
 
@@ -131,9 +148,14 @@ class LazyObjects:
         if _ispathlike(path):
             _list2table(
                 path,
-                [{_camel_case(key): value for key, value in item.__dict__.items()} for item in self.__objects],
+                [
+                    {_camel_case(key): value for key, value in item.__dict__.items()}
+                    for item in self.__objects
+                ],
                 headers=headers,
-                delimiter=delimiter
+                delimiter=delimiter,
             )
         else:
-            raise TypeError("'path' argument must be a bytes or unicode string or pathlib.Path")
+            raise TypeError(
+                "'path' argument must be a bytes or unicode string or pathlib.Path"
+            )

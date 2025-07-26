@@ -3,23 +3,69 @@ from fractions import Fraction as fraction
 from functools import cache
 from pyplus.tools.dec import dint, Calc
 
-import math
-import matplotlib
 import matplotlib.pyplot as plt
-import numba
 import numpy as np
-import numpy
-
-from sympy import *
+import numpy, sympy, scipy, numba, matplotlib, math
 
 
-def safe_formula_solver(formula, **variables):
-    allowed_symbols = {k: symbols(k) for k in variables.keys()}
-    try:
-        expr = sympify(formula, locals=allowed_symbols)
-        return float(expr.subs(variables))
-    except SympifyError:
-        raise ValueError("Invalid formula")
+def solve_equations(*equations, variables=None):
+    if not equations:
+        return []
+
+    if variables is None:
+        variables = set()
+        for eq in equations:
+            variables.update([c for c in eq if c.isalpha()])
+        variables = sorted(variables)
+
+    sym_vars = sympy.symbols(" ".join(variables))
+    sym_equations = []
+
+    for eq_str in equations:
+        left, right = eq_str.split("=") if "=" in eq_str else (eq_str, "0")
+        sym_equations.append(
+            sympy.Eq(
+                eval(left, {v: sym_vars[i] for i, v in enumerate(variables)}),
+                eval(right, {v: sym_vars[i] for i, v in enumerate(variables)}),
+            )
+        )
+
+    solutions = sympy.solve(sym_equations, sym_vars, dict=True)
+    return solutions
+
+
+def solve_formula(formula_str, **kwargs):
+    sym_vars = sympy.symbols(list(kwargs.keys()))
+    expr = sympy.sympify(formula_str)
+    return expr.subs({k: v for k, v in zip(sym_vars, kwargs.values())})
+
+
+def solve_formulas(formula_strs, **kwargs):
+    formula_outputs = []
+    for formula_str in formula_strs:
+        formula_outputs.append(solve_formula(formula_str, **kwargs))
+
+    return formula_outputs
+
+
+def decompose_fraction(numerator, denominator):
+    if numerator == 0:
+        return 0, 1
+    elif denominator == 0:
+        return 1, 0
+    else:
+        gcd = math.gcd(numerator, denominator)
+        return numerator // gcd, denominator // gcd
+
+
+def decompose_prime(n, expand: bool = False):
+    decompose_prime_factors = sympy.factorint(n)
+    if expand:
+        decompose_prime_factors_temp = []
+        for k, v in decompose_prime_factors.items():
+            decompose_prime_factors_temp.extend([k] * v)
+        decompose_prime_factors = decompose_prime_factors_temp
+    return decompose_prime_factors
 
 
 def joseph_problem(n: int) -> int:
@@ -69,10 +115,6 @@ def is_odd(n):
 
 def c(n, r):
     return math.factorial(n) // (math.factorial(r) * math.factorial(n - r))
-
-
-def lcm(a, b):
-    return abs(a * b) // math.gcd(a, b)
 
 
 def hcf(a, b):

@@ -16,7 +16,12 @@ def isiterable(obj):
 
 
 def islistlike(obj):
-    return hasattr(obj, "__len__") and hasattr(obj, "__getitem__") and hasattr(obj, "__setitem__") and isiterable(obj)
+    return (
+        hasattr(obj, "__len__")
+        and hasattr(obj, "__getitem__")
+        and hasattr(obj, "__setitem__")
+        and isiterable(obj)
+    )
 
 
 def isnumber(obj):
@@ -28,7 +33,9 @@ def ispair(obj):
 
 
 def ismappable(obj):
-    return isinstance(obj, dict) or (isiterable(obj) and all(ispair(item) for item in obj))
+    return isinstance(obj, dict) or (
+        isiterable(obj) and all(ispair(item) for item in obj)
+    )
 
 
 def ispathlike(obj):
