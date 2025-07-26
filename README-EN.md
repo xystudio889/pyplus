@@ -21,7 +21,7 @@ index id:001
   <a href="./feature.md"><img
     src="https://img.shields.io/badge/feature-English-536af5?color=781ff1&logoColor=white"/></a>
   <a href="./feature-CN.md"><img
-    src="https://img.shields.io/badge/简体中文-536af5?color=86fce5&logoColor=white"/></a>
+    src="https://img.shields.io/badge/简体中文-536af5?color=ff0000&logoColor=white"/></a>
 </div>
 <br />
 
