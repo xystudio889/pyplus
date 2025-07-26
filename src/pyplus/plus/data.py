@@ -1,4 +1,7 @@
-from .abstract import abstractclassmethod as _abstractclassmethod, abstractmethod as _abstractmethod
+from .abstract import (
+    abstractclassmethod as _abstractclassmethod,
+    abstractmethod as _abstractmethod,
+)
 from .common import ispathlike as _ispathlike
 from .json import Array as _Array, Object as _Object
 from .object import LazyObjects as _LazyObjects
@@ -25,7 +28,9 @@ class DataObjectMixin:
         if isinstance(arg, dict):
             return cls(*[arg[key] for key in cls.__HEADERS__])
         else:
-            raise TypeError("'%s' object is not a instance of a dict" % type(arg).__name__)
+            raise TypeError(
+                "'%s' object is not a instance of a dict" % type(arg).__name__
+            )
 
     @_abstractclassmethod
     def from_line(cls, line):
@@ -64,7 +69,9 @@ class DataObjectsMixin(_LazyObjects):
             else:
                 return cls([cls.__CLASS__(*obj.values()) for obj in array])
         else:
-            raise TypeError("'path' argument must be a bytes or unicode string or pathlib.Path")
+            raise TypeError(
+                "'path' argument must be a bytes or unicode string or pathlib.Path"
+            )
 
     @classmethod
     def from_txt_file(cls, path):
@@ -72,13 +79,22 @@ class DataObjectsMixin(_LazyObjects):
             with _LazyPath(path).read() as txt_file:
                 return cls([cls.__CLASS__.from_line(txt_line) for txt_line in txt_file])
         else:
-            raise TypeError("'path' argument must be a bytes or unicode string or pathlib.Path")
+            raise TypeError(
+                "'path' argument must be a bytes or unicode string or pathlib.Path"
+            )
 
     def to_table(self, path, delimiter=",", headers=True):
         if _ispathlike(path):
-            _list2table(path, [item.to_dict() for item in self], headers=headers, delimiter=delimiter)
+            _list2table(
+                path,
+                [item.to_dict() for item in self],
+                headers=headers,
+                delimiter=delimiter,
+            )
         else:
-            raise TypeError("'path' argument must be a bytes or unicode string or pathlib.Path")
+            raise TypeError(
+                "'path' argument must be a bytes or unicode string or pathlib.Path"
+            )
 
     def to_txt_file(self, path):
         if _ispathlike(path):
@@ -86,17 +102,21 @@ class DataObjectsMixin(_LazyObjects):
                 for obj in self:
                     txt_file.write(obj.to_line() + "\n")
         else:
-            raise TypeError("'path' argument must be a bytes or unicode string or pathlib.Path")
+            raise TypeError(
+                "'path' argument must be a bytes or unicode string or pathlib.Path"
+            )
 
 
 def dataobject(*headers):
     if all(isinstance(header, str) for header in headers):
+
         def wrapper(class_):
             if issubclass(class_, DataObjectMixin):
                 class_.__HEADERS__ = list(headers)
                 return class_
 
             else:
+
                 class Wrapped(class_, DataObjectMixin):
                     __name__ = class_.__name__
                     __HEADERS__ = list(headers)
@@ -110,12 +130,14 @@ def dataobject(*headers):
 
 def dataobjects(data_object_class):
     if issubclass(data_object_class, DataObjectMixin):
+
         def wrapper(class_):
             if issubclass(class_, DataObjectsMixin):
                 class_.__CLASS__ = data_object_class
                 return class_
 
             else:
+
                 class Wrapped(class_, DataObjectsMixin):
                     __name__ = class_.__name__
                     __CLASS__ = data_object_class
@@ -124,4 +146,6 @@ def dataobjects(data_object_class):
 
         return wrapper
     else:
-        raise TypeError("dataobjects() argument must be a subclass of 'DataObjectMixin'")
+        raise TypeError(
+            "dataobjects() argument must be a subclass of 'DataObjectMixin'"
+        )

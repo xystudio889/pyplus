@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="3.0.0.dev1",
+    version="3.0.0.dev2",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -25,6 +25,7 @@ setup(
         "documenter>=0.1",
         "backupworkspace==0.2.1",
         "python-dotenv>=0.19",
+        "scipy>=1.7",
     ],
     python_requires=">=3.8",
     author="xystudio",
@@ -41,7 +42,9 @@ setup(
         ]
     },
     extras_require={
-        "dev": ["sqlmodel>=0.0.4",],
+        "dev": [
+            "sqlmodel>=0.0.4",
+        ],
         "test": [
             "pytest",
             "pytest-cov",

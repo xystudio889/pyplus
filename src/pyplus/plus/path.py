@@ -18,7 +18,9 @@ class LazyPath(_Path):
             self._init()
             return self
         else:
-            raise NotImplementedError("cannot instantiate %r on your system" % (cls.__name__,))
+            raise NotImplementedError(
+                "cannot instantiate %r on your system" % (cls.__name__,)
+            )
 
     @classmethod
     def make_dir(cls, dir):
@@ -35,7 +37,10 @@ class LazyPath(_Path):
             lazy_dir = cls(path)
             lazy_dir.mkdir()
         else:
-            raise TypeError("'path 'argument should be a None, path or str object, not '%s'" % type(path).__name__)
+            raise TypeError(
+                "'path 'argument should be a None, path or str object, not '%s'"
+                % type(path).__name__
+            )
 
         return lazy_dir.resolve()
 
@@ -52,7 +57,10 @@ class LazyPath(_Path):
             lazy_file.touch()
             lazy_file.resolve()
         else:
-            raise TypeError("'path 'argument should be a None, path or str object, not '%s'" % type(path).__name__)
+            raise TypeError(
+                "'path 'argument should be a None, path or str object, not '%s'"
+                % type(path).__name__
+            )
 
         return lazy_file
 
@@ -76,17 +84,35 @@ class LazyPath(_Path):
 
     def open(self, mode="r", buffering=-1, encoding=None, errors=None, newline=None):
         self.touch()
-        return super().open(mode=mode, buffering=buffering, encoding=encoding, errors=errors, newline=newline)
+        return super().open(
+            mode=mode,
+            buffering=buffering,
+            encoding=encoding,
+            errors=errors,
+            newline=newline,
+        )
 
     def read(self, mode="r", buffering=-1, encoding=None, errors=None, newline=None):
-        return self.open(mode=mode, buffering=buffering, encoding=encoding, errors=errors, newline=newline)
+        return self.open(
+            mode=mode,
+            buffering=buffering,
+            encoding=encoding,
+            errors=errors,
+            newline=newline,
+        )
 
     def touch(self, mode=0o777, parents=True, exist_ok=True):
         self.parent.mkdir(mode, parents, exist_ok)
         super().touch(mode, exist_ok)
 
     def write(self, mode="w", buffering=-1, encoding=None, errors=None, newline=None):
-        return self.open(mode=mode, buffering=buffering, encoding=encoding, errors=errors, newline=newline)
+        return self.open(
+            mode=mode,
+            buffering=buffering,
+            encoding=encoding,
+            errors=errors,
+            newline=newline,
+        )
 
 
 # noinspection PyAbstractClass

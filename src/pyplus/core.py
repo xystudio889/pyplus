@@ -38,7 +38,7 @@ documenter.init(
     use_index_path=True,
     index_path=data_path.parent / "docs" / "web",
 )
-filterwarnings('default', category=DeprecationWarning)
+filterwarnings("default", category=DeprecationWarning)
 
 makedirs(global_config_path.parent, exist_ok=True)
 
@@ -116,12 +116,7 @@ with open(
 ) as f:
     deprecated_modules = load(f)
 
-if (
-    get_config(
-        "library.showDeprecationWarning", True, "all"
-    )
-    and deprecated_modules
-):
+if get_config("library.showDeprecationWarning", True, "all") and deprecated_modules:
     for k, v in deprecated_modules.items():
         if get_config(f"{k}.showDeprecationWarning", True, "all"):
             print(
@@ -313,4 +308,16 @@ def get_config_help(config_type: Union[str, Literal["all"]] = ALL):
             )
 
 
-del Dict, Union, Literal, Any, configurer, Path, colorama, makedirs, load, documenter, filterwarnings
+del (
+    Dict,
+    Union,
+    Literal,
+    Any,
+    configurer,
+    Path,
+    colorama,
+    makedirs,
+    load,
+    documenter,
+    filterwarnings,
+)
