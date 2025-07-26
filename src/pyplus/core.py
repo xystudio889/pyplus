@@ -120,7 +120,7 @@ if get_config("library.showDeprecationWarning", True, "all") and deprecated_modu
     for k, v in deprecated_modules.items():
         if get_config(f"{k}.showDeprecationWarning", True, "all"):
             print(
-                f"{colorama.Fore.YELLOW}{colorama.Style.BRIGHT}warning: {k} is deprecated scice {v["deprecated_version"]} and will be removed in {v['remove_version']} version.Please use {v['replace_module']} instead.{colorama.Style.RESET_ALL}"
+                f"{colorama.Fore.YELLOW}{colorama.Style.BRIGHT}warning: {k} is deprecated scice {v["deprecated_version"]} and will be removed in {v['remove_version']} version.Please use {v['replace_module']} instead.{k} is stopped update.{colorama.Style.RESET_ALL}"
             )
     print(
         f"{colorama.Fore.MAGENTA}{colorama.Style.BRIGHT}note:write 'pyplus config set global library.showDeprecationWarning false' in command to close this text\nnote:write 'pyplus config set global [library name].showDeprecationWarning false' in command to select close warning.{colorama.Style.RESET_ALL}"
