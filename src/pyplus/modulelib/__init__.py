@@ -10,7 +10,7 @@ with open(
 ) as f:
     config = load(f)
 
-if not config["advancedlib"]["itertools"]["initializinged"]:
+if not config["modulelib"]["initializinged"]:
     from . import all_module
 
 
