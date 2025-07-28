@@ -20,6 +20,15 @@ data_path = Path(__file__).parent / "data" / "config"
 global_config: Dict[str, Dict[str, Any]] = {}
 local_config: Dict[str, Dict[str, Any]] = {}
 
+none = None
+null = None
+true = True
+false = False
+
+False = false
+True = true
+None = none
+NULL = null
 NEW = "news"
 WILL = "will"
 

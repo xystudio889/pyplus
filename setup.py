@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="python-plus-tools",
-    version="2.2.0a4",
+    version="2.2.0a5",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=[
@@ -25,6 +25,7 @@ setup(
         "documenter>=0.1",
         "backupworkspace==0.2.1",
         "scipy>=1.7",
+        "packaging>=21.3"
     ],
     python_requires=">=3.8",
     author="xystudio",

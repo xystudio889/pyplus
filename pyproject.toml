@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "python-plus-tools"
-version = "2.2.0a4"
+version = "2.2.0a5"
 authors = [{ name = "xystudio", email = "173288240@qq.com" }]
 description = "For the expansion of python content, it covers science, debugging and other fields."
 readme = { file = "README-PYPI.md", content-type = "text/markdown" }
@@ -35,6 +35,7 @@ dependencies = [
     "documenter>=0.1",
     "backupworkspace==0.2.1",
     "scipy>=1.7",
+    "packaging>=21.3"
 ]
 keywords = ["debug", "science", "pyplus", "tools", "python"]
 [project.optional-dependencies]
