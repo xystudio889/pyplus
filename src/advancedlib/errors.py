@@ -2,6 +2,7 @@ from errno import *
 import warnings
 from deprecated import deprecated
 
+
 def NotCompleted(*args: object):
     from functools import wraps
 
@@ -14,13 +15,16 @@ def NotCompleted(*args: object):
 
     return decorator
 
+
 def assertTure(condition: bool, message: str = ""):
     if not condition:
         raise AssertionError(message)
-    
+
+
 def assertFalse(condition: bool, message: str = ""):
     if condition:
         raise AssertionError(message)
+
 
 def show_lirary_deprecated_warning(library: str, version: str, message: str = ""):
     import configurer
@@ -34,5 +38,10 @@ def show_lirary_deprecated_warning(library: str, version: str, message: str = ""
         must_two_texts=True,
     )
 
-    if configurer.get_config(f"library.showDeprecatedWarning", True, "all") and configurer.get_config(f"{library}.showDeprecatedWarning", True, "all"):
-        warnings.warn(f"{colorama.Fore.YELLOW}{library} is deprecated since version {version}. {message}", DeprecationWarning)
+    if configurer.get_config(
+        f"library.showDeprecatedWarning", True, "all"
+    ) and configurer.get_config(f"{library}.showDeprecatedWarning", True, "all"):
+        warnings.warn(
+            f"{colorama.Fore.YELLOW}{library} is deprecated since version {version}. {message}",
+            DeprecationWarning,
+        )

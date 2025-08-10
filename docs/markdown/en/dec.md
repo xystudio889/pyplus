@@ -1,5 +1,0 @@
-# dec
-
-## Description
-
-## functions

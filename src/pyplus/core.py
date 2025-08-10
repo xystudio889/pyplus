@@ -25,9 +25,9 @@ null = None
 true = True
 false = False
 
-False = false
-True = true
-None = none
+FALSE = false
+TRUE = true
+NONE = none
 NULL = null
 NEW = "news"
 WILL = "will"
