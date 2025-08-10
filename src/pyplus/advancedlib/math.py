@@ -8,9 +8,17 @@ import numpy as np
 import numpy, sympy, scipy, numba, matplotlib, math
 
 from deprecated import deprecated
+from typing_extensions import List, Tuple, Union, Dict
 
 
-def solve_equations(*equations, variables=None):
+def solve_equations(*equations, variables=None) -> List[dict[sympy.Symbol, Union[int, float]]]:
+    """
+    Solve equations.
+    
+    :param equations: The equations to solve.
+    :param variables: The variables to solve for.
+    :return: A list of solutions.
+    """
     if not equations:
         return []
 
@@ -36,13 +44,27 @@ def solve_equations(*equations, variables=None):
     return solutions
 
 
-def solve_formula(formula_str, **kwargs):
+def solve_formula(formula_str: str, **kwargs) -> Union[int, float]:
+    """
+    Solve a mathematical formula.
+
+    :param formula_str: The formula to solve.
+    :param kwargs: The variables to substitute in the formula.
+    :return: The result of the formula.
+    """
     sym_vars = sympy.symbols(list(kwargs.keys()))
     expr = sympy.sympify(formula_str)
     return expr.subs({k: v for k, v in zip(sym_vars, kwargs.values())})
 
 
-def solve_formulas(formula_strs, **kwargs):
+def solve_formulas(formula_strs: List[str], **kwargs) -> List[Union[int, float]]:
+    """
+    Solve multiple mathematical formulas.
+    
+    :param formula_strs: The formulas to solve.
+    :param kwargs: The variables to substitute in the formulas.
+    :return: A list of the results of the formulas.
+    """
     formula_outputs = []
     for formula_str in formula_strs:
         formula_outputs.append(solve_formula(formula_str, **kwargs))
@@ -50,7 +72,14 @@ def solve_formulas(formula_strs, **kwargs):
     return formula_outputs
 
 
-def decompose_fraction(numerator, denominator):
+def decompose_fraction(numerator: int, denominator: int) -> Tuple[int, int]:
+    """
+    Decompose a fraction into its numerator and denominator.
+    
+    :param numerator: The numerator of the fraction.
+    :param denominator: The denominator of the fraction.
+    :return: A tuple containing the numerator and denominator of the fraction.
+    """
     if numerator == 0:
         return 0, 1
     elif denominator == 0:
@@ -60,7 +89,7 @@ def decompose_fraction(numerator, denominator):
         return numerator // gcd, denominator // gcd
 
 
-def decompose_prime(n, expand: bool = False):
+def decompose_prime(n: int, expand: bool = False) -> Union[List[int], Dict[int, int]]:
     decompose_prime_factors = sympy.factorint(n)
     if expand:
         decompose_prime_factors_temp = []
@@ -94,7 +123,7 @@ def joseph_problem(n: int) -> int:
 
 
 @cache
-def fib(n):
+def fib(n: int):
     if n == 0:
         return 0
     elif n == 1:
@@ -102,28 +131,25 @@ def fib(n):
     else:
         return fib(n - 1) + fib(n - 2)
 
-
-def is_palindrome(n):
+def is_palindrome(n: int) -> bool:
     return str(n) == str(n)[::-1]
 
 
-def is_even(n):
+def is_even(n: int) -> bool:
     return n % 2 == 0
 
 
-def is_odd(n):
+def is_odd(n: int) -> bool:
     return n % 2 == 1
 
 
-def c(n, r):
+def c(n:int, r:int) -> int:
     return math.factorial(n) // (math.factorial(r) * math.factorial(n - r))
 
-
-def hcf(a, b):
-    return math.gcd(a, b)
-
-@deprecated("Function 'prime_factors' is deprecated in 2.2.0.It will be removed in 3.0.0. Use 'decompose_prime' instead.")
-def prime_factors(n):
+@deprecated(
+    "Function 'prime_factors' is deprecated in 2.2.0.It will be removed in 3.0.0. Use 'decompose_prime' instead."
+)
+def prime_factors(n: int):
     factors = []
     d = 2
     while d * d <= n:
@@ -136,7 +162,7 @@ def prime_factors(n):
     return factors
 
 
-def prime_divisors(n):
+def prime_divisors(n: int) -> List[int]:
     factors = decompose_prime(n)
     divisors = []
     for factor in factors:
@@ -144,11 +170,10 @@ def prime_divisors(n):
     return divisors
 
 
-def p(n, r):
+def p(n: int, r: int) -> int:
     return c(n, r) // math.factorial(r)
 
-
-def is_prime(n):
+def is_prime(n: int) -> bool:
     """检查一个数是否为素数"""
     if n <= 1:
         return False
@@ -165,8 +190,7 @@ def is_prime(n):
         w = 6 - w
     return True
 
-
-def get_primes(n):
+def get_primes(n: int) -> int:
     primes = []
     i = 2
     while len(primes) < n:
@@ -176,7 +200,7 @@ def get_primes(n):
     return primes[-1]
 
 
-def perfect_number(n):
+def perfect_number(n: int) -> int:
     count = 0
     p = 2
     while True:
@@ -188,8 +212,7 @@ def perfect_number(n):
                 return perfect_num
         p += 1
 
-
-def is_perfect_number(num):
+def is_perfect_number(num: int) -> bool:
     if num % 2 != 0:
         return False
 
@@ -204,4 +227,46 @@ def is_perfect_number(num):
             return False
         p += 1
 
-del deprecated
+
+def short_div(divisor: int, *dividends) -> List[Tuple[int, int]]:
+    """
+    Short division is a method of dividing a number by a divisor by repeatedly subtracting the divisor from the dividend until the dividend is less than the divisor.
+
+    The method is named after the French mathematician Gauss. The method is useful for computing the remainder of a division and is used in cryptography.
+
+    :param divisor: The divisor to divide by.
+    :param dividends: The dividends to divide by the divisor.
+    :return: The remainder of the division.
+    """
+    if not dividends:
+        raise ValueError("No dividends provided")
+    if divisor == 0:
+        raise ZeroDivisionError("Division by zero")
+
+    results = []
+    for dividend in dividends:
+        quotient, remainder = divmod(dividend, divisor)
+        results.append((quotient, remainder))
+    return results
+
+def common_factors(a: int, b: int) -> List[int]:
+    """
+    Compute the common factors of two integers.
+    :param a: The first integer.
+    :param b: The second integer.
+    :return: A list of the common factors of the two integers.
+    """
+    gcd_val = math.gcd(abs(a), abs(b))
+    
+    if gcd_val == 0:
+        return []
+    
+    factors = set()
+    for i in range(1, int(math.sqrt(gcd_val)) + 1):
+        if gcd_val % i == 0:
+            factors.add(i)
+            factors.add(gcd_val // i)
+
+    return sorted(factors)
+
+del deprecated, List, Tuple, Union, Dict

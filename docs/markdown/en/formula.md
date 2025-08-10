@@ -1,5 +1,0 @@
-# formula
-
-## Description
-
-## functions
