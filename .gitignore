@@ -5,6 +5,7 @@
 benchmark.py
 .xystudio
 .vscode
+*.xcf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

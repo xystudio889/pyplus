@@ -3,15 +3,15 @@ from importlib import *
 from toml import load, dump
 from site import getsitepackages
 from pathlib import Path
+import configurer
 
-with open(
-    Path(__file__).parents[1] / "data/config/module_config.toml",
-    encoding="utf-8",
-) as f:
-    config = load(f)
-
-if not config["modulelib"]["initializinged"]:
-    from . import all_module
+configurer.init(
+    default_config_type="local",
+    global_config_path=Path.home() / ".xystudio" / "pyplus" / "config.toml",
+    local_config_path=Path.cwd() / ".xystudio" / "pyplus" / "config.toml",
+    must_two_texts=True,
+)
+configurer.init(default_config_type=configurer.get_config("library.firstUsedConfig"))
 
 
 def get_import_moudle_path():
@@ -121,4 +121,4 @@ class LazyImport:
         return getattr(self._module, name)
 
 
-del Path, load, dump, getsitepackages
+del Path, load, dump, getsitepackages, configurer
