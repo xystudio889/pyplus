@@ -11,10 +11,12 @@ from deprecated import deprecated
 from typing_extensions import List, Tuple, Union, Dict
 
 
-def solve_equations(*equations, variables=None) -> List[dict[sympy.Symbol, Union[int, float]]]:
+def solve_equations(
+    *equations, variables=None
+) -> List[dict[sympy.Symbol, Union[int, float]]]:
     """
     Solve equations.
-    
+
     :param equations: The equations to solve.
     :param variables: The variables to solve for.
     :return: A list of solutions.
@@ -60,7 +62,7 @@ def solve_formula(formula_str: str, **kwargs) -> Union[int, float]:
 def solve_formulas(formula_strs: List[str], **kwargs) -> List[Union[int, float]]:
     """
     Solve multiple mathematical formulas.
-    
+
     :param formula_strs: The formulas to solve.
     :param kwargs: The variables to substitute in the formulas.
     :return: A list of the results of the formulas.
@@ -75,7 +77,7 @@ def solve_formulas(formula_strs: List[str], **kwargs) -> List[Union[int, float]]
 def decompose_fraction(numerator: int, denominator: int) -> Tuple[int, int]:
     """
     Decompose a fraction into its numerator and denominator.
-    
+
     :param numerator: The numerator of the fraction.
     :param denominator: The denominator of the fraction.
     :return: A tuple containing the numerator and denominator of the fraction.
@@ -99,7 +101,7 @@ def decompose_prime(n: int, expand: bool = False) -> Union[List[int], Dict[int, 
     return decompose_prime_factors
 
 
-def joseph_problem(n: int) -> int:
+def joseph_problem(n: int, k: int=2) -> int:
     """
     Joseph problem is a classic problem in computer science. It is a problem of finding the last person standing in a circle of people. The problem is named after the Greek mathematician Josephus. The problem can be solved using a simple algorithm called the Josephus problem. The algorithm works as follows:
 
@@ -119,17 +121,18 @@ def joseph_problem(n: int) -> int:
     if n == 1:
         return 1
     else:
-        return (joseph_problem(n - 1) + n - 1) % n + 1
+        return (joseph_problem(n - 1, k) + k - 1) % n + 1
 
 
 @cache
-def fib(n: int):
+def fib(n: int) -> int:
     if n == 0:
         return 0
     elif n == 1:
         return 1
     else:
         return fib(n - 1) + fib(n - 2)
+
 
 def is_palindrome(n: int) -> bool:
     return str(n) == str(n)[::-1]
@@ -143,13 +146,14 @@ def is_odd(n: int) -> bool:
     return n % 2 == 1
 
 
-def c(n:int, r:int) -> int:
+def c(n: int, r: int) -> int:
     return math.factorial(n) // (math.factorial(r) * math.factorial(n - r))
+
 
 @deprecated(
     "Function 'prime_factors' is deprecated in 2.2.0.It will be removed in 3.0.0. Use 'decompose_prime' instead."
 )
-def prime_factors(n: int):
+def prime_factors(n: int) -> List[int]:
     factors = []
     d = 2
     while d * d <= n:
@@ -173,6 +177,7 @@ def prime_divisors(n: int) -> List[int]:
 def p(n: int, r: int) -> int:
     return c(n, r) // math.factorial(r)
 
+
 def is_prime(n: int) -> bool:
     """检查一个数是否为素数"""
     if n <= 1:
@@ -189,6 +194,7 @@ def is_prime(n: int) -> bool:
         i += w
         w = 6 - w
     return True
+
 
 def get_primes(n: int) -> int:
     primes = []
@@ -211,6 +217,7 @@ def perfect_number(n: int) -> int:
             if count == n:
                 return perfect_num
         p += 1
+
 
 def is_perfect_number(num: int) -> bool:
     if num % 2 != 0:
@@ -249,6 +256,7 @@ def short_div(divisor: int, *dividends) -> List[Tuple[int, int]]:
         results.append((quotient, remainder))
     return results
 
+
 def common_factors(a: int, b: int) -> List[int]:
     """
     Compute the common factors of two integers.
@@ -257,10 +265,10 @@ def common_factors(a: int, b: int) -> List[int]:
     :return: A list of the common factors of the two integers.
     """
     gcd_val = math.gcd(abs(a), abs(b))
-    
+
     if gcd_val == 0:
         return []
-    
+
     factors = set()
     for i in range(1, int(math.sqrt(gcd_val)) + 1):
         if gcd_val % i == 0:
@@ -268,5 +276,20 @@ def common_factors(a: int, b: int) -> List[int]:
             factors.add(gcd_val // i)
 
     return sorted(factors)
+
+def no_recursion_fib(n: int) -> int:
+    if n == 0:
+        return 0
+        
+    if n == 1:
+        return 1
+    elif n == 2:
+        return 1
+    
+    a,b = 0,1
+    for _ in range(3,n+1):
+        a, b = b, a+b
+    return b
+    
 
 del deprecated, List, Tuple, Union, Dict

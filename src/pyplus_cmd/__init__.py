@@ -44,10 +44,9 @@ else:
     with open(global_config_path, "r", encoding="utf-8") as f:
         global_config = load(f)
 
-if global_config.get("library.autoCreateLocalConfig"):
-    makedirs(local_config_path.parent, exist_ok=True)
-    if not (local_config_path.exists()):
-        local_config_path.touch()
+makedirs(local_config_path.parent, exist_ok=True)
+if not (local_config_path.exists()):
+    local_config_path.touch()
 
 try:
     with open(local_config_path, "r", encoding="utf-8") as f:
@@ -55,9 +54,7 @@ try:
 except FileNotFoundError:
     pass
 
-first_used_config = configurer.initsettings.get(
-    "library", {"firstUsedConfig": LOCAL}
-).get("firstUsedConfig", LOCAL)
+first_used_config = get_config("library.firstUsedConfig", LOCAL)
 
 with open(data_path / "update.toml", "r", encoding="utf-8") as f:
     updates = load(f)
@@ -563,7 +560,7 @@ def check_update(
 
 
 __version__ = get_version("main")
-
+tools_version = "1.3.0"
 
 def shell():
     print("starting shell...")
@@ -617,8 +614,11 @@ def main() -> None:
         def handle_output(parser, namespace, values):
             setattr(namespace, "_local", values)
 
-    parser = argparse.ArgumentParser(description="imgfit commands")
+    parser = argparse.ArgumentParser(description="pyplus commands")
     subparsers = parser.add_subparsers(dest="command", required=False)
+    
+    parser.add_argument("-v", "--version", help="Get the version.", action="store_true")
+    subparsers.add_parser("version", help="Get the version.").add_argument("namespace", help="A release version namespace.", nargs="?")
 
     config_cmd = subparsers.add_parser(
         "config",
@@ -626,39 +626,47 @@ def main() -> None:
     )
     config_namespace = config_cmd.add_subparsers(dest="config_command", required=True)
     set_cmd = config_namespace.add_parser("set", help="Set the config")
-    set_namespace = set_cmd.add_subparsers(dest="set_namespace", required=True)
-    local_config_cmd = set_namespace.add_parser(
-        "local",
+
+    set_cmd.add_argument("setting", help="Config setting.")
+    value = set_cmd.add_argument("value", help="Config value.", nargs="+")
+
+    set_config_group = set_cmd.add_mutually_exclusive_group()
+    set_config_group.add_argument(
+        "-l" "--local",
+        nargs=0,
+        action=localAction,
         help="Config file only in your project.Local config in './.xystudio/pyplus/config.toml'",
     )
-    global_config_cmd = set_namespace.add_parser(
-        "global",
+    set_config_group.add_argument(
+        "-g",
+        "--global",
+        nargs=0,
+        action=globalAction,
         help="Config file in all project.Global config in 'Users/Appdata/roaming/xystudio/pyplus/config.toml'",
     )
 
-    local_config_cmd.add_argument("setting", help="Config setting.")
-    local_config_cmd.add_argument("value", help="Config value.")
-
-    global_config_cmd.add_argument("setting", help="Config setting.")
-    global_config_cmd.add_argument("value", help="Config value.")
-
     get_conf = config_namespace.add_parser("get", help="Get the config.")
-    get_conf.add_argument(
+    config_type_group = get_conf.add_mutually_exclusive_group()
+    config_type_group.add_argument(
         "-l",
         "--local",
         action=localAction,
-        nargs="?",
+        nargs=0,
         help="Get the local config in your project.Local config in './.xystudio/pyplus/config.toml'",
     )
-    get_conf.add_argument(
+    config_type_group.add_argument(
         "-g",
         "--global",
         action=globalAction,
-        nargs="?",
+        nargs=0,
         help="Output the global config.",
     )
-    get_conf.add_argument(
-        "-a", "--all", nargs="?", action=allAction, help="Output all the config."
+    config_type_group.add_argument(
+        "-a",
+        "--all",
+        nargs=0,
+        action=allAction,
+        help="Output all the config.This option is default option.",
     )
 
     config_namespace.add_parser("get_help", help="Get the config help.").add_argument(
@@ -735,8 +743,6 @@ def main() -> None:
     ).add_argument("version", help="pre-release version.", nargs="?")
 
     subparsers.add_parser("shell", help="run pyplus code.")
-
-    parser.add_argument("-v", "--version", help="Get the version.", action="store_true")
 
     get_alias_command = subparsers.add_parser("get_ailas", help="Get the alias.")
 
@@ -836,39 +842,87 @@ def main() -> None:
 
     if args.command == "config":
         if args.config_command == "set":
-            if args.value.lower() == "true":
-                value = True
-            elif args.value.lower() == "false":
-                value = False
+            args.value = args.value[0] if len(args.value) == 1 else args.value
+            if isinstance(args.value, str):
+                if args.value.lower() == "true":
+                    value = True
+                elif args.value.lower() == "false":
+                    value = False
+                else:
+                    value = args.value
             else:
                 value = args.value
-            config(args.setting, value, args.set_namespace)
-            print(f"{args.set_namespace} config {args.setting} is set to {args.value}.")
+            if first_used_config == LOCAL:
+                if hasattr(args, "_local"):
+                    config(args.setting, value, LOCAL)
+                    print(f"local config {args.setting} is set to {args.value}.")
+                elif hasattr(args, "_global"):
+                    config(args.setting, value, GLOBAL)
+                    print(f"global config {args.setting} is set to {args.value}.")
+                else:
+                    config(args.setting, value, first_used_config)
+            elif first_used_config == GLOBAL:
+                if hasattr(args, "_global"):
+                    config(args.setting, value, GLOBAL)
+                    print(f"global config {args.setting} is set to {args.value}.")
+                elif hasattr(args, "_local"):
+                    config(args.setting, value, LOCAL)
+                    print(f"local config {args.setting} is set to {args.value}.")
+                else:
+                    config(args.setting, value, first_used_config)
+            else:
+                print(
+                    "Error: Invid config library.firstUsedConfig:"
+                    + get_config("library.firstUsedConfig")
+                )
         elif args.config_command == "get_help":
             get_config_help(args.document_description)
         elif args.config_command == "get":
-            print(args)
-            if hasattr(args, "_local"):
-                if args._local is None:
+            if first_used_config == LOCAL:
+                if hasattr(args, "_all"):
+                    if first_used_config == LOCAL:
+                        print(global_config | local_config)
+                    elif first_used_config == GLOBAL:
+                        print(local_config | global_config)
+                    else:
+                        print(
+                            "Error: Invid config library.firstUsedConfig:"
+                            + get_config("library.firstUsedConfig")
+                        )
+                elif hasattr(args, "_local"):
                     print(local_config)
-                else:
-                    print(args._local)
-                    print(get_config(args._local, namespace=LOCAL))
-            if hasattr(args, "_global"):
-                if args._global is None:
+                elif hasattr(args, "_global"):
                     print(global_config)
                 else:
-                    print(get_config(args._global, namespace=GLOBAL))
-            if hasattr(args, "_all"):
-                if args._all is None:
                     print(local_config | global_config)
+            elif first_used_config == GLOBAL:
+                if hasattr(args, "_all"):
+                    if first_used_config == LOCAL:
+                        print(global_config | local_config)
+                    elif first_used_config == GLOBAL:
+                        print(local_config | global_config)
+                    else:
+                        print(
+                            "Error: Invid config library.firstUsedConfig:"
+                            + get_config("library.firstUsedConfig")
+                        )
+                elif hasattr(args, "_global"):
+                    print(global_config)
+                elif hasattr(args, "_local"):
+                    print(local_config)
                 else:
-                    print(get_config(args._all, namespace=ALL))
+                    print(local_config | global_config)
+            else:
+                print(
+                    "Error: Invid config library.firstUsedConfig:"
+                    + get_config("library.firstUsedConfig")
+                )
         elif args.config_command == "remove":
             remove_config(args.setting, args.remove_namespace)
     elif args.version:
         print("Version : pyplus pre:", get_pre_version())
         print("Version : pyplus :", get_version("main"))
+        print("Version : command tools:", tools_version)
     elif args.command == "document":
         if args.doc_namespace == "open":
             open_doc(args.doc_name, args.lang)
@@ -968,6 +1022,17 @@ def main() -> None:
             print(
                 f"Not support convert from {args.types_to_convert} to {args.convert_types}.(choose from `json`, `xml`, `csv`, `yaml`, `toml`, `pickle."
             )
+    elif args.command == "version":
+        if args.namespace == "pyplus": # namespaces, next version will move to data.
+            print("Version : pyplus :", get_version("main"))
+        elif args.namespace == "pyplus_pre":
+            print("Version : pyplus pre:", get_pre_version())
+        elif args.namespace == "command_tools":
+            print("Version : command tools:", tools_version)
+        else:
+            print("Version : pyplus pre:", get_pre_version())
+            print("Version : pyplus :", get_version("main"))
+            print("Version : command tools:", tools_version)
     else:
         parser.print_help()
 

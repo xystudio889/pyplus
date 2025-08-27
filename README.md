@@ -1,4 +1,7 @@
-# pyplus
+<img src="./imgs/logo/logo.png" alt="logo" align="center" style="float:left;margin-right:20px;" />
+
+<h1 align="center">pyplus</h1>
+<br />
 
 ## project-id
 project from:python_projects
