@@ -257,7 +257,7 @@ class Calc:
         return value | self.num
 
 
-class Div0Int(int):
+class Div0Int(dint):
     def __truediv__(self, other):
         if other == 0:
             return float("inf")
@@ -267,6 +267,14 @@ class Div0Int(int):
         if other == 0:
             return float("inf")
         return super().__floordiv__(other)
+
+
+class NotCaseInsensitiveStr(istr):
+    def __eq__(self, other: str):
+        if self.str.lower() == other.lower():
+            return True
+        else:
+            return False
 
 
 Calculator: TypeAlias = Calc

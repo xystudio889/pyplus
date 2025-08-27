@@ -1,3 +1,4 @@
+# librarys
 from os import makedirs
 from pathlib import Path
 
@@ -12,63 +13,25 @@ from toml import load
 from typing import Dict, Union, Literal, Any
 from warnings import filterwarnings
 
-colorama.init(autoreset=True)
-
+# const variable
+# Path
 global_config_path = Path.home() / ".xystudio" / "pyplus" / "config.toml"
 local_config_path = Path.cwd() / ".xystudio" / "pyplus" / "config.toml"
 data_path = Path(__file__).parent / "data" / "config"
 global_config: Dict[str, Dict[str, Any]] = {}
 local_config: Dict[str, Dict[str, Any]] = {}
 
+# special variable
 none = None
 null = None
 true = True
 false = False
-
 FALSE = false
 TRUE = true
 NONE = none
 NULL = null
 NEW = "news"
 WILL = "will"
-
-configurer.init(
-    default_config_type=LOCAL,
-    global_config_path=global_config_path,
-    local_config_path=local_config_path,
-    must_two_texts=True,
-)
-configurer.init(default_config_type=get_config("library.firstUsedConfig"))
-documenter.init(
-    have_alias=True,
-    have_lang=True,
-    cache_path=Path.cwd() / ".xystudio" / "pyplus" / "cache" / "doc.html",
-    doc_path=data_path.parent / "docs" / "markdown",
-    use_index_path=True,
-    index_path=data_path.parent / "docs" / "web",
-)
-filterwarnings("default", category=DeprecationWarning)
-
-makedirs(global_config_path.parent, exist_ok=True)
-
-if not global_config_path.exists():
-    global_config_path.touch()
-else:
-    with open(global_config_path, "r", encoding="utf-8") as f:
-        global_config = load(f)
-
-if get_config("library.autoCreateLocalConfig"):
-    makedirs(local_config_path.parent, exist_ok=True)
-    if not (local_config_path.exists()):
-        local_config_path.touch()
-
-try:
-    with open(local_config_path, "r", encoding="utf-8") as f:
-        local_config = load(f)
-except FileNotFoundError:
-    pass
-
-first_used_config = configurer.initsettings["default_config_type"]
 
 __all__ = [
     "ALL",
@@ -97,6 +60,49 @@ __all__ = [
     "get_config_help",
     "remove_config",
 ]
+
+# init
+colorama.init(autoreset=True)
+configurer.init(
+    default_config_type=LOCAL,
+    global_config_path=global_config_path,
+    local_config_path=local_config_path,
+    must_two_texts=True,
+)
+configurer.init(default_config_type=get_config("library.firstUsedConfig"))
+documenter.init(
+    have_alias=True,
+    have_lang=True,
+    cache_path=Path.cwd() / ".xystudio" / "pyplus" / "cache" / "doc.html",
+    doc_path=data_path.parent / "docs" / "markdown",
+    use_index_path=True,
+    index_path=data_path.parent / "docs" / "web",
+)
+filterwarnings("default", category=DeprecationWarning)  # set warning
+
+# create config file if not exist
+makedirs(global_config_path.parent, exist_ok=True)
+
+if not global_config_path.exists():
+    global_config_path.touch()
+else:
+    with open(global_config_path, "r", encoding="utf-8") as f:
+        global_config = load(f)
+
+if get_config("library.autoCreateLocalConfig"):
+    makedirs(local_config_path.parent, exist_ok=True)
+    if not (local_config_path.exists()):
+        local_config_path.touch()
+
+try:
+    with open(local_config_path, "r", encoding="utf-8") as f:
+        local_config = load(f)
+except FileNotFoundError:
+    pass
+
+first_used_config = configurer.initsettings["default_config_type"]
+
+# load data
 
 with open(data_path / "update.toml", "r", encoding="utf-8") as f:
     updates = load(f)
@@ -134,6 +140,8 @@ if get_config("library.showDeprecationWarning", True, "all") and deprecated_modu
     print(
         f"{colorama.Fore.MAGENTA}{colorama.Style.BRIGHT}note:write 'pyplus config set global library.showDeprecationWarning false' in command to close this text\nnote:write 'pyplus config set global [library name].showDeprecationWarning false' in command to select close warning.{colorama.Style.RESET_ALL}"
     )
+
+# functions
 
 
 def get_update(namespace: str, version: str) -> Union[str, Dict[str, str]]:
